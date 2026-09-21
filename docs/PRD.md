@@ -4,7 +4,10 @@
 **Status:** rascunho para o primeiro lançamento
 **Data:** 20/09/2026
 **Audiência:** produto, engenharia e operação comercial
-**Idioma da interface:** português (pt-BR) como padrão; inglês e espanhol na evolução do produto
+**Idioma da interface:** `pt-BR` (padrão), `en` e `es` no site, webapp, e-mails e MCP
+**Glossário canônico:** [`CONTEXT.md`](../CONTEXT.md)
+**ADRs:** [`docs/adr/`](adr/README.md)
+**Stack:** [`stack.md`](stack.md)
 
 ---
 
@@ -81,46 +84,35 @@ Toda pessoa autenticada que participa de uma **Conta Capyra** é um **Operador**
 Regras:
 
 - Cada **Conta Capyra** tem exatamente um **Proprietário**.
-- **Criador**, **Aprovador** e **Visualizador** podem ser limitados a um subconjunto de **Marcas**.
-- O cliente da agência entra como **Aprovador** ou **Visualizador** da Marca dele — nunca vê as outras Marcas.
-- No tipo `creator`, o fluxo mínimo é um **Proprietário**; aprovação pode ficar desligada por Marca.
+- Um **Operador** tem exatamente um **Papel**; o papel não muda por Marca.
+- **Criador**, **Aprovador** e **Visualizador** são limitados ao conjunto de **Marcas** atribuídas; o **Proprietário** vê todas.
+- Somente o **Proprietário** conecta redes, convida ou remove Operadores e altera cobrança.
+- O cliente da agência entra como **Aprovador** ou **Visualizador** da Marca dele — nunca vê as outras Marcas. Esse e-mail não pode ter outra Conta Capyra.
+- No tipo `creator`, o fluxo mínimo é um **Proprietário**; a **Política de aprovação** continua sendo por Marca (padrão desligado).
+
+### Idiomas
+
+A plataforma atende **`pt-BR`** (padrão), **`en`** e **`es`** no site, no webapp, nos e-mails Capyra e nas descrições do MCP.
+
+- Visitante do site: prefixo de rota (`/pt-br`, `/en`, `/es`); `pt-BR` se o path omitir.
+- **Operador**: após o login, vale o **Idioma** gravado no perfil (padrão `pt-BR`); o seletor no webapp altera só a interface, não o **Fuso da marca**.
+- API: `code` estável em inglês; texto humano segue `Accept-Language` ou o Idioma do Operador. Códigos de erro não se traduzem.
+- Conteúdo publicado nas redes (texto do Destino) **não** é traduzido pelo Capyra.
+- White label: as três línguas dizem Capyra, nunca o **Fornecedor social**.
 
 ---
 
 ## 4. Glossário
 
-Termos canônicos. Evitar os sinônimos da coluna da direita na interface, na API pública e neste PRD.
+O glossário canônico está em [`CONTEXT.md`](../CONTEXT.md). Este PRD não redefine termos.
 
-| Termo | Significado | Evitar |
-| --- | --- | --- |
-| **Conta Capyra** | Espaço isolado do cliente (agência ou criador) | tenant, workspace, “conta” sem qualificativo |
-| **Tipo de conta** | `agency` ou `creator`; só segmenta UX | plano, permissão, franquia |
-| **Marca** | Identidade comercial que pertence a exatamente uma Conta Capyra | cliente, perfil, projeto |
-| **Marca arquivada** | Marca inativa, somente leitura, sem conexões nem publicações futuras | marca excluída |
-| **Fuso da marca** | Fuso IANA que interpreta agendamentos da Marca | fuso do navegador |
-| **Operador** | Usuário que participa da Conta Capyra | usuário da agência |
-| **Conta social** | Identidade de uma Marca em uma rede específica | perfil social, “conta” |
-| **Conexão social** | Vínculo ativo e exclusivo entre uma Conta social e o Capyra | integração |
-| **Conexão com ação necessária** | Autorização inválida; bloqueia envios e exige o Proprietário | “caiu”, desconectada silenciosa |
-| **Publicação** | Conteúdo de uma Marca que agrupa um ou mais Destinos | post, envio |
-| **Destino** | Entrega planejada para exatamente uma Conta social, com texto, mídia e horário próprios | rede, publicação |
-| **Versão de destino** | Snapshot imutável criado ao submeter ou agendar | rascunho enviado |
-| **Tentativa de entrega** | Um esforço de enviar um Destino | retry genérico |
-| **Post externo** | Conteúdo publicado fora do Capyra, importado só para leitura | rascunho importado |
-| **Snapshot de métrica** | Observação datada de uma métrica nativa | “zero” quando a rede não envia dado |
-| **Identidade social do ciclo** | Identidade nativa conectada ao menos uma vez no ciclo de cobrança | conexão simultânea |
-| **Jornada social white label** | Jornada em que só Capyra e a rede de destino são identificáveis | white label parcial |
-| **Gate white label** | Aprovação prática da jornada nas redes da v1 antes do comercial | validação só documental |
-| **Fornecedor social** | Motor interno de conexão, fila e publicação | nunca nomeado na UI |
-| **SocialProvider** | Contrato interno que isola o Capyra do fornecedor | “SDK do Zernio” na API pública |
+Relacionamentos que o produto assume (detalhe e diálogo em CONTEXT):
 
-Relacionamentos centrais:
-
-- Uma **Marca** pertence a uma única **Conta Capyra**.
+- Uma **Marca** pertence a uma única **Conta Capyra** e não é tenant.
 - Uma **Marca** tem no máximo uma **Conta social** ativa por rede.
-- Uma identidade nativa verificada tem no máximo uma **Conexão social** ativa em todo o Capyra.
+- Uma **Identidade nativa** verificada tem no máximo uma **Conexão social** ativa em todo o Capyra.
 - Uma **Publicação** pertence a uma **Marca** e possui um ou mais **Destinos**.
-- Identificadores do fornecedor **nunca** são IDs públicos nem critério isolado de tenant.
+- Identificadores do **Fornecedor social** nunca são IDs públicos nem critério de Conta.
 
 ---
 
@@ -257,7 +249,7 @@ IDs estáveis para rastreio em specs e testes.
 
 - **FR-007.** Login e primeiro acesso usam somente e-mail + link mágico ou código de acesso; não há senha.
 - **FR-008.** Link e código expiram, são de uso único e pertencem a um único e-mail.
-- **FR-009.** E-mails transacionais de autenticação, convite e cobrança identificam só Capyra.
+- **FR-009.** E-mails transacionais de autenticação, convite e cobrança identificam só Capyra e saem no **Idioma** do destinatário (`pt-BR`, `en` ou `es`).
 
 ### 7.3 Marcas
 
@@ -339,15 +331,27 @@ IDs estáveis para rastreio em specs e testes.
 - **FR-058.** Contratos públicos, logs visíveis ao cliente, PDFs, webhooks de saída (se houver) e textos de erro usam vocabulário Capyra.
 - **FR-059.** IDs, nomes de perfil e URLs do fornecedor não são aceitos como identificadores públicos.
 
+### 7.13 Idiomas
+
+- **FR-060.** Site, webapp, e-mails Capyra e MCP oferecem `pt-BR`, `en` e `es`; o padrão é `pt-BR`.
+- **FR-061.** O **Operador** persiste um **Idioma**; mudá-lo não altera o **Fuso da marca** nem traduz Destinos já escritos.
+
+### 7.14 MCP
+
+- **FR-062.** O MCP headless autentica um **Operador** e chama só `/api/v1`; respeita **Papel** e Marcas atribuídas; não acessa SQL, blob, Stripe, Resend nem o **Fornecedor social**.
+
 ---
 
 ## 8. Arquitetura — camada Social Provider
+
+Runtime, frameworks e adapters de nuvem estão em [`stack.md`](stack.md). Esta seção cobre só o fornecedor social.
 
 A UI e a API pública conhecem só o domínio Capyra. O fornecedor atual (Zernio) é uma implementação interna, substituível.
 
 ```mermaid
 flowchart LR
   Web[apps_web_Capyra] --> Api[API_Capyra]
+  Mcp[apps_mcp] --> Api
   Api --> Domain[Dominio_Marcas_Publicacoes_Billing]
   Domain --> Provider[SocialProvider]
   Provider --> Zernio[ZernioProvider]
@@ -359,7 +363,7 @@ flowchart LR
 ### 8.1 Fronteiras
 
 - A API Capyra é a única fronteira de negócio e de integração externa.
-- O web app fala apenas com a API Capyra.
+- O web app e o MCP falam apenas com a API Capyra.
 - `SocialProvider` encapsula conexão OAuth, perfis, contas, upload de mídia, agendamento, publicação, cancelamento, analytics, biblioteca de anúncios e webhooks.
 - `ZernioProvider` é a implementação de produção do primeiro lançamento.
 - `MockProvider` cobre desenvolvimento e testes; nunca é fallback silencioso em produção.
@@ -410,7 +414,7 @@ Nenhum desses recursos nomeia o fornecedor.
 | Item | Regra |
 | --- | --- |
 | Identificador | E-mail |
-| Fatores | Link mágico **ou** código numérico (OTP) enviados no mesmo e-mail transacional Capyra |
+| Fatores | Link mágico **ou** código numérico (OTP) enviados no mesmo e-mail transacional Capyra, via **Resend** |
 | Validade | Curta (minutos para o código; minutos a poucas horas para o link); um uso |
 | Conta inexistente | Primeiro login bem-sucedido provisiona Conta Capyra + Marca inicial |
 | Sessão | Cookie httpOnly, segura, com rotação; logout explícito |
@@ -502,6 +506,8 @@ Resultados: criativo visível, anunciante, período de veiculação e metadados 
 
 Não há preço por assento de Operador na v1. Convidar Aprovadores e Visualizadores (incluindo o cliente da agência) não altera a fatura.
 
+O trilho de pagamento é o **Stripe** (Checkout / Billing, BRL, recorrente). A API ajusta a assinatura quando uma **Identidade social do ciclo** entra ou deixa de renovar. Webhooks do Stripe atualizam o direito de uso. A UI Capyra fala em fatura e Conta social, não em “subscription item” nem no **Fornecedor social**. O Stripe pode aparecer na página hospedada de checkout.
+
 ### 13.2 Regras do ciclo
 
 - Entra na fatura toda **Identidade social do ciclo**: identidade nativa conectada ao menos uma vez durante o ciclo.
@@ -534,7 +540,8 @@ Nenhum item descreve custo do fornecedor, “account-day” ou nome de API terce
 - Mais de uma Conta social ativa da mesma rede na mesma Marca.
 - Participação do mesmo e-mail em várias Contas Capyra.
 - Senha, login social Google/Apple e SSO corporativo.
-- CLI, MCP e API pública para terceiros além da própria aplicação Capyra.
+- CLI e análise de dados em Python / app de IA — fora deste repositório até um corte futuro.
+- API pública para terceiros além do webapp Capyra e do MCP headless.
 - Conectores: Threads, WhatsApp, Reddit, Bluesky, Telegram, Snapchat, Discord.
 - White-label da UI Capyra para a agência revender com a marca dela (o white label aqui é Capyra na frente do fornecedor, não a agência na frente do Capyra).
 
@@ -608,7 +615,8 @@ Premissas:
 - O fornecedor permanece parceiro oficial das redes (Meta, TikTok, LinkedIn, Pinterest, X, Google, YouTube) o bastante para publicar via API oficial.
 - Contas Instagram de publicação são profissionais.
 - O Capyra opera a aplicação web e a API; o cliente não acessa dashboard nem domínio do fornecedor.
-- Há método de pagamento recorrente em BRL para o Proprietário (implementação self-service; o provedor de pagamento não precisa ser escolhido neste PRD).
+- Há checkout recorrente em BRL via Stripe para o Proprietário.
+- E-mail transacional (link mágico, código, convite, avisos) sai pelo Resend com remetente Capyra.
 
 ---
 
@@ -633,5 +641,6 @@ Este PRD não substitui spec técnica, OpenAPI, ADRs nem o glossário canônico 
 
 - spec de domínio e data model;
 - contrato OpenAPI `/api/v1`;
-- ADRs de `SocialProvider`, billing e auth passwordless;
 - plano do Gate white label por rede.
+
+Stack e ADRs de runtime, Stripe e Resend estão em [`stack.md`](stack.md) e [`docs/adr/`](adr/README.md).
