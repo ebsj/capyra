@@ -1,0 +1,1685 @@
+openapi: 3.1.0
+info:
+  title: Capyra API
+  version: "1.0.0"
+  description: |
+    Contrato público `/api/v1`. Vocabulário Capyra apenas.
+    IDs públicos: accountId, brandId, socialAccountId, publicationId, destinationId.
+    Identificadores do Fornecedor social são rejeitados.
+  contact:
+    name: Capyra
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+  - url: /api/v1
+    description: Relativo ao host Capyra
+tags:
+  - name: Auth
+  - name: Brands
+  - name: Members
+  - name: SocialConnections
+  - name: Media
+  - name: Publications
+  - name: Calendar
+  - name: ExternalPosts
+  - name: Reports
+  - name: Competitors
+  - name: Billing
+  - name: Notifications
+  - name: Audit
+security:
+  - cookieAuth: []
+paths:
+  /auth/request:
+    post:
+      tags: [Auth]
+      security: []
+      operationId: requestAccess
+      summary: Envia link mágico e código para o e-mail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestAccessInput"
+      responses:
+        "202":
+          description: Pedido aceito (não revela se o e-mail já existe além do fluxo normal)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Accepted"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /auth/complete:
+    post:
+      tags: [Auth]
+      security: []
+      operationId: completeAccess
+      summary: Autentica com link ou código; provisiona Conta se o e-mail for novo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteAccessInput"
+      responses:
+        "200":
+          description: Sessão criada
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionView"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+  /auth/logout:
+    post:
+      tags: [Auth]
+      operationId: logout
+      summary: Encerra só este acesso
+      responses:
+        "204":
+          description: Logout local
+  /auth/me:
+    get:
+      tags: [Auth]
+      operationId: getMe
+      responses:
+        "200":
+          description: Operador autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperatorView"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /brands:
+    get:
+      tags: [Brands]
+      operationId: listBrands
+      parameters:
+        - $ref: "#/components/parameters/IncludeArchived"
+      responses:
+        "200":
+          description: Marcas visíveis ao Operador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandList"
+    post:
+      tags: [Brands]
+      operationId: createBrand
+      summary: Só Proprietário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandWrite"
+      responses:
+        "201":
+          description: Marca criada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /brands/{brandId}:
+    parameters:
+      - $ref: "#/components/parameters/BrandId"
+    get:
+      tags: [Brands]
+      operationId: getBrand
+      responses:
+        "200":
+          description: Marca
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandView"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Brands]
+      operationId: updateBrand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandWrite"
+      responses:
+        "200":
+          description: Marca atualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /brands/{brandId}/archive:
+    post:
+      tags: [Brands]
+      operationId: archiveBrand
+      parameters:
+        - $ref: "#/components/parameters/BrandId"
+      responses:
+        "200":
+          description: Marca arquivada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /brands/{brandId}/restore:
+    post:
+      tags: [Brands]
+      operationId: restoreBrand
+      parameters:
+        - $ref: "#/components/parameters/BrandId"
+      responses:
+        "200":
+          description: Marca restaurada; conexões não são reatribuídas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandView"
+  /members:
+    get:
+      tags: [Members]
+      operationId: listMembers
+      responses:
+        "200":
+          description: Operadores da Conta
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
+  /members/{operatorId}:
+    patch:
+      tags: [Members]
+      operationId: updateMember
+      summary: Altera Papel e Marcas atribuídas; não promove a Proprietário
+      parameters:
+        - $ref: "#/components/parameters/OperatorId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberUpdate"
+      responses:
+        "200":
+          description: Operador atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperatorView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      tags: [Members]
+      operationId: removeMember
+      parameters:
+        - $ref: "#/components/parameters/OperatorId"
+      responses:
+        "204":
+          description: Autorização revogada na hora
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /member-invitations:
+    get:
+      tags: [Members]
+      operationId: listInvitations
+      responses:
+        "200":
+          description: Convites pendentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationList"
+    post:
+      tags: [Members]
+      operationId: createInvitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvitationCreate"
+      responses:
+        "201":
+          description: Convite criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationView"
+        "409":
+          description: E-mail já pertence a outra Conta Capyra
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+  /brands/{brandId}/social-connections:
+    parameters:
+      - $ref: "#/components/parameters/BrandId"
+    get:
+      tags: [SocialConnections]
+      operationId: listSocialConnections
+      responses:
+        "200":
+          description: Contas sociais da Marca
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountList"
+    post:
+      tags: [SocialConnections]
+      operationId: startSocialConnection
+      summary: Só Proprietário; inicia OAuth headless
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartConnectionInput"
+      responses:
+        "201":
+          description: URL oficial da rede (não do Fornecedor social)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationSessionView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          description: Slot ocupado, identidade tomada ou inadimplência
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+  /brands/{brandId}/social-connections/{socialAccountId}:
+    parameters:
+      - $ref: "#/components/parameters/BrandId"
+      - $ref: "#/components/parameters/SocialAccountId"
+    get:
+      tags: [SocialConnections]
+      operationId: getSocialConnection
+      responses:
+        "200":
+          description: Conta social
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountView"
+    delete:
+      tags: [SocialConnections]
+      operationId: disconnectSocialAccount
+      responses:
+        "202":
+          description: Desconexão em andamento até cancelamento confirmado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountView"
+  /brands/{brandId}/social-connections/{socialAccountId}/reconnect:
+    post:
+      tags: [SocialConnections]
+      operationId: reconnectSocialAccount
+      parameters:
+        - $ref: "#/components/parameters/BrandId"
+        - $ref: "#/components/parameters/SocialAccountId"
+      responses:
+        "201":
+          description: Nova sessão de autorização da mesma identidade
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationSessionView"
+  /authz/callback:
+    get:
+      tags: [SocialConnections]
+      security: []
+      operationId: socialOAuthCallback
+      summary: Callback no domínio Capyra
+      parameters:
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect para o webapp Capyra
+        "400":
+          $ref: "#/components/responses/Error"
+  /brands/{brandId}/social-connections/{socialAccountId}/linkedin-target:
+    post:
+      tags: [SocialConnections]
+      operationId: selectLinkedInTarget
+      summary: Seleção de organização ou perfil na UI Capyra
+      parameters:
+        - $ref: "#/components/parameters/BrandId"
+        - $ref: "#/components/parameters/SocialAccountId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LinkedInTargetInput"
+      responses:
+        "200":
+          description: Alvo gravado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialAccountView"
+  /media:
+    get:
+      tags: [Media]
+      operationId: listMedia
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQuery"
+      responses:
+        "200":
+          description: Biblioteca da Marca
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaList"
+    post:
+      tags: [Media]
+      operationId: createMedia
+      summary: Proprietário ou Criador; até 200 MB; sem transcodificação
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQueryRequired"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, kind]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                kind:
+                  $ref: "#/components/schemas/MediaKind"
+      responses:
+        "201":
+          description: Mídia referenciada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "413":
+          $ref: "#/components/responses/Error"
+  /media/{mediaId}:
+    delete:
+      tags: [Media]
+      operationId: deleteMedia
+      parameters:
+        - $ref: "#/components/parameters/MediaId"
+      responses:
+        "204":
+          description: Eliminada
+        "409":
+          description: Em uso por Destino não concluído
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+  /publications:
+    get:
+      tags: [Publications]
+      operationId: listPublications
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQuery"
+        - $ref: "#/components/parameters/Page"
+      responses:
+        "200":
+          description: Publicações da Marca
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicationList"
+    post:
+      tags: [Publications]
+      operationId: createPublication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublicationCreate"
+      responses:
+        "201":
+          description: Publicação com Destinos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicationView"
+  /publications/{publicationId}:
+    parameters:
+      - $ref: "#/components/parameters/PublicationId"
+    get:
+      tags: [Publications]
+      operationId: getPublication
+      responses:
+        "200":
+          description: Publicação
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicationView"
+    patch:
+      tags: [Publications]
+      operationId: updatePublicationDraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublicationCreate"
+      responses:
+        "200":
+          description: Rascunho atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicationView"
+  /destinations/{destinationId}:
+    parameters:
+      - $ref: "#/components/parameters/DestinationId"
+    get:
+      tags: [Publications]
+      operationId: getDestination
+      responses:
+        "200":
+          description: Destino
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+    patch:
+      tags: [Publications]
+      operationId: updateDestination
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DestinationWrite"
+      responses:
+        "200":
+          description: Destino atualizado (pode reabrir revisão)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+  /destinations/{destinationId}/submit:
+    post:
+      tags: [Publications]
+      operationId: submitDestination
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      responses:
+        "200":
+          description: em_revisao
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+  /destinations/{destinationId}/approve:
+    post:
+      tags: [Publications]
+      operationId: approveDestination
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      responses:
+        "200":
+          description: aprovado ou agendado se já houver horário
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "402":
+          $ref: "#/components/responses/Delinquent"
+  /destinations/{destinationId}/reject:
+    post:
+      tags: [Publications]
+      operationId: rejectDestination
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      responses:
+        "200":
+          description: rejeitado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+  /destinations/{destinationId}/request-changes:
+    post:
+      tags: [Publications]
+      operationId: requestDestinationChanges
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentCreate"
+      responses:
+        "200":
+          description: alteracoes_solicitadas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+  /destinations/{destinationId}/schedule:
+    post:
+      tags: [Publications]
+      operationId: scheduleDestination
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleInput"
+      responses:
+        "200":
+          description: agendado (cria Versão de destino)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+        "402":
+          $ref: "#/components/responses/Delinquent"
+  /destinations/{destinationId}/publish:
+    post:
+      tags: [Publications]
+      operationId: publishDestinationNow
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      responses:
+        "200":
+          description: submetido; estado publicado ou entrega_desconhecida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+        "402":
+          $ref: "#/components/responses/Delinquent"
+  /destinations/{destinationId}/cancel:
+    post:
+      tags: [Publications]
+      operationId: cancelDestination
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      responses:
+        "202":
+          description: cancelamento pedido; só vira cancelado com confirmação da rede
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+  /destinations/{destinationId}/retry:
+    post:
+      tags: [Publications]
+      operationId: retryDestination
+      parameters:
+        - $ref: "#/components/parameters/DestinationId"
+      responses:
+        "200":
+          description: nova tentativa só se falha_definitiva; não repete concluídos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DestinationView"
+  /destinations/{destinationId}/comments:
+    parameters:
+      - $ref: "#/components/parameters/DestinationId"
+    get:
+      tags: [Publications]
+      operationId: listDestinationComments
+      responses:
+        "200":
+          description: Comentários do Destino
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentList"
+    post:
+      tags: [Publications]
+      operationId: createDestinationComment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentCreate"
+      responses:
+        "201":
+          description: Comentário
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /calendar:
+    get:
+      tags: [Calendar]
+      operationId: getCalendar
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQuery"
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: network
+          in: query
+          schema:
+            $ref: "#/components/schemas/Network"
+      responses:
+        "200":
+          description: Destinos por dia, rede e estado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarView"
+  /external-posts:
+    get:
+      tags: [ExternalPosts]
+      operationId: listExternalPosts
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQueryRequired"
+        - $ref: "#/components/parameters/SocialAccountIdQuery"
+        - $ref: "#/components/parameters/Page"
+      responses:
+        "200":
+          description: Posts externos importados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExternalPostList"
+  /reports:
+    get:
+      tags: [Reports]
+      operationId: getReport
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQueryRequired"
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: network
+          in: query
+          schema:
+            $ref: "#/components/schemas/Network"
+        - name: destinationId
+          in: query
+          schema:
+            $ref: "#/components/schemas/CapyraId"
+      responses:
+        "200":
+          description: Relatório; métrica ausente omitida (não zero)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportView"
+  /reports/export:
+    get:
+      tags: [Reports]
+      operationId: exportReport
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQueryRequired"
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: format
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [pdf, csv]
+      responses:
+        "200":
+          description: PDF Capyra ou CSV só dados
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+  /metrics:
+    get:
+      tags: [Reports]
+      operationId: listMetricSnapshots
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQueryRequired"
+      responses:
+        "200":
+          description: Snapshots; value pode ser null
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetricSnapshotList"
+  /competitors/ads:
+    get:
+      tags: [Competitors]
+      operationId: searchCompetitorAds
+      parameters:
+        - $ref: "#/components/parameters/BrandIdQueryRequired"
+        - name: library
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [meta, linkedin]
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Resultados em modelo Capyra
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompetitorAdList"
+        "400":
+          description: Conexão exigida ausente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+  /billing:
+    get:
+      tags: [Billing]
+      operationId: getBilling
+      summary: Só Proprietário
+      responses:
+        "200":
+          description: Ciclo, identidades cobradas, próxima cobrança
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /billing/checkout:
+    post:
+      tags: [Billing]
+      operationId: startCheckout
+      responses:
+        "201":
+          description: URL do checkout hospedado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutView"
+  /billing/portal:
+    post:
+      tags: [Billing]
+      operationId: startBillingPortal
+      responses:
+        "201":
+          description: URL do portal de faturas e método de pagamento
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutView"
+  /notifications:
+    get:
+      tags: [Notifications]
+      operationId: listNotifications
+      responses:
+        "200":
+          description: Notificações in-app
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationList"
+  /audit-events:
+    get:
+      tags: [Audit]
+      operationId: listAuditEvents
+      summary: Só Proprietário
+      responses:
+        "200":
+          description: Ações sensíveis sem segredos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditEventList"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: capyra_session
+  parameters:
+    BrandId:
+      name: brandId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    BrandIdQuery:
+      name: brandId
+      in: query
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    BrandIdQueryRequired:
+      name: brandId
+      in: query
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    SocialAccountId:
+      name: socialAccountId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    SocialAccountIdQuery:
+      name: socialAccountId
+      in: query
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    PublicationId:
+      name: publicationId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    DestinationId:
+      name: destinationId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    OperatorId:
+      name: operatorId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    MediaId:
+      name: mediaId
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/CapyraId"
+    IncludeArchived:
+      name: includeArchived
+      in: query
+      schema:
+        type: boolean
+        default: false
+    Page:
+      name: cursor
+      in: query
+      schema:
+        type: string
+  responses:
+    Unauthenticated:
+      description: Sem sessão
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+    Forbidden:
+      description: Papel ou Marcas atribuídas insuficientes
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+    NotFound:
+      description: Recurso inexistente nesta Conta/Marcas
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+    Error:
+      description: Erro Capyra
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+    RateLimited:
+      description: Rate limit de acesso
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+    Delinquent:
+      description: Inadimplência bloqueia agendar/publicar/conectar
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorBody"
+  schemas:
+    CapyraId:
+      type: string
+      minLength: 8
+      maxLength: 64
+      pattern: "^[A-Za-z0-9_-]+$"
+      description: ID Capyra. IDs de Fornecedor social são rejeitados.
+    ErrorBody:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Estável, inglês
+          enum:
+            - unauthenticated
+            - forbidden_role
+            - brand_not_assigned
+            - approval_required
+            - authorization_required
+            - identity_unverified
+            - identity_taken
+            - slot_occupied
+            - delivery_unknown
+            - platform_rejected
+            - delinquent
+            - invite_mismatch
+            - invite_expired
+            - email_in_other_account
+            - media_in_use
+            - invalid_timezone
+            - validation_error
+            - rate_limited
+            - not_found
+        message:
+          type: string
+          description: Humana, no Idioma do Operador ou Accept-Language
+        details:
+          type: object
+          additionalProperties: true
+    Accepted:
+      type: object
+      required: [accepted]
+      properties:
+        accepted:
+          type: boolean
+          const: true
+    RequestAccessInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+        accountType:
+          $ref: "#/components/schemas/AccountType"
+        inviteId:
+          type: string
+    CompleteAccessInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+        token:
+          type: string
+          description: Segredo do link mágico
+        code:
+          type: string
+          description: Código numérico
+        accountType:
+          $ref: "#/components/schemas/AccountType"
+        locale:
+          $ref: "#/components/schemas/Locale"
+        inviteId:
+          type: string
+    AccountType:
+      type: string
+      enum: [agency, creator]
+    Locale:
+      type: string
+      enum: [pt-BR, en, es]
+    Role:
+      type: string
+      enum: [owner, creator, approver, viewer]
+    Network:
+      type: string
+      enum: [instagram, tiktok, linkedin]
+    DestinationState:
+      type: string
+      enum:
+        - rascunho
+        - em_revisao
+        - aprovado
+        - rejeitado
+        - alteracoes_solicitadas
+        - agendado
+        - publicado
+        - cancelado
+        - falha_definitiva
+        - entrega_desconhecida
+    ConnectionStatus:
+      type: string
+      enum: [pending_verification, active, action_required, disconnecting, disconnected]
+    MediaKind:
+      type: string
+      enum: [original, variant]
+    SessionView:
+      type: object
+      required: [operator, account]
+      properties:
+        operator:
+          $ref: "#/components/schemas/OperatorView"
+        account:
+          $ref: "#/components/schemas/AccountView"
+    AccountView:
+      type: object
+      required: [accountId, type, billingStatus]
+      properties:
+        accountId:
+          $ref: "#/components/schemas/CapyraId"
+        type:
+          $ref: "#/components/schemas/AccountType"
+        billingStatus:
+          type: string
+          enum: [ok, delinquent]
+    OperatorView:
+      type: object
+      required: [operatorId, email, role, locale, brandIds, accountId]
+      properties:
+        operatorId:
+          $ref: "#/components/schemas/CapyraId"
+        accountId:
+          $ref: "#/components/schemas/CapyraId"
+        email:
+          type: string
+          format: email
+        role:
+          $ref: "#/components/schemas/Role"
+        locale:
+          $ref: "#/components/schemas/Locale"
+        brandIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapyraId"
+    BrandWrite:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        timezone:
+          type: string
+          description: IANA
+        approvalPolicy:
+          type: string
+          enum: [required, optional]
+        accountType:
+          $ref: "#/components/schemas/AccountType"
+    BrandView:
+      type: object
+      required: [brandId, accountId, name, timezone, approvalPolicy]
+      properties:
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        accountId:
+          $ref: "#/components/schemas/CapyraId"
+        name:
+          type: string
+        timezone:
+          type: string
+        approvalPolicy:
+          type: string
+          enum: [required, optional]
+        archivedAt:
+          type: string
+          format: date-time
+          nullable: true
+    BrandList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BrandView"
+    MemberList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OperatorView"
+    MemberUpdate:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [creator, approver, viewer]
+        brandIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapyraId"
+        locale:
+          $ref: "#/components/schemas/Locale"
+    InvitationCreate:
+      type: object
+      required: [email, role]
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [creator, approver, viewer]
+        brandIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapyraId"
+          default: []
+    InvitationView:
+      type: object
+      required: [inviteId, email, role, brandIds, expiresAt]
+      properties:
+        inviteId:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [creator, approver, viewer]
+        brandIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapyraId"
+        expiresAt:
+          type: string
+          format: date-time
+    InvitationList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvitationView"
+    StartConnectionInput:
+      type: object
+      required: [network]
+      properties:
+        network:
+          $ref: "#/components/schemas/Network"
+    AuthorizationSessionView:
+      type: object
+      required: [authorizationUrl, expiresAt, network]
+      properties:
+        authorizationUrl:
+          type: string
+          format: uri
+          description: URL oficial da rede, não do Fornecedor social
+        expiresAt:
+          type: string
+          format: date-time
+        network:
+          $ref: "#/components/schemas/Network"
+    LinkedInTargetInput:
+      type: object
+      required: [target]
+      properties:
+        target:
+          type: string
+          enum: [organization, person]
+        organizationId:
+          type: string
+          description: ID Capyra da opção listada na UI, não ID do fornecedor
+    SocialAccountView:
+      type: object
+      required: [socialAccountId, brandId, network, status]
+      properties:
+        socialAccountId:
+          $ref: "#/components/schemas/CapyraId"
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        network:
+          $ref: "#/components/schemas/Network"
+        displayHandle:
+          type: string
+        status:
+          $ref: "#/components/schemas/ConnectionStatus"
+        connectedAt:
+          type: string
+          format: date-time
+          nullable: true
+    SocialAccountList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SocialAccountView"
+    MediaView:
+      type: object
+      required: [mediaId, brandId, kind]
+      properties:
+        mediaId:
+          $ref: "#/components/schemas/CapyraId"
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+          maximum: 209715200
+    MediaList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaView"
+    PublicationCreate:
+      type: object
+      required: [brandId, destinations]
+      properties:
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        destinations:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/DestinationWrite"
+    PublicationView:
+      type: object
+      required: [publicationId, brandId, destinations]
+      properties:
+        publicationId:
+          $ref: "#/components/schemas/CapyraId"
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        destinations:
+          type: array
+          items:
+            $ref: "#/components/schemas/DestinationView"
+    PublicationList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicationView"
+        nextCursor:
+          type: string
+          nullable: true
+    DestinationWrite:
+      type: object
+      required: [socialAccountId]
+      properties:
+        socialAccountId:
+          $ref: "#/components/schemas/CapyraId"
+        copy:
+          type: string
+        hashtags:
+          type: array
+          items:
+            type: string
+        mediaIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapyraId"
+        scheduledLocal:
+          type: string
+          description: Horário civil no Fuso da marca; DST inválido recusado
+    DestinationView:
+      type: object
+      required: [destinationId, publicationId, socialAccountId, state]
+      properties:
+        destinationId:
+          $ref: "#/components/schemas/CapyraId"
+        publicationId:
+          $ref: "#/components/schemas/CapyraId"
+        socialAccountId:
+          $ref: "#/components/schemas/CapyraId"
+        state:
+          $ref: "#/components/schemas/DestinationState"
+        copy:
+          type: string
+        mediaIds:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapyraId"
+        scheduledAt:
+          type: string
+          format: date-time
+          nullable: true
+        timezoneAtWrite:
+          type: string
+    ScheduleInput:
+      type: object
+      required: [scheduledLocal]
+      properties:
+        scheduledLocal:
+          type: string
+    CommentCreate:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+          minLength: 1
+    CommentView:
+      type: object
+      required: [commentId, destinationId, authorOperatorId, body, createdAt]
+      properties:
+        commentId:
+          $ref: "#/components/schemas/CapyraId"
+        destinationId:
+          $ref: "#/components/schemas/CapyraId"
+        authorOperatorId:
+          $ref: "#/components/schemas/CapyraId"
+        body:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CommentList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommentView"
+    CalendarView:
+      type: object
+      required: [days]
+      properties:
+        days:
+          type: array
+          items:
+            type: object
+            required: [date, destinations]
+            properties:
+              date:
+                type: string
+                format: date
+              destinations:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DestinationView"
+    ExternalPostView:
+      type: object
+      required: [externalPostId, socialAccountId]
+      properties:
+        externalPostId:
+          $ref: "#/components/schemas/CapyraId"
+        socialAccountId:
+          $ref: "#/components/schemas/CapyraId"
+        publishedAt:
+          type: string
+          format: date-time
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/MetricSnapshot"
+    ExternalPostList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExternalPostView"
+        nextCursor:
+          type: string
+          nullable: true
+    MetricSnapshot:
+      type: object
+      required: [metric, observedAt]
+      properties:
+        metric:
+          type: string
+        value:
+          type: number
+          nullable: true
+          description: null = ausente, nunca coercido a zero
+        observedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    MetricSnapshotList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MetricSnapshot"
+    ReportView:
+      type: object
+      required: [brandId, from, to, destinations]
+      properties:
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        destinations:
+          type: array
+          items:
+            type: object
+            properties:
+              destinationId:
+                $ref: "#/components/schemas/CapyraId"
+              metrics:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MetricSnapshot"
+    CompetitorAdView:
+      type: object
+      required: [adId, library]
+      properties:
+        adId:
+          $ref: "#/components/schemas/CapyraId"
+        library:
+          type: string
+          enum: [meta, linkedin]
+        advertiserName:
+          type: string
+        creativeUrl:
+          type: string
+          format: uri
+        startedOn:
+          type: string
+          format: date
+          nullable: true
+        endedOn:
+          type: string
+          format: date
+          nullable: true
+    CompetitorAdList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompetitorAdView"
+    BillingView:
+      type: object
+      required: [cycle, identities, listPriceBRL, estimatedNextChargeBRL]
+      properties:
+        cycle:
+          type: object
+          required: [start, end]
+          properties:
+            start:
+              type: string
+              format: date
+            end:
+              type: string
+              format: date
+        identities:
+          type: array
+          items:
+            type: object
+            required: [brandId, network, connectedAt]
+            properties:
+              brandId:
+                $ref: "#/components/schemas/CapyraId"
+              network:
+                $ref: "#/components/schemas/Network"
+              displayHandle:
+                type: string
+              connectedAt:
+                type: string
+                format: date-time
+        listPriceBRL:
+          type: number
+          description: 49.90 por identidade
+        estimatedNextChargeBRL:
+          type: number
+        billingStatus:
+          type: string
+          enum: [ok, delinquent]
+    CheckoutView:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+    NotificationView:
+      type: object
+      required: [notificationId, kind, createdAt]
+      properties:
+        notificationId:
+          $ref: "#/components/schemas/CapyraId"
+        kind:
+          type: string
+          enum:
+            - invite
+            - access_code
+            - approval_pending
+            - approval_decision
+            - connection_action_required
+            - destination_failed
+            - invoice
+            - receipt
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    NotificationList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationView"
+    AuditEventView:
+      type: object
+      required: [eventId, actorOperatorId, accountId, action, createdAt]
+      properties:
+        eventId:
+          $ref: "#/components/schemas/CapyraId"
+        actorOperatorId:
+          $ref: "#/components/schemas/CapyraId"
+        accountId:
+          $ref: "#/components/schemas/CapyraId"
+        brandId:
+          $ref: "#/components/schemas/CapyraId"
+        action:
+          type: string
+        resource:
+          type: string
+        correlationId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    AuditEventList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditEventView"
