@@ -14,3 +14,4 @@ Decisões de domínio e arquitetura do Capyra Social. O glossário canônico est
 | [0008](0008-drizzle-and-in-api-auth.md) | Drizzle/SQL; auth de Operador na API, não Firebase/Clerk |
 | [0009](0009-stripe-checkout-and-resend-email.md) | Stripe no checkout; Resend no e-mail transacional |
 | [0010](0010-mcp-stateless-sdk-v2.md) | MCP headless stateless: `@modelcontextprotocol/server` + `createMcpHandler` |
+| [0011](0011-shadcn-default-ui.md) | Site e webapp usam só shadcn/ui no tema padrão |

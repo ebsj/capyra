@@ -4,7 +4,7 @@
 **Data:** 20/09/2026
 **Depende de:** [`CONTEXT.md`](../CONTEXT.md), [`PRD.md`](PRD.md), [ADRs](adr/README.md)
 
-Este documento fecha a stack do repositório. Não redefine o domínio. Escolhas caras de reverter estão também em ADRs 0006–0010.
+Este documento fecha a stack do repositório. Não redefine o domínio. Escolhas caras de reverter estão também em ADRs 0006–0011.
 
 ---
 
@@ -74,7 +74,17 @@ O webapp é autenticado. SEO de rota logada não importa. O app consome `/api/v1
 
 TanStack Router + Query no Vite: rotas type-safe, cache via API Capyra, deploy estático + API separada.
 
-UI: **Tailwind CSS + shadcn/ui** em `packages/ui`, consumido pelo webapp. O site não importa rotas, sessão nem data layer do webapp.
+### 3.2.1 UI — shadcn/ui padrão, site e webapp
+
+Site (`apps/site`) e webapp (`apps/web`) usam **exclusivamente** componentes **shadcn/ui** (Tailwind). Sem design system paralelo, sem fork e sem personalizar o componente além do que o próprio shadcn expõe.
+
+Vale o **tema e os tokens padrão** do shadcn. Não criar paleta, radius, tipografia ou variantes “Capyra” na UI. Composição de telas, não restyling.
+
+Os componentes vivem em `packages/ui` e são o único kit visual compartilhado. O site pode importar `packages/ui`; continua **sem** importar `apps/web`, `apps/api`, sessão de **Operador** ou data layer.
+
+Fora desta regra: PDF de relatório, e-mail Resend e a página hospedada do Stripe — não são shadcn. MCP não tem UI.
+
+Ver [ADR 0011](adr/0011-shadcn-default-ui.md).
 
 ### 3.3 Site — Next.js isolado, separado do webapp
 
@@ -85,7 +95,7 @@ Isolamento:
 - repositório compartilhado, **runtime e deploy separados**
 - cookies e sessão do webapp não existem no site
 - sem import de `apps/web` nem de `apps/api`
-- tokens visuais podem ser copiados ou extraídos com cuidado; não há pacote obrigatório compartilhado com o webapp neste corte
+- UI: os mesmos componentes shadcn/ui padrão via `packages/ui` ([ADR 0011](adr/0011-shadcn-default-ui.md))
 
 O Site pode usar o adapter de hospedagem que o Next exigir (Node ou OpenNext na Cloudflare). Isso **não** afrouxa o princípio web-standard da API, do webapp e do MCP.
 
@@ -207,7 +217,7 @@ apps/site         Next.js (isolado)
 apps/mcp          MCP headless (SDK v2 + createMcpHandler)
 packages/platform contratos de nuvem + adapter Cloudflare + adapter local
                   + email Resend + billing Stripe
-packages/ui       shadcn/Tailwind (webapp)
+packages/ui       shadcn/ui padrão (tema default) — site e webapp
 packages/i18n     catálogos pt-BR, en, es
 packages/contracts OpenAPI gerado
 docs/             PRD, stack, adr
@@ -234,6 +244,8 @@ Desenvolvimento local: Wrangler (API, MCP, D1, R2, Queues) + Vite (web) + Next (
 | Python neste corte | Adiado; não criar `apps/ai` agora |
 | SES, e-mail no Worker, SMTP avulso | Resend é o porta `email` da v1 |
 | Pagar.me / billing manual como trilho | Stripe é o checkout da plataforma |
+| Design system próprio, MUI, Chakra, fork do shadcn | Site e webapp usam só shadcn/ui no tema padrão |
+| Tema visual customizado na UI | Tokens e componentes default do shadcn; ver ADR 0011 |
 
 ---
 
@@ -250,4 +262,5 @@ A stack está aceita quando:
 7. E-mail transacional de auth/convite sai pelo Resend com marca Capyra.
 8. Checkout e recorrência do **Proprietário** passam pelo Stripe; a fatura Capyra conta **Identidades sociais do ciclo**.
 9. Trocar D1 por Postgres exige um novo adapter `db`, não um rewrite das rotas.
+10. `apps/web` e `apps/site` montam a UI só com shadcn/ui em `packages/ui`, no tema padrão, sem componentes paralelos nem tokens customizados.
 

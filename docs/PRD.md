@@ -35,7 +35,7 @@ Uma equipe de agência ou um criador consegue, no mesmo produto:
 
 | Segmento | Necessidade central |
 | --- | --- |
-| Agências de marketing | Várias **Marcas**, equipe interna, aprovação pelo cliente, relatório white-label, isolamento entre clientes |
+| Agências de marketing | Várias **Marcas**, equipe interna, aprovação por **Aprovador**, relatório white-label, **Marcas atribuídas** por Operador |
 | Influenciadores digitais | Uma ou poucas **Marcas** próprias, calendário único, relatórios para marcas/parceiros, operação enxuta |
 
 O **Tipo de conta** (`agency` ou `creator`) segmenta a experiência, não o plano nem o preço. A unidade comercial é a **Conta social** conectada.
@@ -49,7 +49,7 @@ O **Tipo de conta** (`agency` ou `creator`) segmenta a experiência, não o plan
 - Entregar o ciclo completo **criar → aprovar → publicar → medir → pesquisar concorrentes** nas oito redes da v1.
 - Manter a **Jornada social white label** em conexão, consentimento, callback, reconexão, revogação, erros, e-mails e publicação.
 - Cobrar de forma previsível: **R$ 49,90 por mês por Conta social conectada**.
-- Isolar cada **Marca** para que contas, conteúdo, aprovações e métricas não se misturem.
+- Recortar conteúdo, aprovações e métricas às **Marcas atribuídas**, sem tratar **Marca** como tenant; o isolamento é a **Conta Capyra**.
 - Permitir trocar o fornecedor social no futuro sem reescrever a API pública nem a interface.
 
 ### 2.2 Indicadores de sucesso
@@ -76,7 +76,7 @@ Toda pessoa autenticada que participa de uma **Conta Capyra** é um **Operador**
 
 | Papel | Quem é | Pode | Não pode |
 | --- | --- | --- | --- |
-| **Proprietário** | Dono da agência, sócio ou o próprio influenciador | Cobrança, membros, conexões sociais, todas as Marcas, publicar, aprovar, relatórios | — |
+| **Proprietário** | Dono da agência, sócio ou o próprio influenciador | Cobrança, Operadores, conexões sociais, todas as Marcas, publicar, aprovar, relatórios | — |
 | **Criador** | Social media, redator, designer | Criar rascunhos, editar conteúdo das Marcas autorizadas, enviar para aprovação, consultar calendário e relatórios | Conectar redes, gerir cobrança, convidar/remover membros, publicar se a Marca exigir aprovação e ainda não estiver aprovado |
 | **Aprovador** | Coordenação da agência ou cliente da marca | Ver conteúdo das Marcas atribuídas, comentar, aprovar, rejeitar, pedir alterações | Conectar redes, alterar cobrança, editar o conteúdo após envio (exceto devolver com comentário) |
 | **Visualizador** | Cliente, parceiro ou analista | Somente leitura: calendário, publicações, relatórios das Marcas atribuídas | Qualquer mutação |
@@ -84,11 +84,13 @@ Toda pessoa autenticada que participa de uma **Conta Capyra** é um **Operador**
 Regras:
 
 - Cada **Conta Capyra** tem exatamente um **Proprietário**.
+- O **Proprietário** não transfere o Papel na v1.
 - Um **Operador** tem exatamente um **Papel**; o papel não muda por Marca.
 - **Criador**, **Aprovador** e **Visualizador** são limitados ao conjunto de **Marcas** atribuídas; o **Proprietário** vê todas.
 - Somente o **Proprietário** conecta redes, convida ou remove Operadores e altera cobrança.
-- O cliente da agência entra como **Aprovador** ou **Visualizador** da Marca dele — nunca vê as outras Marcas. Esse e-mail não pode ter outra Conta Capyra.
+- O cliente da agência entra como **Aprovador** ou **Visualizador** das **Marcas atribuídas** — nunca vê as outras Marcas. Esse e-mail não pode ter outra Conta Capyra.
 - No tipo `creator`, o fluxo mínimo é um **Proprietário**; a **Política de aprovação** continua sendo por Marca (padrão desligado).
+- O **Proprietário** pode alterar o **Tipo de conta**. Isso não muda preço, Papel, Marcas nem a Política de aprovação já gravada.
 
 ### Idiomas
 
@@ -126,7 +128,7 @@ Capacidades abaixo são **baseline de planejamento**. O produto consulta o `Soci
 | --- | --- | --- |
 | Instagram | Feed, Reels, Stories, carrossel | Conta profissional; formatos, quantidade de itens e capa validados antes de agendar |
 | Facebook | Posts de Página, imagens, vídeo, carrossel, Stories quando a API permitir | Seleção de Página no próprio Capyra (headless); perfil pessoal não é destino de publicação |
-| LinkedIn | Página da organização e/ou perfil pessoal conforme a autorização | Seleção de organização no Capyra; analytics de perfil pessoal só para posts publicados pelo Capyra |
+| LinkedIn | Página da organização **ou** perfil pessoal, conforme a autorização | Um slot por Marca; a seleção é no Capyra. Página e perfil ao mesmo tempo exigem **Marcas** distintas (ou fica fora da v1). Analytics de perfil pessoal só para posts publicados pelo Capyra |
 | TikTok | Vídeo e carrossel de fotos | Mídia obrigatória; prévia e consentimento explícitos; contas Business publicam vídeo direto como público |
 | YouTube | Vídeo e Shorts | Um vídeo por Destino; identidade precisa possuir ou gerenciar o canal; sem post de comunidade na v1 |
 | Twitter/X | Texto, imagem, vídeo, thread quando o provider suportar | Custo extra de API do X pode existir no fornecedor; não é repassado como linha avulsa ao cliente Capyra |
@@ -169,7 +171,7 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 
 ### 6.2 Organizar Marcas e equipe
 
-1. O Proprietário nomeia a Marca, confirma o **Fuso da marca** e, se for agência, identifica o cliente internamente (nome visível só na Conta Capyra).
+1. O Proprietário nomeia a Marca e confirma o **Fuso da marca**.
 2. Convida Criadores, Aprovadores e Visualizadores por e-mail, com Marcas atribuídas.
 3. O convidado entra com link mágico ou código; passa a operar só o que lhe foi concedido.
 4. Remover um Operador revoga o acesso na hora, inclusive em sessão ainda aberta nas rotas autenticadas seguintes.
@@ -197,8 +199,9 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 1. Se a Marca **exige aprovação**, Destino só pode ser agendado ou publicado no estado **aprovado**.
 2. O Criador envia a Publicação para revisão. Aprovadores da Marca são notificados **no Capyra** (e por e-mail Capyra, sem citar fornecedor).
 3. O Aprovador comenta no item, aprova, rejeita ou pede alterações. Pedido de alteração devolve ao Criador sem publicar.
-4. Aprovação pode ser por Destino (um canal aprovado, outro não).
-5. Se a Marca **não exige aprovação**, o Proprietário e o Criador autorizado publicam direto.
+4. Aprovação é por Destino (um canal aprovado, outro não).
+5. Aprovar um Destino que já tem horário o **agenda**. Sem horário, o Destino permanece aprovado até o Criador ou o Proprietário agendar ou publicar. O Aprovador não escolhe horário nem clica em publicar agora.
+6. Se a Marca **não exige aprovação**, o Proprietário e o Criador publicam ou agendam direto.
 
 ### 6.6 Agendar e publicar
 
@@ -206,7 +209,7 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 2. Agendar ou publicar cria **Versão de destino** imutável.
 3. Calendário da Marca (e da Conta, filtrável) mostra rascunhos, pendentes, aprovados, agendados, publicados e falhos, por rede.
 4. Cancelar um Destino futuro só conclui depois da confirmação de que a rede não publicará aquela versão.
-5. Editar um item agendado cancela a versão vigente (com confirmação) e cria outra, reabrindo aprovação se a Marca exigir.
+5. Editar um Destino **aprovado** ou **agendado** (texto, mídia, horário ou canal) reabre a revisão se a Marca exigir aprovação. Agendar um Destino aprovado sem alterar conteúdo não reabre. Editar um item já agendado cancela a versão vigente (com confirmação) e cria outra.
 6. Retry é só para Destinos em **falha definitiva**, por ação explícita, e nunca reenvia Destinos já concluídos.
 
 ### 6.7 Relatórios
@@ -242,14 +245,15 @@ IDs estáveis para rastreio em specs e testes.
 - **FR-002.** Toda Conta nova nasce com uma Marca inicial; nome e Fuso da marca são confirmados antes de qualquer agendamento.
 - **FR-003.** Convites são de uso único, vinculados ao e-mail, com expiração (sete dias) e papéis/Marcas explícitos.
 - **FR-004.** Um e-mail autenticado participa de no máximo uma Conta Capyra na v1.
-- **FR-005.** Remoção de Operador revoga autorização imediatamente nas APIs; sessões antigas falham no próximo request autenticado.
+- **FR-005.** Remoção de Operador revoga autorização imediatamente nas APIs, em todos os lugares autenticados; logout encerra só aquele acesso. Sessões antigas falham no próximo request autenticado.
 - **FR-006.** Criador, Aprovador e Visualizador só enxergam Marcas atribuídas; Proprietário enxerga todas.
+- **FR-006b.** O Proprietário altera Papel e Marcas atribuídas de Criador, Aprovador e Visualizador na hora, sem novo Convite. Não promove a Proprietário.
 
 ### 7.2 Autenticação
 
 - **FR-007.** Login e primeiro acesso usam somente e-mail + link mágico ou código de acesso; não há senha.
 - **FR-008.** Link e código expiram, são de uso único e pertencem a um único e-mail.
-- **FR-009.** E-mails transacionais de autenticação, convite e cobrança identificam só Capyra e saem no **Idioma** do destinatário (`pt-BR`, `en` ou `es`).
+- **FR-009.** E-mails transacionais de autenticação, convite e cobrança identificam só Capyra e saem no **Idioma** do destinatário (`pt-BR`, `en` ou `es`). Convite a quem ainda não entrou sai no Idioma do Proprietário; no primeiro acesso o convidado grava o próprio Idioma.
 
 ### 7.3 Marcas
 
@@ -271,7 +275,7 @@ IDs estáveis para rastreio em specs e testes.
 ### 7.5 Mídia
 
 - **FR-021.** Biblioteca privada por Conta e Marca; binários fora do banco de estado; metadados e referências no Capyra.
-- **FR-022.** Uploads até 200 MB (imagens, vídeo); o Capyra não transcodifica, não reenquadra e não comprime na v1.
+- **FR-022.** Uploads até 200 MB (imagens, vídeo); o Capyra não transcodifica, não reenquadra e não comprime na v1. Só Proprietário e Criador enviam Mídia original e Variante de mídia nas Marcas atribuídas; Aprovador e Visualizador não enviam arquivo.
 - **FR-023.** Destino usa Mídia original compatível ou Variante de mídia fornecida pelo operador.
 - **FR-024.** Mídia em uso por Destino não concluído não pode ser eliminada.
 
@@ -291,10 +295,10 @@ IDs estáveis para rastreio em specs e testes.
 
 - **FR-034.** Cada Marca configura se publicação/agendamento exige aprovação.
 - **FR-035.** Estados do Destino no fluxo editorial: `rascunho`, `em_revisao`, `aprovado`, `rejeitado`, `alteracoes_solicitadas`, `agendado`, `publicado`, `cancelado`, `falha_definitiva`, `entrega_desconhecida`.
-- **FR-036.** Com comentários no Destino/Publicação, com autor, horário e visibilidade restrita à Conta e às Marcas autorizadas.
+- **FR-036.** Comentário pertence ao Destino, com autor, horário e visibilidade restrita à Conta e às Marcas atribuídas. Proprietário, Criador e Aprovador escrevem; Visualizador só lê. O e-mail não é o fio.
 - **FR-037.** Aprovação é por Destino; um Destino aprovado não libera os demais.
 - **FR-038.** Pedido de alteração reabre o rascunho para o Criador e impede agendar/publicar até nova aprovação, se a exigência estiver ligada.
-- **FR-039.** Visualizador não aprova; Aprovador não publica; Criador não aprova o próprio item se a Marca exigir um Aprovador distinto — salvo quando o Proprietário atua nos dois papéis em contas `creator` sem Aprovador.
+- **FR-039.** Visualizador não aprova; Aprovador não publica; Criador não aprova. O Proprietário cria, aprova, publica e lê em todas as Marcas — inclusive o Destino que ele mesmo escreveu.
 
 ### 7.8 Relatórios
 
@@ -317,7 +321,7 @@ IDs estáveis para rastreio em specs e testes.
 - **FR-050.** A fatura do ciclo soma as Identidades sociais do ciclo; reconectar a mesma identidade não duplica.
 - **FR-051.** Nova conexão no meio do ciclo entra em pró-rata; desconexão não estorna o ciclo corrente.
 - **FR-052.** Sem Conta social ativa, a Conta Capyra permanece gratuita para login, Marcas e rascunhos locais, mas não publica.
-- **FR-053.** Falha de pagamento marca a Conta em inadimplência: bloqueia novas conexões e novos agendamentos; Destinos já enviados ao fornecedor seguem a política de cancelamento confirmado; leitura de histórico permanece.
+- **FR-053.** Falha de pagamento marca a Conta em **Inadimplência**: bloqueia novas conexões e qualquer ação que agende ou publique, inclusive aprovar um Destino com horário. Rascunho, comentário, rejeitar e leitura permanecem. Destinos já enviados ao fornecedor seguem a política de cancelamento confirmado.
 - **FR-054.** Somente o Proprietário vê e altera método de pagamento, faturas e portal de cobrança.
 
 ### 7.11 Auditoria e notificações
@@ -338,7 +342,7 @@ IDs estáveis para rastreio em specs e testes.
 
 ### 7.14 MCP
 
-- **FR-062.** O MCP headless autentica um **Operador** e chama só `/api/v1`; respeita **Papel** e Marcas atribuídas; não acessa SQL, blob, Stripe, Resend nem o **Fornecedor social**.
+- **FR-062.** O MCP headless autentica um **Operador** e chama só `/api/v1`; respeita **Papel** e Marcas atribuídas; não acessa SQL, blob, Stripe, Resend nem o **Fornecedor social**. Não há Papel extra nem atalho de Proprietário.
 
 ---
 
@@ -539,8 +543,10 @@ Nenhum item descreve custo do fornecedor, “account-day” ou nome de API terce
 - Edição ou exclusão de post já publicado na rede.
 - Mais de uma Conta social ativa da mesma rede na mesma Marca.
 - Participação do mesmo e-mail em várias Contas Capyra.
+- Transferência do Papel de **Proprietário**.
 - Senha, login social Google/Apple e SSO corporativo.
 - CLI e análise de dados em Python / app de IA — fora deste repositório até um corte futuro.
+- Exclusão definitiva self-service de **Marca** ou da **Conta Capyra** (privacidade/LGPD); a v1 arquiva.
 - API pública para terceiros além do webapp Capyra e do MCP headless.
 - Conectores: Threads, WhatsApp, Reddit, Bluesky, Telegram, Snapchat, Discord.
 - White-label da UI Capyra para a agência revender com a marca dela (o white label aqui é Capyra na frente do fornecedor, não a agência na frente do Capyra).
