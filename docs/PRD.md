@@ -18,7 +18,7 @@ Agências de marketing e influenciadores digitais gerenciam várias marcas, vár
 
 O Capyra Social é a plataforma em que essas equipes **gerenciam todas as mídias sociais das marcas em um só lugar**. O operador agenda posts, gera relatórios, pesquisa anúncios de concorrentes e conduz o fluxo de criação e aprovação de conteúdo sem sair do Capyra.
 
-Por baixo, a publicação nas redes usa um fornecedor white label. O usuário e o cliente da agência identificam **somente Capyra** e a rede social oficial (Instagram, LinkedIn, etc.). Qualquer menção, logo, domínio ou e-mail do fornecedor é defeito, não detalhe de implementação.
+Por baixo, a publicação nas redes usa um fornecedor white label. O usuário e o cliente da agência identificam **somente Capyra** e a rede social oficial (Instagram, TikTok, LinkedIn). Qualquer menção, logo, domínio ou e-mail do fornecedor é defeito, não detalhe de implementação.
 
 ### 1.1 Resultado pretendido
 
@@ -47,7 +47,7 @@ O **Tipo de conta** (`agency` ou `creator`) segmenta a experiência, não o plan
 
 ### 2.1 Objetivos do primeiro lançamento
 
-- Entregar o ciclo completo **criar → aprovar → publicar → medir → pesquisar concorrentes** nas oito redes da v1.
+- Entregar o ciclo completo **criar → aprovar → publicar → medir → pesquisar concorrentes** nas três redes da v1: **Instagram**, **TikTok** e **LinkedIn**.
 - Manter a **Jornada social white label** em conexão, consentimento, callback, reconexão, revogação, erros, e-mails e publicação.
 - Cobrar de forma previsível: **R$ 49,90 por mês por Conta social conectada**.
 - Recortar conteúdo, aprovações e métricas às **Marcas atribuídas**, sem tratar **Marca** como tenant; o isolamento é a **Conta Capyra**.
@@ -67,7 +67,7 @@ O **Tipo de conta** (`agency` ou `creator`) segmenta a experiência, não o plan
 
 ### 2.3 Economia (interna)
 
-O Capyra cobra R$ 49,90 / Conta social / mês. O fornecedor atual fatura por conta conectada (primeiras duas contas gratuitas no plano de uso; depois cerca de US$ 6, US$ 3 e US$ 1 conforme o volume; X/Twitter pode ter custo de API repassado). A margem unitária precisa permanecer positiva depois de câmbio, impostos, mídia, e-mail e suporte. Esse número **não aparece** para o cliente.
+O Capyra cobra R$ 49,90 / Conta social / mês. O fornecedor atual fatura por conta conectada (primeiras duas contas gratuitas no plano de uso; depois cerca de US$ 6, US$ 3 e US$ 1 conforme o volume). A margem unitária precisa permanecer positiva depois de câmbio, impostos, mídia, e-mail e suporte. Esse número **não aparece** para o cliente.
 
 ---
 
@@ -123,24 +123,28 @@ Relacionamentos que o produto assume (detalhe e diálogo em CONTEXT):
 
 ### 5.1 Incluídas no primeiro lançamento
 
-Capacidades abaixo são **baseline de planejamento**. O produto consulta o `SocialProvider` antes de cada submissão e recusa o que a rede ou o fornecedor não aceitar no momento. O Capyra não envia mídia inválida esperando que o fornecedor “corrija”.
+Três redes. Capacidades abaixo são **baseline de planejamento**. O produto consulta o `SocialProvider` antes de cada submissão e recusa o que a rede ou o fornecedor não aceitar no momento. O Capyra não envia mídia inválida esperando que o fornecedor “corrija”.
 
 | Rede | Escopo da v1 | Notas essenciais |
 | --- | --- | --- |
 | Instagram | Feed, Reels, Stories, carrossel | Conta profissional; formatos, quantidade de itens e capa validados antes de agendar |
-| Facebook | Posts de Página, imagens, vídeo, carrossel, Stories quando a API permitir | Seleção de Página no próprio Capyra (headless); perfil pessoal não é destino de publicação |
-| LinkedIn | Página da organização **ou** perfil pessoal, conforme a autorização | Um slot por Marca; a seleção é no Capyra. Página e perfil ao mesmo tempo exigem **Marcas** distintas (ou fica fora da v1). Analytics de perfil pessoal só para posts publicados pelo Capyra |
 | TikTok | Vídeo e carrossel de fotos | Mídia obrigatória; prévia e consentimento explícitos; contas Business publicam vídeo direto como público |
-| YouTube | Vídeo e Shorts | Um vídeo por Destino; identidade precisa possuir ou gerenciar o canal; sem post de comunidade na v1 |
-| Twitter/X | Texto, imagem, vídeo, thread quando o provider suportar | Custo extra de API do X pode existir no fornecedor; não é repassado como linha avulsa ao cliente Capyra |
-| Pinterest | Pin de imagem/vídeo | Seleção de board no Capyra |
-| Google Meu Negócio | Post da ficha (atualização, oferta, evento, conforme a API) | Seleção de local no Capyra; uma ficha = uma Conta social |
+| LinkedIn | Página da organização **ou** perfil pessoal, conforme a autorização | Um slot por Marca; a seleção é no Capyra. Página e perfil ao mesmo tempo exigem **Marcas** distintas (ou fica fora da v1). Analytics de perfil pessoal só para posts publicados pelo Capyra |
+
+Facebook, YouTube, Twitter/X, Pinterest e Google Meu Negócio **não** entram neste lançamento.
 
 ### 5.2 Fora da v1 (conectores futuros)
 
-O fornecedor já cobre outras redes. O Capyra **não as oferece** no primeiro lançamento, mas a camada `SocialProvider` deve aceitar novos códigos de plataforma sem quebrar contratos existentes:
+O fornecedor já cobre outras redes. O Capyra **não as oferece** no primeiro lançamento, mas a camada `SocialProvider` deve aceitar novos códigos de plataforma sem quebrar contratos existentes.
 
-Threads, WhatsApp, Reddit, Bluesky, Telegram, Snapchat, Discord.
+| Rede | Quando entrar | Notas já conhecidas |
+| --- | --- | --- |
+| Facebook | Depois da v1 | Posts de Página; seleção de Página no Capyra; perfil pessoal não é destino |
+| YouTube | Depois da v1 | Vídeo e Shorts; um vídeo por Destino; sem post de comunidade no primeiro corte da rede |
+| Twitter/X | Depois da v1 | Texto, imagem, vídeo, thread se o provider suportar; custo extra de API possível no fornecedor, sem taxa avulsa ao cliente |
+| Pinterest | Depois da v1 | Pin; seleção de board no Capyra |
+| Google Meu Negócio | Depois da v1 | Post da ficha; seleção de local no Capyra; uma ficha = uma Conta social |
+| Threads, WhatsApp, Reddit, Bluesky, Telegram, Snapchat, Discord | Depois da v1 | Códigos de plataforma, sem produto à parte |
 
 Incluir uma rede nova é: ligar o conector no provider, declarar capacidades, passar pelo **Gate white label** daquela rede, e expô-la na UI/billing. Não é um segundo produto.
 
@@ -150,7 +154,7 @@ Antes de salvar rascunho avançado, agendar ou publicar, o Capyra obtém do prov
 
 - formatos aceitos;
 - limites de caracteres, duração, peso e quantidade de mídia;
-- necessidade de seleção (Página, board, local, organização, canal);
+- necessidade de seleção (organização ou perfil no LinkedIn; Página, board, local ou canal quando a rede futura exigir);
 - se a identidade está verificada e apta a publicar;
 - restrições de privacidade (ex.: TikTok público).
 
@@ -182,7 +186,7 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 1. Só o Proprietário inicia ou encerra **Conexão social**.
 2. Ao criar a Marca, o Capyra cria de forma idempotente o perfil correspondente no fornecedor (invisível).
 3. O Proprietário escolhe a rede. O Capyra inicia OAuth **headless**: o navegador vai da UI Capyra para a tela oficial da rede e volta ao **domínio Capyra**.
-4. Se a rede exigir escolha (Página, board, local, organização), essa tela é do Capyra, nunca do fornecedor.
+4. Se a rede exigir escolha (organização ou perfil no LinkedIn; Página, board, local ou canal nas redes futuras), essa tela é do Capyra, nunca do fornecedor.
 5. A identidade nativa verificada ocupa o slot daquela rede na Marca. Outra identidade no mesmo slot é bloqueada até desconexão explícita.
 6. A nova Conta social entra na cobrança (pró-rata do ciclo corrente).
 7. O Capyra importa metadados e métricas dos **noventa dias** anteriores como **Posts externos** (sem baixar binários automaticamente).
@@ -222,7 +226,7 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 
 ### 6.8 Concorrentes (biblioteca de anúncios)
 
-1. Na Marca, o operador pesquisa anúncios públicos da Meta (requer Facebook ou Instagram conectado) ou do LinkedIn (requer LinkedIn conectado).
+1. Na Marca, o operador pesquisa anúncios públicos da Meta (requer Instagram conectado) ou do LinkedIn (requer LinkedIn conectado).
 2. Filtros: termo, página/anunciante, país, período, status, plataforma de anúncio.
 3. Resultados aparecem como pesquisa Capyra. Tokens e nomes do fornecedor não vazam.
 4. Isso **não** cria campanhas pagas no Capyra e **não** rastreia o feed orgânico do concorrente.
@@ -271,7 +275,7 @@ IDs estáveis para rastreio em specs e testes.
 - **FR-017.** Identidade não verificável fica pendente e não publica. Reconexão insegura (troca de identidade disfarçada de refresh) é bloqueada antes da autorização; handle não é a chave de identidade.
 - **FR-018.** Desconexão só termina após cancelamento confirmado dos Destinos futuros daquela Conta social.
 - **FR-019.** Perda de autorização marca **Conexão com ação necessária**, bloqueia novos envios e alerta o Proprietário.
-- **FR-020.** OAuth é headless: callback no domínio Capyra; seleção de Página/board/local/organização na UI Capyra.
+- **FR-020.** OAuth é headless: callback no domínio Capyra; seleção de organização/perfil LinkedIn (e Página/board/local/canal quando a rede existir) na UI Capyra.
 
 ### 7.5 Mídia
 
@@ -311,7 +315,7 @@ IDs estáveis para rastreio em specs e testes.
 
 ### 7.9 Concorrentes
 
-- **FR-045.** Pesquisa na biblioteca de anúncios da Meta exige Conta social ativa de Facebook ou Instagram na Marca.
+- **FR-045.** Pesquisa na biblioteca de anúncios da Meta exige Conta social ativa de Instagram na Marca.
 - **FR-046.** Pesquisa na biblioteca de anúncios do LinkedIn exige Conta social ativa de LinkedIn na Marca.
 - **FR-047.** A API pública do Capyra expõe busca, filtros e resultados em modelo próprio; IDs internos do fornecedor não vazam.
 - **FR-048.** A feature não cria, edita nem veicula anúncios.
@@ -489,7 +493,7 @@ Na v1, “analisar concorrentes” significa **pesquisar anúncios públicos**, 
 
 | Biblioteca | Pré-requisito na Marca | Uso |
 | --- | --- | --- |
-| Meta Ad Library | Facebook ou Instagram conectado | Busca por termo, páginas, país, período, status e plataforma |
+| Meta Ad Library | Instagram conectado | Busca por termo, páginas, país, período, status e plataforma |
 | LinkedIn Ad Library | LinkedIn conectado | Busca por termo ou anunciante, país e período |
 
 Resultados: criativo visível, anunciante, período de veiculação e metadados públicos disponíveis. O operador usa isso para referência criativa e de mercado. Não há scoring automático de “ameaça” nem importação desses anúncios para o calendário da Marca.
@@ -549,7 +553,7 @@ Nenhum item descreve custo do fornecedor, “account-day” ou nome de API terce
 - CLI e análise de dados em Python / app de IA — fora deste repositório até um corte futuro.
 - Exclusão definitiva self-service de **Marca** ou da **Conta Capyra** (privacidade/LGPD); a v1 arquiva.
 - API pública para terceiros além do webapp Capyra e do MCP headless.
-- Conectores: Threads, WhatsApp, Reddit, Bluesky, Telegram, Snapchat, Discord.
+- Conectores depois da v1: Facebook, YouTube, Twitter/X, Pinterest, Google Meu Negócio, Threads, WhatsApp, Reddit, Bluesky, Telegram, Snapchat, Discord.
 - White-label da UI Capyra para a agência revender com a marca dela (o white label aqui é Capyra na frente do fornecedor, não a agência na frente do Capyra).
 
 ---
@@ -560,10 +564,10 @@ Nenhum piloto comercial começa sem prova prática. Documentação do fornecedor
 
 ### 15.1 Superfícies
 
-Em cada uma das oito redes da v1, o Operador (e o Aprovador, quando aplicável) só pode identificar Capyra e a rede:
+Em cada uma das três redes da v1 (Instagram, TikTok, LinkedIn), o Operador (e o Aprovador, quando aplicável) só pode identificar Capyra e a rede:
 
 1. conexão inicial;
-2. consentimento e seleção de conta/Página/canal/board/local;
+2. consentimento e seleção de conta/organização quando a rede exigir;
 3. callback no domínio Capyra;
 4. reconexão da mesma identidade;
 5. tentativa de conectar identidade diferente em slot ocupado;
@@ -607,8 +611,6 @@ Referências internas de implementação (não visíveis ao cliente):
 | Risco | Impacto | Mitigação |
 | --- | --- | --- |
 | Tela de consentimento da rede mostra o app do fornecedor, não o Capyra | Reprova o Gate white label | Prova prática antes do comercial; negociar app próprio / white-label de OAuth |
-| X/Twitter com custo de API extra no fornecedor | Comprime margem da unidade de R$ 49,90 | Monitorar custo por rede; desligar X se a unidade ficar negativa; não criar taxa avulsa na v1 |
-| Google Meu Negócio e Pinterest exigem seleção de local/board | Headless mal feito vaza UI do fornecedor | Telas de seleção 100% Capyra; MockProvider cobre os estados |
 | LinkedIn analytics incompleto em perfil pessoal | Relatório “vazio” parece bug | Copy honesta; métrica ausente ≠ zero |
 | Janela de sete dias de mídia temporária | Agendamento longo falha se o job atrasar | Persistência no Capyra + envio a seis dias + reconciliação |
 | Handle alterado interpretado como conta nova | Perda de histórico no fornecedor | Identidade nativa estável no Capyra; bloquear reconexão insegura |
@@ -619,7 +621,7 @@ Referências internas de implementação (não visíveis ao cliente):
 
 Premissas:
 
-- O fornecedor permanece parceiro oficial das redes (Meta, TikTok, LinkedIn, Pinterest, X, Google, YouTube) o bastante para publicar via API oficial.
+- O fornecedor permanece parceiro oficial das redes da v1 (Instagram via Meta, TikTok, LinkedIn) o bastante para publicar via API oficial.
 - Contas Instagram de publicação são profissionais.
 - O Capyra opera a aplicação web e a API; o cliente não acessa dashboard nem domínio do fornecedor.
 - Há checkout recorrente em BRL via Stripe para o Proprietário.
@@ -632,7 +634,7 @@ Premissas:
 A v1 está aceita quando:
 
 1. Um Proprietário cria a Conta com e-mail (link ou código), uma Marca e convida um Criador, um Aprovador e um Visualizador com isolamento por Marca.
-2. Conecta as oito redes da v1 em modo headless, sem exposição do fornecedor nas superfícies da §15.1 (ou a rede sem `go` permanece oculta).
+2. Conecta Instagram, TikTok e LinkedIn em modo headless, sem exposição do fornecedor nas superfícies da §15.1 (ou a rede sem `go` permanece oculta).
 3. O Criador monta uma Publicação com Destinos distintos, o Aprovador comenta e aprova, e o conteúdo só então é agendado.
 4. O calendário mostra o item; a publicação ocorre no Fuso da marca; falha e cancelamento têm estado explícito.
 5. Relatório da Marca exporta PDF com capivara-logo + “Capyra” e CSV só de dados, sem o fornecedor.

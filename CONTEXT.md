@@ -331,6 +331,7 @@ _Avoid_: validação só documental, go parcial na rede vendida
 - "@handle" parecia identidade — resolvido: a **Identidade nativa** é estável; handle não é a chave
 - "várias contas do mesmo Instagram na Marca" — resolvido: no máximo uma **Conta social** ativa por rede e Marca
 - LinkedIn página "e/ou" perfil pessoal — resolvido: um slot; a conexão escolhe um alvo; os dois ao mesmo tempo não cabem na mesma **Marca** na v1
+- Oito redes no primeiro lançamento — resolvido: v1 é **Instagram**, **TikTok** e **LinkedIn**; Facebook, YouTube, X, Pinterest e Google Meu Negócio ficam para depois
 - "cobrar conexões simultâneas" — resolvido: a fatura conta **Identidades sociais do ciclo**
 - "conta suspensa" vs falha de pagamento — resolvido: **Inadimplência** bloqueia conexão nova e agendar/publicar (incluindo aprovar com horário); não congela rascunho nem leitura
 - "white label" parecia só logo na interface — resolvido: a **Jornada social white label** cobre toda a jornada percebida

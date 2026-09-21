@@ -32,6 +32,7 @@ Site e webapp usam só shadcn/ui no tema padrão (`packages/ui`). Logo e mascote
 - OpenAPI em `contracts/openapi` é a fonte do contrato `/api/v1`; a API não inventa campo.
 - Testes de isolamento por Conta Capyra e Marcas atribuídas; E2E com `MockProvider`.
 - Recusar reabrir a tabela “Recusados” de `docs/stack.md` sem ADR novo.
+- Primeiro lançamento oferece só **Instagram**, **TikTok** e **LinkedIn**. Rede nova exige Gate white label `go` antes da UI/billing.
 
 ## Workflow
 
@@ -44,4 +45,4 @@ Site e webapp usam só shadcn/ui no tema padrão (`packages/ui`). Logo e mascote
 
 Esta constituição prevalece sobre hábito de framework, atalho de fornecedor e o template padrão do Speckit. Emenda exige ADR + atualização deste arquivo. Spec e código que violem I–V não entram.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-21 | **Last Amended**: 2026-09-21
+**Version**: 1.0.1 | **Ratified**: 2026-09-21 | **Last Amended**: 2026-09-21
