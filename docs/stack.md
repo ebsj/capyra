@@ -82,7 +82,9 @@ Vale o **tema e os tokens padrão** do shadcn. Não criar paleta, radius, tipogr
 
 Os componentes vivem em `packages/ui` e são o único kit visual compartilhado. O site pode importar `packages/ui`; continua **sem** importar `apps/web`, `apps/api`, sessão de **Operador** ou data layer.
 
-Fora desta regra: PDF de relatório, e-mail Resend e a página hospedada do Stripe — não são shadcn. MCP não tem UI.
+Logo e mascotes vêm de [`docs/design/`](design/README.md). São ilustração e marca no site e no webapp (também PDF e e-mail). **Não** viram tokens, paleta nem tema Capyra.
+
+Fora desta regra de componente: PDF de relatório, e-mail Resend e a página hospedada do Stripe — não são shadcn. MCP não tem UI.
 
 Ver [ADR 0011](adr/0011-shadcn-default-ui.md).
 
@@ -96,6 +98,7 @@ Isolamento:
 - cookies e sessão do webapp não existem no site
 - sem import de `apps/web` nem de `apps/api`
 - UI: os mesmos componentes shadcn/ui padrão via `packages/ui` ([ADR 0011](adr/0011-shadcn-default-ui.md))
+- Marca: logo e mascotes de [`docs/design/`](design/README.md)
 
 O Site pode usar o adapter de hospedagem que o Next exigir (Node ou OpenNext na Cloudflare). Isso **não** afrouxa o princípio web-standard da API, do webapp e do MCP.
 
@@ -220,7 +223,7 @@ packages/platform contratos de nuvem + adapter Cloudflare + adapter local
 packages/ui       shadcn/ui padrão (tema default) — site e webapp
 packages/i18n     catálogos pt-BR, en, es
 packages/contracts OpenAPI gerado
-docs/             PRD, stack, adr
+docs/             PRD, stack, adr, design (logo e mascotes)
 CONTEXT.md
 ```
 
@@ -262,5 +265,5 @@ A stack está aceita quando:
 7. E-mail transacional de auth/convite sai pelo Resend com marca Capyra.
 8. Checkout e recorrência do **Proprietário** passam pelo Stripe; a fatura Capyra conta **Identidades sociais do ciclo**.
 9. Trocar D1 por Postgres exige um novo adapter `db`, não um rewrite das rotas.
-10. `apps/web` e `apps/site` montam a UI só com shadcn/ui em `packages/ui`, no tema padrão, sem componentes paralelos nem tokens customizados.
+10. `apps/web` e `apps/site` montam a UI só com shadcn/ui em `packages/ui`, no tema padrão, sem componentes paralelos nem tokens customizados. Logo e mascotes saem de `docs/design/`.
 

@@ -8,6 +8,7 @@
 **Glossário canônico:** [`CONTEXT.md`](../CONTEXT.md)
 **ADRs:** [`docs/adr/`](adr/README.md)
 **Stack:** [`stack.md`](stack.md)
+**Identidade visual:** [`docs/design/`](design/README.md)
 
 ---
 

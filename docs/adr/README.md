@@ -1,6 +1,6 @@
 # ADRs
 
-Decisões de domínio e arquitetura do Capyra Social. O glossário canônico está em [`CONTEXT.md`](../../CONTEXT.md). O produto está em [`PRD.md`](../PRD.md). A stack está em [`stack.md`](../stack.md).
+O glossário canônico está em [`CONTEXT.md`](../../CONTEXT.md). O produto está em [`PRD.md`](../PRD.md). A stack está em [`stack.md`](../stack.md). Logo e mascotes estão em [`docs/design/`](../design/README.md).
 
 | ADR | Decisão |
 | --- | --- |
