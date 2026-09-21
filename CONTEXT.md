@@ -61,7 +61,7 @@ Marca inativa preservada em modo somente leitura, sem conexões sociais nem publ
 _Avoid_: marca excluída, marca removida
 
 **Fuso da marca**:
-Fuso horário IANA que interpreta os agendamentos de uma Marca.
+Fuso horário IANA que interpreta os agendamentos de uma Marca; o padrão é `America/Sao_Paulo`.
 _Avoid_: fuso do navegador, fuso do operador
 
 **Política de aprovação**:
@@ -175,6 +175,7 @@ _Avoid_: validação só documental, go parcial na rede vendida
 ## Relationships
 
 - Uma **Conta Capyra** possui uma ou mais **Marcas**
+- Toda **Conta Capyra** nova nasce com uma **Marca** inicial, com nome placeholder até o **Proprietário** confirmar; não se agenda com nome vazio
 - Uma **Marca** pertence a exatamente uma **Conta Capyra**
 - O isolamento é a **Conta Capyra**; a **Marca** não é limite de isolamento, não é faturada à parte e não representa o cliente contratual da agência
 - **Marcas atribuídas** recortam visibilidade e mutação dentro da **Conta Capyra**; o **Proprietário** opera todas as Marcas dessa Conta
@@ -191,6 +192,7 @@ _Avoid_: validação só documental, go parcial na rede vendida
 - O **Convite** sai no **Idioma** do **Proprietário**; no primeiro acesso o convidado grava o próprio **Idioma**
 - O **Papel** não varia por **Marca**
 - **Criador**, **Aprovador** e **Visualizador** recebem **Marcas atribuídas**; o **Proprietário** opera todas
+- **Marcas atribuídas** podem ser vazias; o **Operador** entra e não opera **Marca** nenhuma até o **Proprietário** atribuir
 - Somente o **Proprietário** inicia ou encerra uma **Conexão social**, convida ou remove **Operadores** e altera cobrança
 - O **Proprietário** altera **Papel** e **Marcas atribuídas** de **Criador**, **Aprovador** e **Visualizador** na hora; não promove a **Proprietário** nem exige novo **Convite**
 - **Criador** não aprova; **Aprovador** não agenda nem publica; **Visualizador** não muta
@@ -199,7 +201,7 @@ _Avoid_: validação só documental, go parcial na rede vendida
 - Alterar texto, mídia, horário ou **Destino** depois de aprovado reabre a revisão quando a **Política de aprovação** está ligada; agendar o aprovado sem alterar conteúdo não reabre
 - Um **Comentário** pertence a exatamente um **Destino**
 - **Proprietário**, **Criador** e **Aprovador** escrevem **Comentário** nas **Marcas atribuídas**; **Visualizador** só lê
-- Toda **Marca** possui exatamente um **Fuso da marca** e uma **Política de aprovação**
+- Toda **Marca** possui exatamente um **Fuso da marca** e uma **Política de aprovação**; **Marca** nova nasce em `America/Sao_Paulo` até o **Proprietário** alterar
 - Uma **Marca** possui no máximo uma **Conta social** ativa por rede; página LinkedIn e perfil pessoal LinkedIn ocupam o mesmo slot
 - Uma **Identidade nativa** verificada possui no máximo uma **Conexão social** ativa em todo o Capyra
 - Handle não identifica uma **Conta social**
@@ -226,6 +228,9 @@ _Avoid_: validação só documental, go parcial na rede vendida
 > **Dev:** "O Proprietário preenche o nome do cliente além do nome da **Marca**?"
 > **Domain expert:** "Não. O nome é o da **Marca**. Quem aprova, se entrar no Capyra, é um **Operador** — não existe Cliente da agência."
 >
+> **Dev:** "Acabei de entrar. A **Marca** já tem nome?"
+> **Domain expert:** "Tem um placeholder. Sem nome vazio na hora de agendar. Não é Cliente da agência."
+>
 > **Dev:** "A Natura é uma **Conta Capyra** ou uma **Marca**?"
 > **Domain expert:** "Na Conta da agência Acme, Natura é uma **Marca**. Quem paga o Capyra é a Acme, a **Conta Capyra**."
 >
@@ -240,6 +245,9 @@ _Avoid_: validação só documental, go parcial na rede vendida
 >
 > **Dev:** "`ana@natura.com` pode aprovar na Acme e ter a própria **Conta Capyra**?"
 > **Domain expert:** "Não. Um e-mail é um **Operador** em uma **Conta Capyra**. Para a Natura contratar o Capyra, a Acme precisa removê-la primeiro — ou ela usa outro e-mail."
+>
+> **Dev:** "A Acme convida o Aprovador antes de criar a **Marca**. O **Convite** vale?"
+> **Domain expert:** "Vale, com **Marcas atribuídas** vazias. Ela entra e não opera nada até o **Proprietário** atribuir."
 >
 > **Dev:** "`ana@natura.com` era **Visualizador**. Vira **Aprovador** sem outro convite?"
 > **Domain expert:** "Sim. O **Proprietário** muda **Papel** e **Marcas atribuídas** na hora. Não vira **Proprietário**."
@@ -286,6 +294,9 @@ _Avoid_: validação só documental, go parcial na rede vendida
 > **Dev:** "O Aprovador sobe outro recorte do Reels?"
 > **Domain expert:** "Não. Só **Proprietário** e **Criador** enviam **Mídia original** ou **Variante de mídia**. O Aprovador pede alteração com **Comentário**."
 >
+> **Dev:** "Criei a Conta em Recife e marquei 10:00 sem mexer no fuso. Que horário vale?"
+> **Domain expert:** "`America/Sao_Paulo`, o padrão do **Fuso da marca**. O navegador não conta. Recife só vale se o **Proprietário** mudar o fuso."
+>
 > **Dev:** "A métrica veio vazia. Coloco zero no relatório?"
 > **Domain expert:** "Não. **Snapshot de métrica** ausente permanece ausente."
 
@@ -293,12 +304,14 @@ _Avoid_: validação só documental, go parcial na rede vendida
 
 - "cliente" era usado tanto para quem paga o Capyra quanto para o cliente da agência — resolvido: quem paga é a **Conta Capyra**; o cliente da agência não é entidade de domínio (aparece como **Marca** e, se entrar no produto, como **Operador** na Conta da agência)
 - "nome do cliente interno" na Marca — resolvido: não existe na v1; o nome visível é o da **Marca**
+- Nome da **Marca** inicial — resolvido: placeholder até o **Proprietário** confirmar; não se agenda com nome vazio
 - "isolar cada Marca" / "isolamento entre clientes" pareciam tenant por Marca — resolvido: o isolamento é a **Conta Capyra**; o recorte interno são as **Marcas atribuídas**
 - "usuário" poderia ser a pessoa autenticada ou a Conta que paga — resolvido: a pessoa é o **Operador**; quem paga é a **Conta Capyra**
 - MCP como "bot" — resolvido: não é pessoa nova; é o mesmo **Operador**, mesmo **Papel**, mesmas **Marcas atribuídas**
 - participação em várias Contas — resolvido: na v1 um e-mail autenticado pertence a no máximo uma **Conta Capyra**
 - Transferir **Proprietário** — resolvido: fora da v1; a saída é outra **Conta Capyra**, convites e desconectar redes
 - Mudar **Papel** depois do **Convite** — resolvido: o **Proprietário** altera **Papel** e **Marcas atribuídas** no lugar; não promove a Proprietário
+- **Convite** sem Marcas — resolvido: lista vazia é válida; o **Operador** não opera **Marca** até o **Proprietário** atribuir
 - "membro" e "permissão por marca" sugeriam Papel diferente em cada Marca — resolvido: um **Papel** por **Operador** e **Marcas atribuídas**
 - Vários dispositivos — resolvido: o **Operador** pode estar autenticado em mais de um lugar; logout é local; remover o Operador derruba todos
 - **Proprietário** "atuando em dois papéis" — resolvido: um **Papel** só, com todas as capacidades; não é admin separado de Criador/Aprovador
@@ -310,7 +323,7 @@ _Avoid_: validação só documental, go parcial na rede vendida
 - Trocar `agency` ↔ `creator` — resolvido: o **Proprietário** muda o tipo; só afeta padrões de experiência daqui pra frente, não Marcas nem políticas já gravadas
 - "conectar redes" parecia tarefa de quem cria conteúdo — resolvido: somente o **Proprietário** inicia ou encerra **Conexão social**
 - "remover marca" parecia exclusão — resolvido: o fluxo self-service da v1 produz **Marca arquivada** (restaurável com novas conexões); exclusão definitiva fica fora da v1
-- "horário agendado" poderia seguir o navegador — resolvido: vale o **Fuso da marca**, e mudar o fuso não desloca instantes já gravados
+- "horário agendado" poderia seguir o navegador — resolvido: vale o **Fuso da marca** (padrão `America/Sao_Paulo`); mudar o fuso não desloca instantes já gravados; o navegador não é fonte da verdade
 - "publicação" misturava o conteúdo, cada envio e o resultado — resolvido: **Publicação** agrupa **Destinos**; cada envio é **Tentativa de entrega**
 - "cancelar" parecia só apagar localmente — resolvido: **Cancelamento de destino** exige confirmação de que a rede não publicará
 - "falha" incluía timeout após envio — resolvido: aceite incerto é **Entrega desconhecida**

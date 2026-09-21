@@ -1,50 +1,47 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Constituição Capyra Social
+
+Princípios que o Speckit e o código não podem contradizer. O glossário está em [`CONTEXT.md`](../../CONTEXT.md). O produto está em [`docs/PRD.md`](../../docs/PRD.md). As decisões caras estão em [`docs/adr/`](../../docs/adr/README.md). A stack está em [`docs/stack.md`](../../docs/stack.md). A marca está em [`docs/design/`](../../docs/design/README.md).
+
+Isto **não** é o template Library-First / CLI / TDD do Speckit. Esses padrões foram recusados para o Capyra.
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Glossário e isolamento
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+O vocabulário canônico é o `CONTEXT.md`. **Conta Capyra** é o único isolamento. **Marca** não é tenant. Um e-mail autenticado é um **Operador** em exatamente uma Conta. Toda ação autenticada (webapp, API, MCP) é desse Operador, com um **Papel** e **Marcas atribuídas**.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Fornecedor social invisível
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Toda rede passa por `SocialProvider`. A API pública e a UI falam só tipos Capyra. Uma rede só é vendida depois do **Gate white label** prático. `MockProvider` nunca é fallback silencioso em produção.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Contrato web-standard, nuvem é adapter
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+API, webapp e MCP usam o contrato Fetch. Cloudflare é o primeiro adapter, não o domínio. Site Next.js é app isolado: sem sessão de Operador, sem `/api/v1` de negócio, sem importar `apps/web` nem `apps/api`. Sem Nest, Express, Prisma, Durable Objects no domínio, Python ou CLI neste corte.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Auth, cobrança e e-mail nossos
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Sessão do **Operador** vive na API (link mágico / código). Sem Firebase, Clerk ou senha na v1. Checkout Stripe em BRL alinhado à **Identidade social do ciclo**. E-mail transacional Resend, remetente Capyra, sem o **Fornecedor social**.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. UI stock, marca à parte
+
+Site e webapp usam só shadcn/ui no tema padrão (`packages/ui`). Logo e mascotes vêm de `docs/design/`. Não extrair paleta das ilustrações. Header, PDF e e-mail: capivara-logo + a palavra “Capyra”. MCP não tem UI.
+
+## Constraints
+
+- IDs públicos: `accountId`, `brandId`, `socialAccountId`, `publicationId`, `destinationId` — nunca IDs do fornecedor.
+- OpenAPI em `contracts/openapi` é a fonte do contrato `/api/v1`; a API não inventa campo.
+- Testes de isolamento por Conta Capyra e Marcas atribuídas; E2E com `MockProvider`.
+- Recusar reabrir a tabela “Recusados” de `docs/stack.md` sem ADR novo.
+
+## Workflow
+
+1. Termo de domínio novo ou conflito de linguagem → `CONTEXT.md` (e ADR se for irreversível).
+2. Escolha cara de reverter → ADR em `docs/adr/`.
+3. Feature → Speckit: specify → (clarify) → plan → tasks → (analyze) → implement, sempre contra esta constituição e o PRD.
+4. Rede nova → Gate white label `go` antes de aparecer na UI/billing.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Esta constituição prevalece sobre hábito de framework, atalho de fornecedor e o template padrão do Speckit. Emenda exige ADR + atualização deste arquivo. Spec e código que violem I–V não entram.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-09-21 | **Last Amended**: 2026-09-21

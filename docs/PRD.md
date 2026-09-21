@@ -172,7 +172,7 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 
 ### 6.2 Organizar Marcas e equipe
 
-1. O Proprietário nomeia a Marca e confirma o **Fuso da marca**.
+1. O Proprietário nomeia a Marca e confirma o **Fuso da marca** (padrão `America/Sao_Paulo`).
 2. Convida Criadores, Aprovadores e Visualizadores por e-mail, com Marcas atribuídas.
 3. O convidado entra com link mágico ou código; passa a operar só o que lhe foi concedido.
 4. Remover um Operador revoga o acesso na hora, inclusive em sessão ainda aberta nas rotas autenticadas seguintes.
@@ -218,7 +218,7 @@ O mesmo mecanismo autentica convites de equipe: o convite está amarrado ao e-ma
 1. Qualquer papel com leitura na Marca abre relatórios por período, Marca, rede e Destino.
 2. Métricas nativas: impressões, alcance, engajamento, cliques, visualizações, salvamentos, seguidores, melhor horário quando a rede fornecer.
 3. Indisponível **não** vira zero. Agregação entre redes só ocorre para definições equivalentes.
-4. Exportação PDF e CSV usa marca, cores e domínio Capyra.
+4. Exportação PDF usa a capivara-logo ([`docs/design/`](design/README.md)) e a palavra “Capyra” no tipo padrão. CSV é só dados. Sem paleta extra, sem wordmark ilustrado, sem nome do fornecedor.
 
 ### 6.8 Concorrentes (biblioteca de anúncios)
 
@@ -243,8 +243,8 @@ IDs estáveis para rastreio em specs e testes.
 ### 7.1 Conta e equipe
 
 - **FR-001.** Toda Conta Capyra possui Tipo `agency` ou `creator`, exatamente um Proprietário e zero ou mais Operadores nos demais papéis.
-- **FR-002.** Toda Conta nova nasce com uma Marca inicial; nome e Fuso da marca são confirmados antes de qualquer agendamento.
-- **FR-003.** Convites são de uso único, vinculados ao e-mail, com expiração (sete dias) e papéis/Marcas explícitos.
+- **FR-002.** Toda Conta nova nasce com uma Marca inicial de nome placeholder (`Minha marca` no padrão `pt-BR`). O Fuso da marca padrão é `America/Sao_Paulo`. Nome não vazio e fuso são confirmados antes de qualquer agendamento; o navegador não é fonte da verdade.
+- **FR-003.** Convites são de uso único, vinculados ao e-mail, com expiração (sete dias) e papéis/Marcas explícitos. A lista de Marcas atribuídas pode ser vazia; o Operador entra e não opera Marca nenhuma até o Proprietário atribuir.
 - **FR-004.** Um e-mail autenticado participa de no máximo uma Conta Capyra na v1.
 - **FR-005.** Remoção de Operador revoga autorização imediatamente nas APIs, em todos os lugares autenticados; logout encerra só aquele acesso. Sessões antigas falham no próximo request autenticado.
 - **FR-006.** Criador, Aprovador e Visualizador só enxergam Marcas atribuídas; Proprietário enxerga todas.
@@ -254,7 +254,7 @@ IDs estáveis para rastreio em specs e testes.
 
 - **FR-007.** Login e primeiro acesso usam somente e-mail + link mágico ou código de acesso; não há senha.
 - **FR-008.** Link e código expiram, são de uso único e pertencem a um único e-mail.
-- **FR-009.** E-mails transacionais de autenticação, convite e cobrança identificam só Capyra e saem no **Idioma** do destinatário (`pt-BR`, `en` ou `es`). Convite a quem ainda não entrou sai no Idioma do Proprietário; no primeiro acesso o convidado grava o próprio Idioma.
+- **FR-009.** E-mails transacionais de autenticação, convite e cobrança identificam só Capyra e saem no **Idioma** do destinatário (`pt-BR`, `en` ou `es`). Convite a quem ainda não entrou sai no Idioma do Proprietário; no primeiro acesso o convidado grava o próprio Idioma. Visual: capivara-logo + a palavra “Capyra”; sem mascote no corpo; sem o **Fornecedor social**.
 
 ### 7.3 Marcas
 
@@ -306,7 +306,7 @@ IDs estáveis para rastreio em specs e testes.
 - **FR-040.** Snapshots de métricas nativas por Conta social e por Destino, com origem, período, instante da observação e instante da atualização.
 - **FR-041.** Métrica ausente permanece ausente; a UI explica a indisponibilidade.
 - **FR-042.** Relatórios filtráveis por Marca, rede, período e Destino; comparações não afirmam causalidade.
-- **FR-043.** Exportação PDF e CSV com identidade visual Capyra, sem nome, logo ou rodapé do fornecedor.
+- **FR-043.** Exportação PDF com a capivara-logo e a palavra “Capyra” no tipo padrão; CSV só dados. Sem paleta extra, sem nome, logo ou rodapé do fornecedor.
 - **FR-044.** Melhor horário, histórico de seguidores e demografias entram quando o provider os fornecer para aquela rede; ausência não inventa número.
 
 ### 7.9 Concorrentes
@@ -635,7 +635,7 @@ A v1 está aceita quando:
 2. Conecta as oito redes da v1 em modo headless, sem exposição do fornecedor nas superfícies da §15.1 (ou a rede sem `go` permanece oculta).
 3. O Criador monta uma Publicação com Destinos distintos, o Aprovador comenta e aprova, e o conteúdo só então é agendado.
 4. O calendário mostra o item; a publicação ocorre no Fuso da marca; falha e cancelamento têm estado explícito.
-5. Relatório da Marca exporta PDF/CSV só com marca Capyra.
+5. Relatório da Marca exporta PDF com capivara-logo + “Capyra” e CSV só de dados, sem o fornecedor.
 6. Pesquisa de anúncios Meta e LinkedIn funciona nas Marcas com a conexão exigida.
 7. Conectar três Instagrams de três Marcas resulta em cobrança de R$ 149,70 / mês (pró-rata no primeiro ciclo); reconectar o mesmo Instagram não duplica; desconectar não estorna o ciclo corrente.
 8. Testes de contrato e isolamento passam com `MockProvider`; a prova real do fornecedor está registrada no Gate white label.

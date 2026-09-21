@@ -2,7 +2,7 @@
 
 **Status:** revisado
 **Data:** 20/09/2026
-**Depende de:** [`CONTEXT.md`](../CONTEXT.md), [`PRD.md`](PRD.md), [ADRs](adr/README.md)
+**Depende de:** [`CONTEXT.md`](../CONTEXT.md), [`PRD.md`](PRD.md), [ADRs](adr/README.md), [constituição Speckit](../.specify/memory/constitution.md)
 
 Este documento fecha a stack do repositório. Não redefine o domínio. Escolhas caras de reverter estão também em ADRs 0006–0011.
 
@@ -82,7 +82,7 @@ Vale o **tema e os tokens padrão** do shadcn. Não criar paleta, radius, tipogr
 
 Os componentes vivem em `packages/ui` e são o único kit visual compartilhado. O site pode importar `packages/ui`; continua **sem** importar `apps/web`, `apps/api`, sessão de **Operador** ou data layer.
 
-Logo e mascotes vêm de [`docs/design/`](design/README.md). São ilustração e marca no site e no webapp (também PDF e e-mail). **Não** viram tokens, paleta nem tema Capyra.
+Logo e mascotes vêm de [`docs/design/`](design/README.md). São ilustração e marca no site e no webapp. PDF: capivara-logo + a palavra “Capyra” no tipo padrão; CSV só dados. **Não** viram tokens, paleta nem tema Capyra.
 
 Fora desta regra de componente: PDF de relatório, e-mail Resend e a página hospedada do Stripe — não são shadcn. MCP não tem UI.
 
@@ -98,7 +98,7 @@ Isolamento:
 - cookies e sessão do webapp não existem no site
 - sem import de `apps/web` nem de `apps/api`
 - UI: os mesmos componentes shadcn/ui padrão via `packages/ui` ([ADR 0011](adr/0011-shadcn-default-ui.md))
-- Marca: logo e mascotes de [`docs/design/`](design/README.md)
+- Marca: logo e mascotes de [`docs/design/`](design/README.md); header = capivara-logo + a palavra “Capyra” no tipo padrão
 
 O Site pode usar o adapter de hospedagem que o Next exigir (Node ou OpenNext na Cloudflare). Isso **não** afrouxa o princípio web-standard da API, do webapp e do MCP.
 
