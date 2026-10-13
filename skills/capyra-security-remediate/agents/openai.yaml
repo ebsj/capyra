@@ -1,0 +1,4 @@
+interface:
+  display_name: "Capyra Security Remediate"
+  short_description: "Prioritize and fix scan findings."
+  default_prompt: "Use capyra-security-remediate to triage security findings and plan or implement corrections."

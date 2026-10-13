@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style id="kanit-local">
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-ExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-BlackItalic.ttf') format('truetype'); font-weight: 900; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: rgb(237 232 223); padding: 20px; font-family: 'IBM Plex Sans', sans-serif; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(1 118 211); margin-bottom: 10px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.card { border-radius: 24px; border: 1px solid rgb(227 217 205); background: rgb(255 252 247); padding: 18px; }
+.feature-card { width: 200px; }
+.icon-box { width: 40px; height: 40px; border-radius: 14px; background: rgb(234 244 255); border: 1px solid rgb(227 217 205); display: flex; align-items: center; justify-content: center; color: rgb(1 118 211); }
+.kicker { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(94 78 64); margin-top: 12px; }
+.title { font-family: 'Kanit', sans-serif; font-size: 18px; font-weight: 700; color: rgb(17 57 102); margin-top: 4px; }
+.desc { font-size: 12px; line-height: 1.6; color: rgb(94 78 64); margin-top: 6px; }
+.metric-card { flex: 1; min-width: 140px; display: flex; gap: 12px; align-items: flex-start; }
+.metric-val { font-family: 'Kanit', sans-serif; font-size: 28px; font-weight: 700; color: rgb(17 57 102); line-height: 1; }
+.metric-lbl { font-size: 11px; line-height: 1.5; color: rgb(94 78 64); margin-top: 4px; }
+svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="section-label">Feature Cards</div>
+<div class="row">
+  <div class="card feature-card">
+    <div class="icon-box"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="kicker">Análise</div>
+    <div class="title">Leitura estruturada</div>
+    <div class="desc">Evidências, recomendações e relatório compartilhável em minutos.</div>
+  </div>
+  <div class="card feature-card" style="background:rgb(235 243 219);border-color:rgb(152 184 88 / 0.3)">
+    <div class="icon-box" style="background:rgb(235 243 219);color:rgb(50 100 20)"><svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg></div>
+    <div class="kicker" style="color:rgb(50 100 20)">Skills</div>
+    <div class="title" style="color:rgb(17 57 102)">Especialização</div>
+    <div class="desc">Catálogo de skills para cada plataforma e objetivo.</div>
+  </div>
+  <div class="card feature-card" style="background:rgba(245 224 157 / 0.4);border-color:rgb(93 63 41 / 0.2)">
+    <div class="icon-box" style="background:rgba(245 224 157 / 0.6);color:rgb(93 63 41)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+    <div class="kicker" style="color:rgb(93 63 41)">Relatório</div>
+    <div class="title" style="color:rgb(17 57 102)">Snapshot público</div>
+    <div class="desc">Relatório congelado, compartilhável com token único.</div>
+  </div>
+</div>
+
+<div class="section-label">Metric / Stat Cards</div>
+<div class="row">
+  <div class="card" style="flex:1;min-width:280px;display:flex;gap:14px;flex-wrap:wrap">
+    <div class="metric-card">
+      <div class="icon-box"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div><div class="metric-val">24</div><div class="metric-lbl">Análises concluídas</div></div>
+    </div>
+    <div class="metric-card">
+      <div class="icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div><div class="metric-val">87</div><div class="metric-lbl">Score médio /100</div></div>
+    </div>
+    <div class="metric-card">
+      <div class="icon-box" style="background:hsl(0 51% 95%);color:hsl(0 51% 51%)"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div><div class="metric-val" style="color:hsl(0 51% 51%)">3</div><div class="metric-lbl">Falhas pendentes</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

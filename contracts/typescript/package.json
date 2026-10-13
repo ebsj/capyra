@@ -1,0 +1,24 @@
+{
+  "name": "@capyra/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./openapi": "./src/openapi.generated.ts",
+    "./validators": "./src/validators.generated.ts"
+  },
+  "scripts": {
+    "generate": "openapi-typescript ../openapi/capyra-api.v1.yaml -o src/openapi.generated.ts && redocly bundle ../openapi/capyra-api.v1.yaml --dereferenced -o .openapi-bundled.yaml && openapi-zod-client .openapi-bundled.yaml -o src/validators.generated.ts --export-schemas && node -e \"import('node:fs').then(({rmSync})=>rmSync('.openapi-bundled.yaml'))\"",
+    "typecheck": "tsc --noEmit --module nodenext --moduleResolution nodenext --target es2023 src/index.ts src/openapi.generated.ts src/validators.generated.ts"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.49.0",
+    "openapi-typescript": "^7.13.0",
+    "openapi-zod-client": "^1.18.3",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@zodios/core": "^10.9.6",
+    "zod": "^3.25.76"
+  }
+}

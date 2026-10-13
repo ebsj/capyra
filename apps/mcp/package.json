@@ -1,0 +1,26 @@
+{
+  "name": "@capyra/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 5090 --inspector-port 9232",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "deploy": "wrangler deploy",
+    "types": "wrangler types worker-configuration.d.ts --env-file /dev/null",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "tsx --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@capyra/contracts": "file:../../contracts/typescript",
+    "@capyra/integration-core": "file:../../packages/capyra-integration-core",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.127.1"
+  }
+}

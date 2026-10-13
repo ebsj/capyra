@@ -1,0 +1,4 @@
+interface:
+  display_name: "Capyra Security DAST"
+  short_description: "Run safe ZAP baseline checks."
+  default_prompt: "Use capyra-security-dast to run a safe ZAP baseline and interpret DAST findings."

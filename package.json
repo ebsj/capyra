@@ -1,0 +1,46 @@
+{
+  "name": "capyra-node-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "contracts/typescript",
+    "packages/capyra-integration-core",
+    "apps/api",
+    "apps/cli",
+    "apps/mcp",
+    "apps/web",
+    "apps/site"
+  ],
+  "overrides": {
+    "@hono/node-server": "1.19.17",
+    "body-parser": "2.3.0",
+    "ip-address": "10.5.0",
+    "protobufjs": "7.6.5"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present && npm run test:infra",
+    "test:infra": "node --test tests/infra/*.test.mjs",
+    "dev:api": "npm --workspace @capyra/api run dev",
+    "dev:cloudflare": "./infra/scripts/dev-cloudflare.sh",
+    "contracts:generate": "npm --workspace @capyra/contracts run generate",
+    "test:parity": "node tests/characterization/cloudflare-v2-parity.mjs",
+    "check:cloudflare": "npm --workspace @capyra/api run check && npm --workspace @capyra/mcp run build && npm --workspace @capyra/web run deploy -- --dry-run && npm --workspace @capyra/site run deploy -- --dry-run",
+    "build:node": "npm run build --workspaces --if-present",
+    "typecheck:node": "npm run typecheck --workspaces --if-present",
+    "test:node": "npm run test --workspaces --if-present",
+    "security:local": "node tools/security-baseline.mjs local",
+    "security:images": "node tools/security-baseline.mjs images",
+    "security:dast": "node tools/security-baseline.mjs dast",
+    "security:scope": "node tools/security-baseline.mjs scope",
+    "skills:install-security": "node tools/install-local-skills.mjs",
+    "skills:install-security:dry-run": "node tools/install-local-skills.mjs --dry-run",
+    "skills:validate-security": "node tools/validate-local-skills.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2",
+    "wrangler": "^4.127.1"
+  }
+}

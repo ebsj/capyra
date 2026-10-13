@@ -1,0 +1,225 @@
+{
+  "common": {
+    "name": "Capyra",
+    "tagline": "Lectura estructurada para videos cortos",
+    "visual": {
+      "logoAlt": "Capyra",
+      "heroAlt": "Mascota de Capyra con cámara",
+      "ctaAlt": "Mascota de Capyra en movimiento"
+    }
+  },
+  "nav": {
+    "overview": "Visión general",
+    "integrations": "Integraciones",
+    "workflow": "Cómo funciona",
+    "results": "Resultados",
+    "audience": "Para quién"
+  },
+  "actions": {
+    "createAccount": "Crear cuenta",
+    "startAnalysis": "Iniciar análisis",
+    "learnIntegrations": "Ver integraciones",
+    "openIntegration": "Abrir guía",
+    "useWithChatGPT": "Usar con ChatGPT",
+    "useWithClaude": "Usar con Claude",
+    "backHome": "Volver a la landing",
+    "switchToPortuguese": "PT-BR",
+    "switchToEnglish": "EN",
+    "switchToSpanish": "ES"
+  },
+  "footer": {
+    "description": "Capyra ayuda a creators y agencias a convertir una URL pública o un archivo de video corto en lectura estructurada, evidencias, recomendaciones y snapshot compartible.",
+    "links": "Navegación",
+    "legal": "Capyra © 2026. Todos los derechos reservados.",
+    "localeHint": "Disponible en PT-BR, EN y ES.",
+    "integrations": "Guías de integración"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscaste no existe o fue eliminada de la nueva landing pública.",
+    "backHome": "Volver a la landing"
+  },
+  "landing": {
+    "meta": {
+      "title": "Análisis de video corto con evidencia",
+      "description": "Capyra convierte URLs públicas y archivos de video corto en lecturas estructuradas con skills, evidencias, recomendaciones y snapshots compartibles."
+    },
+    "hero": {
+      "kicker": "Análisis de video corto",
+      "title": "Capyra lee videos cortos con evidencia lista para decidir.",
+      "description": "Pega una URL pública o sube un archivo. Capyra mantiene el contexto correcto, ejecuta skills especializadas y devuelve qué comunica el video, dónde aparece la evidencia y qué siguiente prueba tiene sentido.",
+      "secondaryCta": "Conocer integraciones",
+      "visualCaption": "Flujo Capyra",
+      "chips": {
+        "input": {
+          "label": "Entrada",
+          "value": "URL o archivo"
+        },
+        "skills": {
+          "label": "Lectura",
+          "value": "Skills seleccionadas"
+        },
+        "output": {
+          "label": "Salida",
+          "value": "Evidencias y recomendaciones"
+        }
+      }
+    },
+    "overview": {
+      "kicker": "Qué hacemos",
+      "title": "Lectura clara, evidencias reales y próximo paso visible.",
+      "description": "La landing presenta el producto por lo que entrega en la práctica: un análisis corto, rastreable y fácil de compartir con cliente, creator o equipo.",
+      "structured": {
+        "kicker": "Análisis",
+        "title": "Lectura estructurada",
+        "description": "Capyra organiza tema, hook, estructura, CTA, ritmo, visual y audio en un flujo único, sin convertir el video en una lista suelta de opiniones.",
+        "cta": "Ver resultado"
+      },
+      "skills": {
+        "kicker": "Skills",
+        "title": "Especialización por objetivo",
+        "description": "Seleccionas habilidades como contenido, filmación, edición, audio o compliance para calibrar la lectura al caso real.",
+        "cta": "Cómo funciona"
+      },
+      "snapshot": {
+        "kicker": "Snapshot",
+        "title": "Informe compartible",
+        "description": "El resultado puede convertirse en un snapshot congelado, con token revocable, para presentar evidencias sin exponer el workspace privado.",
+        "cta": "Qué devuelve"
+      }
+    },
+    "integrations": {
+      "kicker": "Integraciones",
+      "title": "Usa Capyra también donde creators, agencias y agentes ya trabajan.",
+      "description": "La plataforma web sigue siendo el centro del producto, pero el mismo motor puede activarse desde ChatGPT y Claude cuando el flujo pide análisis asistido.",
+      "chatgpt": {
+        "title": "ChatGPT",
+        "description": "Conecta el MCP de Capyra para consultar análisis, crear lecturas y reutilizar resultados dentro de conversaciones operativas."
+      },
+      "claude": {
+        "title": "Claude",
+        "description": "Usa Capyra como herramienta externa para transformar videos enviados o URLs públicas en material estructurado de revisión."
+      }
+    },
+    "workflow": {
+      "kicker": "Cómo funciona",
+      "title": "Del video al resultado en tres movimientos.",
+      "description": "El flujo evita configuración pesada antes del primer valor: envías la fuente, eliges el foco y recibes una lectura lista para actuar.",
+      "input": {
+        "title": "Envía la fuente",
+        "description": "Pega una URL pública de Reels, TikTok o Shorts, o sube el archivo del video cuando la fuente pública no sea suficiente."
+      },
+      "skills": {
+        "title": "Elige las skills",
+        "description": "Define si la lectura debe priorizar estrategia de contenido, producción, edición, audio, música o compliance."
+      },
+      "result": {
+        "title": "Recibe la lectura",
+        "description": "La respuesta separa observación, inferencia, límite y recomendación para que el próximo test quede más claro."
+      }
+    },
+    "results": {
+      "kicker": "Qué devuelve",
+      "title": "El resultado combina diagnóstico, evidencia y recomendación.",
+      "description": "El mock de abajo ilustra la estructura de retorno. Muestra los tipos de información que la plataforma organiza, sin prometer métricas externas nativas.",
+      "mock": {
+        "eyebrow": "Ejemplo de lectura",
+        "title": "Hook claro, CTA tardío y oportunidad de corte.",
+        "description": "El análisis registra qué se observó en el video, dónde aparece y qué ajustes se pueden probar en el próximo contenido.",
+        "scoreLabel": "Score cualitativo",
+        "scoreValue": "Alto",
+        "evidenceLabel": "Evidencias",
+        "evidenceValue": "Por timestamp",
+        "recommendationLabel": "Recomendaciones",
+        "recommendationValue": "Priorizadas",
+        "limitLabel": "Límites",
+        "limitValue": "Explícitos",
+        "evidenceTitle": "Resumen de evidencias",
+        "evidence0": "Hook identificado en los primeros segundos, con promesa clara para la audiencia.",
+        "evidence1": "Caída de ritmo en la mitad del video sugiere oportunidad de corte o subtítulo de refuerzo.",
+        "evidence2": "El CTA aparece tarde; recomendación: anticipar el pedido antes del cierre.",
+        "snapshotTitle": "Snapshot compartible",
+        "snapshotDescription": "Generado en el momento del análisis, con token revocable y contexto suficiente para presentación externa."
+      }
+    },
+    "audience": {
+      "kicker": "Para quién",
+      "title": "Foco en quienes necesitan explicar performance con evidencia.",
+      "description": "Capyra fue diseñada para reducir subjetividad en revisiones de video corto y transformar feedback en material accionable.",
+      "agency": {
+        "title": "Agencias",
+        "description": "Presenta la lectura al cliente con timestamps, límites y recomendaciones que sostienen el próximo test.",
+        "bullet0": "Transforma una URL pública o archivo bruto en material de revisión.",
+        "bullet1": "Usa evidencias por skill para justificar feedback creativo.",
+        "bullet2": "Genera snapshots para reuniones, aprobaciones y seguimiento."
+      },
+      "creator": {
+        "title": "Creators",
+        "description": "Entiende qué comunica el video, dónde pierde fuerza y qué ajuste probar sin depender de una lectura genérica.",
+        "bullet0": "Compara hook, estructura, CTA, visual y audio en una sola lectura.",
+        "bullet1": "Recibe recomendaciones priorizadas para la próxima versión.",
+        "bullet2": "Usa el análisis para repetir patrones que funcionan."
+      },
+      "team": {
+        "title": "Equipos internos y agentes",
+        "description": "Estandariza revisiones y activa Capyra por web o MCP cuando el flujo exige automatización asistida.",
+        "bullet0": "Mantén origen, skills y resultado en el mismo historial.",
+        "bullet1": "Usa ChatGPT o Claude para flujos asistidos.",
+        "bullet2": "Comparte solo el snapshot necesario."
+      }
+    },
+    "cta": {
+      "kicker": "Empieza ahora",
+      "title": "Crea una cuenta y genera la primera lectura estructurada.",
+      "description": "Entra al app, envía la fuente del video y mira cómo Capyra convierte evidencias en decisión.",
+      "secondary": "Ver guías de integración"
+    }
+  },
+  "integrations": {
+    "meta": {
+      "title": "Integraciones",
+      "description": "Guías cortas para usar Capyra con ChatGPT y Claude."
+    },
+    "hero": {
+      "kicker": "Integraciones",
+      "title": "Lleva la lectura de Capyra a tu flujo de trabajo.",
+      "description": "Usa la plataforma web para operar el producto completo y conecta ChatGPT o Claude cuando necesites análisis asistido o retorno estructurado fuera de la interfaz principal."
+    },
+    "page": {
+      "kicker": "Guía corta",
+      "title": "Dos formas de activar la misma lectura estructurada.",
+      "description": "Cada integración usa Capyra como capa de análisis sobre la API. El app web sigue siendo el lugar de login, autorización y seguimiento del workspace."
+    },
+    "shared": {
+      "whatYouGet": "Qué puedes hacer",
+      "configuration": "Configuración",
+      "mcpUrl": "URL del MCP",
+      "clientId": "Client ID",
+      "firstStep": "Primer paso",
+      "webCta": "Abrir app web",
+      "mcpCta": "Abrir MCP público"
+    },
+    "chatgpt": {
+      "kicker": "MCP",
+      "title": "ChatGPT",
+      "description": "Usa el servidor MCP de Capyra para consultar o iniciar lecturas durante una conversación con contexto de campaña, briefing o revisión.",
+      "bullet0": "Autoriza Capyra por el flujo OAuth cuando el cliente MCP lo solicite.",
+      "bullet1": "Usa URLs públicas o assets existentes como entrada para análisis.",
+      "bullet2": "Devuelve evidencias y recomendaciones sin copiar datos manualmente entre herramientas.",
+      "step": "En ChatGPT, agrega Capyra como conector MCP usando la URL del MCP y el Client ID abajo cuando tu cuenta tenga acceso al flujo de conectores."
+    },
+    "claude": {
+      "kicker": "MCP",
+      "title": "Claude",
+      "description": "Conecta Claude al MCP de Capyra para transformar videos y contexto de trabajo en material estructurado de revisión.",
+      "bullet0": "Usa el mismo login de Capyra para autorizar el cliente externo.",
+      "bullet1": "Pide lecturas con foco en estrategia, producción, edición, audio o compliance.",
+      "bullet2": "Mantén el resultado rastreable al workspace y a los snapshots generados.",
+      "step": "En Claude o en otro cliente compatible con MCP remoto, configura la URL del MCP, usa el Client ID abajo y completa la autorización en el navegador."
+    },
+    "cta": {
+      "title": "¿Prefieres empezar por la interfaz?",
+      "description": "El app web es el camino más directo para crear cuenta, enviar el primer video y acompañar el resultado completo."
+    }
+  }
+}

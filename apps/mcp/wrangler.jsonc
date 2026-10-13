@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "capyra-mcp",
+  "main": "src/server.ts",
+  "compatibility_date": "2026-08-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [{ "pattern": "mcp.capyra.co", "custom_domain": true }],
+  "services": [{ "binding": "API", "service": "capyra-api" }],
+  "vars": {
+    "CAPYRA_API_BASE_URL": "https://api.capyra.co/api/v1",
+    "CAPYRA_OAUTH_API_PUBLIC_BASE_URL": "https://api.capyra.co/api/v1",
+    "CAPYRA_WEB_BASE_URL": "https://web.capyra.co",
+    "CAPYRA_MCP_PUBLIC_BASE_URL": "https://mcp.capyra.co",
+    "CAPYRA_MCP_RESOURCE_NAME": "Capyra MCP",
+    "CAPYRA_MCP_DOCUMENTATION_URL": "https://capyra.co/integracoes",
+    "CAPYRA_MCP_DISCOVERY_CORS_ORIGINS": "https://web.capyra.co",
+    "CAPYRA_OAUTH_ISSUER_URL": "https://web.capyra.co"
+  },
+  "observability": { "enabled": true, "logs": { "enabled": true, "head_sampling_rate": 0.1 } }
+}

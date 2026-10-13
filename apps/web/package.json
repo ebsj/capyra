@@ -1,0 +1,63 @@
+{
+  "name": "@capyra/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vinext dev --port 3000",
+    "dev:next": "next dev",
+    "build": "vinext build",
+    "build:next": "node scripts/build.mjs",
+    "start": "vinext start --port 3000",
+    "deploy": "vinext build && vinext-cloudflare deploy --skip-build",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node --test ../../tests/web/smoke.test.mjs",
+    "test": "node --test ../../tests/web/*.test.mjs"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.1.7",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@tanstack/react-table": "^8.21.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "firebase": "^12.12.0",
+    "lucide-react": "^0.487.0",
+    "next": "^16.3.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "recharts": "^2.15.4",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.1.2"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.2",
+    "@vinext/cloudflare": "^1.0.0-beta.6",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitejs/plugin-rsc": "^0.5.34",
+    "@types/node": "22.13.10",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.17",
+    "react-server-dom-webpack": "^19.2.8",
+    "typescript": "^5.9.3",
+    "vinext": "^1.0.0-beta.8",
+    "vite": "^8.2.2"
+  },
+  "overrides": {
+    "@opentelemetry/core": "2.9.0",
+    "protobufjs": "7.6.5",
+    "@opentelemetry/otlp-transformer": {
+      "protobufjs": "8.6.5"
+    },
+    "postcss": "$postcss",
+    "sharp": "0.35.3"
+  }
+}

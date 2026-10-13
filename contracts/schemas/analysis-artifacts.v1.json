@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AnalysisArtifacts",
+  "type": "object",
+  "required": ["blobPathPrefix", "files", "items"],
+  "properties": {
+    "blobPathPrefix": {
+      "type": ["string", "null"]
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "fileName",
+          "category",
+          "mimeType",
+          "downloadUrl",
+          "previewUrl"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "downloadUrl": {
+            "type": "string"
+          },
+          "previewUrl": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

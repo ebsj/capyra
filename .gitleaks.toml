@@ -1,0 +1,19 @@
+title = "Capyra gitleaks baseline"
+
+[allowlist]
+description = "Known local-only development placeholders and public emulator credentials."
+regexes = [
+  '''ChangeThisPassword123!''',
+  '''Password=5JrvqCt1X-8''',
+  '''devstoreaccount1''',
+  '''Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==''',
+  '''Capyra123!''',
+  '''test-key''',
+]
+paths = [
+  '''(^|/)\.next/''',
+  '''(^|/)\.venv/''',
+  '''(^|/)dist/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)tmp/''',
+]

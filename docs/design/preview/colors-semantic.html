@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'IBM Plex Sans', sans-serif; background: #faf6ef; padding: 20px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 999px; border: 1px solid rgba(0,0,0,0.08); font-size: 12px; font-weight: 500; }
+.chip-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #5e4e40; margin: 16px 0 8px; }
+.tone-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.tone-card { border-radius: 16px; padding: 12px 14px; border: 1px solid rgba(0,0,0,0.08); min-width: 140px; }
+.tone-name { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 4px; }
+.tone-desc { font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="section-label">Semantic Color Roles</div>
+<div class="chips">
+  <div class="chip" style="background:rgb(234 244 255);color:rgb(1 118 211)"><div class="chip-dot" style="background:rgb(1 118 211)"></div>brand — primary action</div>
+  <div class="chip" style="background:rgb(235 243 219);color:rgb(50 100 20)"><div class="chip-dot" style="background:rgb(152 184 88)"></div>sage — positive / growth</div>
+  <div class="chip" style="background:rgb(245 224 157);color:rgb(93 63 41)"><div class="chip-dot" style="background:rgb(245 200 80)"></div>sand — neutral highlight</div>
+  <div class="chip" style="background:rgba(93 63 41 / 0.12);color:rgb(93 63 41)"><div class="chip-dot" style="background:rgb(93 63 41)"></div>cocoa — secondary accent</div>
+  <div class="chip" style="background:hsl(211 100% 96%);color:hsl(217 36% 17%)"><div class="chip-dot" style="background:hsl(207 99% 42%)"></div>accent — info / soft blue</div>
+  <div class="chip" style="background:hsl(0 51% 95%);color:hsl(0 51% 51%)"><div class="chip-dot" style="background:hsl(0 51% 51%)"></div>destructive — errors</div>
+</div>
+<div class="section-label">Tone Tints (used in cards & badges)</div>
+<div class="tone-row">
+  <div class="tone-card" style="background:rgb(234 244 255);border-color:rgb(1 118 211 / 0.2)">
+    <div class="tone-name" style="color:rgb(1 118 211)">Brand</div>
+    <div class="tone-desc" style="color:rgb(1 118 211)">Primary emphasis, CTAs, icons</div>
+  </div>
+  <div class="tone-card" style="background:rgb(235 243 219);border-color:rgb(152 184 88 / 0.3)">
+    <div class="tone-name" style="color:rgb(50 100 20)">Sage</div>
+    <div class="tone-desc" style="color:rgb(50 100 20)">Positive, growth, success</div>
+  </div>
+  <div class="tone-card" style="background:rgba(245 224 157 / 0.5);border-color:rgb(93 63 41 / 0.2)">
+    <div class="tone-name" style="color:rgb(93 63 41)">Sand</div>
+    <div class="tone-desc" style="color:rgb(93 63 41)">Warm neutral, secondary info</div>
+  </div>
+  <div class="tone-card" style="background:hsl(212 71% 23%);border-color:hsl(218 35% 30%)">
+    <div class="tone-name" style="color:hsl(38 100% 92%)">Navy (Sidebar)</div>
+    <div class="tone-desc" style="color:hsl(38 80% 80%)">App shell, authenticated chrome</div>
+  </div>
+</div>
+</body>
+</html>

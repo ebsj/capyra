@@ -1,0 +1,35 @@
+{
+  "name": "@capyra/cli",
+  "version": "0.1.7",
+  "description": "Capyra platform CLI for analyses, assets, and OAuth-backed integrations.",
+  "type": "module",
+  "bin": {
+    "capyra": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/cli.ts --format esm --dts --external commander && node scripts/fix-bin.mjs",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "tsx --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "commander": "^14.0.3"
+  },
+  "devDependencies": {
+    "@capyra/contracts": "file:../../contracts/typescript",
+    "@capyra/integration-core": "file:../../packages/capyra-integration-core",
+    "@types/node": "^22.13.10",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

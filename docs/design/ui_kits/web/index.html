@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capyra Web — UI Kit</title>
+<style id="kanit-local">
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-ExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../../fonts/Kanit-BlackItalic.ttf') format('truetype'); font-weight: 900; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          hsl(38 52% 96%);
+  --fg:          hsl(217 36% 17%);
+  --card:        hsl(38 100% 98%);
+  --card-fg:     hsl(217 36% 17%);
+  --muted:       hsl(39 28% 90%);
+  --muted-fg:    hsl(28 19% 38%);
+  --primary:     hsl(207 99% 42%);
+  --primary-fg:  hsl(0 0% 100%);
+  --accent:      hsl(211 100% 96%);
+  --border:      hsl(33 28% 85%);
+  --destructive: hsl(0 51% 51%);
+  --ring:        hsl(207 99% 42%);
+
+  --sb-bg:       hsl(212 71% 23%);
+  --sb-fg:       hsl(38 100% 98%);
+  --sb-primary:  hsl(207 99% 42%);
+  --sb-accent:   hsl(216 44% 15%);
+  --sb-border:   hsl(218 35% 22%);
+  --sb-ring:     hsl(208 100% 70%);
+  --sb-muted:    hsl(38 60% 72%);
+
+  --radius: 0.9rem;
+  --font-display: 'Kanit', sans-serif;
+  --font-sans:    'IBM Plex Sans', sans-serif;
+}
+
+html { height: 100%; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fg);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-image:
+    radial-gradient(circle at top right, hsl(207 99% 42% / 0.14), transparent 30%),
+    radial-gradient(circle at 12% 20%, hsl(211 100% 96% / 0.18), transparent 22%),
+    linear-gradient(180deg, hsl(38 52% 96%), hsl(38 100% 98%) 34%, hsl(39 28% 90%) 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(hsl(217 36% 17% / 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.16;
+  mask-image: linear-gradient(180deg, hsl(0 0% 0% / 0.9), transparent 76%);
+  z-index: 0;
+}
+
+/* ── Layout ── */
+.app { display: flex; height: 100vh; overflow: hidden; position: relative; z-index: 1; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  background: var(--sb-bg);
+  display: flex; flex-direction: column;
+  padding: 16px 12px;
+  border-right: 1px solid var(--sb-border);
+  overflow-y: auto;
+  transition: width 0.25s ease;
+}
+.sidebar.collapsed { width: 64px; }
+.sidebar.collapsed .sidebar-text { display: none; }
+.sidebar.collapsed .sidebar-brand { padding: 12px 8px; justify-content: center; }
+.sidebar.collapsed .new-btn { justify-content: center; padding: 10px; }
+.sidebar.collapsed .nav-item { padding: 10px 8px; }
+.sidebar.collapsed .nav-desc { display: none; }
+.sidebar.collapsed .session-block { display: none; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 22px;
+  background: hsl(216 44% 15% / 0.4);
+  border: 1px solid var(--sb-border);
+  margin-bottom: 8px; cursor: pointer;
+  text-decoration: none; transition: background 0.15s;
+}
+.sidebar-brand:hover { background: hsl(216 44% 15% / 0.7); }
+.logo-box {
+  width: 38px; height: 38px; flex-shrink: 0;
+  border-radius: 12px; background: hsl(38 100% 96%);
+  border: 1px solid var(--sb-border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.logo-box img { width: 30px; height: 30px; object-fit: contain; }
+.brand-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sb-muted); }
+.brand-user { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--sb-fg); line-height: 1.2; }
+
+.new-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 16px;
+  background: var(--sb-primary); color: white;
+  font-size: 13px; font-weight: 600; border: none;
+  cursor: pointer; font-family: inherit; width: 100%;
+  transition: background 0.15s;
+}
+.new-btn:hover { background: hsl(207 99% 36%); }
+.new-btn svg { flex-shrink: 0; }
+
+.sidebar-divider { height: 1px; background: var(--sb-border); margin: 8px 0; }
+
+.group-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--sb-muted); padding: 6px 10px 2px;
+}
+
+.nav-item {
+  display: flex; flex-direction: column;
+  padding: 9px 10px; border-radius: 14px; cursor: pointer; gap: 3px;
+  transition: background 0.15s;
+}
+.nav-item.active { background: hsl(207 99% 42% / 0.15); }
+.nav-item:hover:not(.active) { background: var(--sb-accent); }
+.nav-row { display: flex; align-items: center; gap: 10px; }
+.nav-label { font-size: 13px; font-weight: 500; color: var(--sb-fg); }
+.nav-desc { font-size: 10px; color: var(--sb-muted); line-height: 1.4; padding-left: 26px; }
+.sb-icon { width: 16px; height: 16px; stroke: hsl(38 80% 88%); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+.session-block {
+  margin-top: auto; background: hsl(216 44% 15% / 0.3);
+  border-radius: 20px; border: 1px solid var(--sb-border); padding: 12px 14px;
+}
+.session-label { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sb-muted); }
+.session-name { font-size: 13px; font-weight: 600; color: var(--sb-fg); margin-top: 6px; }
+.session-email { font-size: 11px; color: var(--sb-muted); }
+.badges-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.badge-sb { padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; background: hsl(207 99% 42% / 0.22); color: hsl(38 90% 90%); }
+
+.logout-btn {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 9px 14px; border-radius: 14px; border: 1px solid var(--sb-border);
+  background: transparent; color: var(--sb-fg); font-size: 13px; font-weight: 500;
+  cursor: pointer; font-family: inherit; transition: background 0.15s; margin-top: 8px;
+}
+.logout-btn:hover { background: var(--sb-accent); }
+
+/* ── Main area ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+.topbar {
+  border-bottom: 1px solid var(--border);
+  background: hsl(38 52% 96% / 0.86);
+  backdrop-filter: blur(16px);
+  padding: 14px 24px;
+  display: flex; align-items: flex-start; gap: 12px;
+  flex-shrink: 0;
+  position: sticky; top: 0; z-index: 20;
+}
+.topbar-toggle {
+  width: 34px; height: 34px; border-radius: 12px;
+  border: 1px solid var(--border); background: var(--card);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; margin-top: 6px;
+  transition: background 0.15s;
+}
+.topbar-toggle:hover { background: var(--accent); }
+.topbar-toggle svg { width: 15px; height: 15px; stroke: var(--muted-fg); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.topbar-meta { flex: 1; min-width: 0; }
+.topbar-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted-fg); display: flex; align-items: center; gap: 8px; }
+.topbar-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--fg); margin-top: 6px; line-height: 1.2; }
+.topbar-desc { font-size: 12px; color: var(--muted-fg); margin-top: 4px; line-height: 1.5; max-width: 500px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.btn-primary { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 16px; background: var(--primary); color: white; font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.btn-primary:hover { background: hsl(207 99% 36%); }
+.btn-outline { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 16px; background: var(--card); color: var(--fg); font-size: 13px; font-weight: 600; border: 1px solid var(--border); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.btn-outline:hover { background: var(--accent); }
+.btn-icon { width: 36px; height: 36px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; }
+.btn-icon:hover { background: var(--accent); }
+.btn-icon svg { width: 15px; height: 15px; stroke: var(--muted-fg); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── Content ── */
+.content { flex: 1; overflow-y: auto; padding: 24px; }
+.inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Pages ── */
+.view { display: none; }
+.view.active { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Dashboard hero card ── */
+.hero-card {
+  border-radius: 28px; border: 1px solid var(--border); background: var(--card);
+  overflow: hidden; box-shadow: 0 4px 16px hsl(217 36% 17% / 0.06);
+  padding: 24px;
+}
+.hero-card-inner { display: grid; gap: 20px; }
+@media (min-width: 1000px) { .hero-card-inner { grid-template-columns: 1.15fr 0.85fr; align-items: end; } }
+.badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+.badge-primary { background: hsl(207 99% 42% / 0.12); color: var(--primary); }
+.badge-secondary { background: var(--muted); color: var(--fg); border: 1px solid var(--border); }
+.badge-success { background: hsl(80 40% 90%); color: hsl(80 40% 30%); }
+.badge-warn { background: hsl(46 81% 90%); color: hsl(46 60% 35%); }
+.badge-danger { background: hsl(0 51% 94%); color: hsl(0 51% 45%); }
+.badge-outline { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+
+.hero-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 600; color: var(--fg); text-wrap: balance; line-height: 1.25; }
+.hero-desc { font-size: 14px; line-height: 1.7; color: var(--muted-fg); margin-top: 10px; max-width: 480px; }
+.hero-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.stat-mini { display: grid; gap: 10px; }
+.stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-card { border-radius: 22px; border: 1px solid var(--border); background: hsl(38 52% 96% / 0.8); padding: 14px 16px; }
+.stat-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-fg); }
+.stat-val { font-size: 28px; font-weight: 600; color: var(--fg); margin-top: 6px; line-height: 1; }
+.stat-helper { font-size: 11px; color: var(--muted-fg); margin-top: 6px; line-height: 1.4; }
+.status-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+/* ── Summary cards ── */
+.summary-grid { display: grid; gap: 12px; }
+@media (min-width: 700px) { .summary-grid { grid-template-columns: repeat(3, 1fr); } }
+.summary-card { border-radius: 24px; border: 1px solid var(--border); background: var(--card); padding: 18px 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 1px 2px hsl(217 36% 17% / 0.04); }
+.summary-icon { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: hsl(207 99% 42% / 0.1); color: var(--primary); }
+.summary-icon.warn { background: hsl(46 81% 90%); color: hsl(46 60% 35%); }
+.summary-icon.danger { background: hsl(0 51% 94%); color: hsl(0 51% 51%); }
+.summary-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.summary-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-fg); }
+.summary-val { font-size: 30px; font-weight: 600; color: var(--fg); margin-top: 6px; line-height: 1; }
+.summary-desc { font-size: 11px; color: var(--muted-fg); margin-top: 6px; line-height: 1.5; }
+
+/* ── Main grid ── */
+.main-grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .main-grid { grid-template-columns: 1.15fr 0.85fr; } }
+
+.panel { border-radius: 28px; border: 1px solid var(--border); background: var(--card); overflow: hidden; }
+.panel-header { padding: 20px 22px 0; }
+.panel-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--fg); }
+.panel-desc { font-size: 12px; color: var(--muted-fg); margin-top: 6px; line-height: 1.5; }
+.panel-body { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 10px; }
+
+/* ── Activity row ── */
+.activity-row { border-radius: 22px; border: 1px solid var(--border); background: hsl(38 52% 96% / 0.8); padding: 14px 16px; }
+.activity-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.activity-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); }
+.activity-time { font-size: 12px; color: var(--fg); }
+.activity-title { font-size: 15px; font-weight: 600; color: var(--fg); margin-top: 8px; line-height: 1.4; }
+.activity-details { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; font-size: 12px; color: var(--muted-fg); }
+.activity-details span { font-weight: 600; color: var(--fg); }
+.activity-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+/* ── History view ── */
+.history-header { border-radius: 28px; border: 1px solid var(--border); background: var(--card); padding: 20px 22px; }
+.history-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--fg); }
+.history-desc { font-size: 13px; color: var(--muted-fg); margin-top: 6px; line-height: 1.5; }
+.history-toolbar { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-top: 16px; align-items: end; }
+.input-field { display: flex; flex-direction: column; gap: 6px; }
+.input-label { font-size: 13px; font-weight: 500; color: var(--fg); }
+input, select {
+  font-family: var(--font-sans); font-size: 13px; padding: 9px 13px;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: var(--card); color: var(--fg); outline: none; width: 100%;
+}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px hsl(207 99% 42% / 0.12); }
+
+.history-row { border-radius: 22px; border: 1px solid var(--border); background: hsl(38 52% 96% / 0.8); padding: 16px 18px; }
+.history-row-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.history-row-title { font-size: 16px; font-weight: 600; color: var(--fg); margin-top: 10px; line-height: 1.4; }
+.history-row-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; font-size: 12px; color: var(--muted-fg); }
+.history-row-grid span { font-weight: 600; color: var(--fg); }
+.skill-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: hsl(217 36% 17% / 0.4); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card); border-radius: 28px; border: 1px solid var(--border);
+  padding: 28px; max-width: 480px; width: 100%;
+  box-shadow: 0 24px 64px hsl(217 36% 17% / 0.18);
+  animation: fadeUp 0.2s ease-out;
+}
+@keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+.modal-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--fg); }
+.modal-desc { font-size: 13px; color: var(--muted-fg); margin-top: 8px; line-height: 1.6; }
+.modal-form { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 13px; font-weight: 500; color: var(--fg); }
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-option {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-radius: 14px; border: 1px solid var(--border); cursor: pointer;
+  transition: all 0.15s; font-size: 13px; color: var(--fg);
+}
+.radio-option.selected { border-color: var(--primary); background: var(--accent); color: var(--primary); }
+.radio-option:hover:not(.selected) { background: var(--muted); }
+
+/* scroll */
+.content::-webkit-scrollbar { width: 8px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--border); border: 2px solid transparent; background-clip: padding-box; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar" id="sidebar">
+    <a class="sidebar-brand" href="#" onclick="return false">
+      <div class="logo-box"><img src="../../assets/logo.png" alt="Capyra"></div>
+      <div class="sidebar-text">
+        <div class="brand-eyebrow">Capyra Web</div>
+        <div class="brand-user">Ana Rodrigues</div>
+      </div>
+    </a>
+
+    <button class="new-btn" onclick="openModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span class="sidebar-text">Enviar arquivo</span>
+    </button>
+
+    <div class="sidebar-divider"></div>
+    <div class="group-label sidebar-text">Superfícies</div>
+
+    <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard');setNav(this)">
+      <div class="nav-row">
+        <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span class="nav-label">Dashboard</span>
+      </div>
+      <span class="nav-desc sidebar-text">Leitura rápida do workspace e próximos passos.</span>
+    </div>
+
+    <div class="nav-item" id="nav-analyses" onclick="showView('analyses');setNav(this)">
+      <div class="nav-row">
+        <svg class="sb-icon" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span class="nav-label">Análises</span>
+      </div>
+      <span class="nav-desc sidebar-text">Histórico, filtros e acesso ao detalhe.</span>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div class="session-block sidebar-text">
+      <div class="session-label">Sessão</div>
+      <div class="session-name">Ana Rodrigues</div>
+      <div class="session-email">ana@agencia.co</div>
+      <div class="badges-row">
+        <span class="badge-sb">Pro</span>
+        <span class="badge-sb" style="background:hsl(216 44% 15% / 0.6)">histórico privado</span>
+      </div>
+    </div>
+
+    <button class="logout-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="hsl(38 80% 80%)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="sidebar-text">Sair</span>
+    </button>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </div>
+      <div class="topbar-meta">
+        <div class="topbar-eyebrow" id="tb-eyebrow">Workspace</div>
+        <div class="topbar-title" id="tb-title">Painel de decisão</div>
+        <div class="topbar-desc" id="tb-desc">Veja o que exige ação agora, o que já foi concluído e o melhor próximo movimento.</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-primary" onclick="openModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Enviar arquivo
+        </button>
+        <div class="btn-icon" title="Encerrar sessão">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="inner">
+
+        <!-- ── DASHBOARD VIEW ── -->
+        <div class="view active" id="view-dashboard">
+
+          <!-- Hero Card -->
+          <div class="hero-card">
+            <div class="hero-card-inner">
+              <div>
+                <div class="badge-row">
+                  <span class="badge badge-primary">evidence ledger</span>
+                  <span class="badge badge-secondary">CTA acima da dobra</span>
+                </div>
+                <div class="hero-title">Priorize o que precisa de ação sem perder a procedência do histórico.</div>
+                <div class="hero-desc">O dashboard resume status, recência e próximos movimentos em vez de se comportar como um grid genérico de métricas. A ação principal fica explícita e o detalhe continua a um clique de distância.</div>
+                <div class="hero-actions">
+                  <button class="btn-primary" onclick="openModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Enviar arquivo
+                  </button>
+                  <button class="btn-outline" onclick="showView('analyses');setNav(document.getElementById('nav-analyses'))">Abrir histórico</button>
+                </div>
+              </div>
+              <div class="stat-mini">
+                <div class="stat-card">
+                  <div class="stat-eyebrow">Status</div>
+                  <div class="status-pills">
+                    <span class="badge badge-success">Concluídas: 24</span>
+                    <span class="badge badge-warn">Pendentes: 3</span>
+                    <span class="badge badge-danger">Falhas: 1</span>
+                  </div>
+                </div>
+                <div class="stat-row">
+                  <div class="stat-card">
+                    <div class="stat-eyebrow">Volume</div>
+                    <div class="stat-val">28</div>
+                    <div class="stat-helper">Total de análises no workspace.</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-eyebrow">Score médio</div>
+                    <div class="stat-val">87</div>
+                    <div class="stat-helper">Leitura geral das concluídas.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="summary-icon">
+                <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </div>
+              <div>
+                <div class="summary-eyebrow">Concluídas</div>
+                <div class="summary-val">24</div>
+                <div class="summary-desc">Resultados prontos para leitura.</div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon warn">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="summary-eyebrow">Pendentes</div>
+                <div class="summary-val">3</div>
+                <div class="summary-desc">Ainda exigem acompanhamento.</div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-icon danger">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div>
+                <div class="summary-eyebrow">Falhas</div>
+                <div class="summary-val">1</div>
+                <div class="summary-desc">Precisam de nova tentativa.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity + Queue -->
+          <div class="main-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">Atividade recente</div>
+                <div class="panel-desc">Origem, recência e movimento direto para o detalhe permanecem visíveis.</div>
+              </div>
+              <div class="panel-body">
+                <div class="activity-row">
+                  <div class="activity-meta">
+                    <span class="badge badge-success">Concluída</span>
+                    <span class="activity-eyebrow">Recência</span>
+                    <span class="activity-time">2 min atrás</span>
+                  </div>
+                  <div class="activity-title">Hook forte, queda no meio — oportunidade de CTA identificada no segmento 0:45–1:10</div>
+                  <div class="activity-details">
+                    <div><span>Origem:</span> youtube.com/watch?v=…</div>
+                    <div><span>Criada em:</span> 27 abr 2026, 14:32</div>
+                  </div>
+                  <div class="activity-footer">
+                    <button class="btn-outline" style="font-size:12px;padding:7px 14px">Abrir detalhe <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+                  </div>
+                </div>
+                <div class="activity-row">
+                  <div class="activity-meta">
+                    <span class="badge badge-primary">Processando</span>
+                    <span class="activity-eyebrow">Recência</span>
+                    <span class="activity-time">18 min atrás</span>
+                  </div>
+                  <div class="activity-title">Análise de consistência — série de reels de produto para campanha de lançamento</div>
+                  <div class="activity-details">
+                    <div><span>Origem:</span> instagram.com/reel/…</div>
+                    <div><span>Criada em:</span> 27 abr 2026, 14:16</div>
+                  </div>
+                  <div class="activity-footer">
+                    <button class="btn-outline" style="font-size:12px;padding:7px 14px">Abrir detalhe <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+                  </div>
+                </div>
+                <div class="activity-row">
+                  <div class="activity-meta">
+                    <span class="badge badge-success">Concluída</span>
+                    <span class="activity-eyebrow">Recência</span>
+                    <span class="activity-time">1 hora atrás</span>
+                  </div>
+                  <div class="activity-title">Engajamento acima da média — CTA no final converteu bem para o segmento de 25–34</div>
+                  <div class="activity-details">
+                    <div><span>Origem:</span> tiktok.com/@marca/…</div>
+                    <div><span>Criada em:</span> 27 abr 2026, 13:28</div>
+                  </div>
+                  <div class="activity-footer">
+                    <button class="btn-outline" style="font-size:12px;padding:7px 14px">Abrir detalhe <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">Fila de atenção</div>
+                <div class="panel-desc">Destaque para o que ainda não virou leitura concluída.</div>
+              </div>
+              <div class="panel-body">
+                <div class="activity-row" style="cursor:pointer" onmouseover="this.style.background='hsl(211 100% 96%)'" onmouseout="this.style.background='hsl(38 52% 96% / 0.8)'">
+                  <div class="activity-meta">
+                    <span class="badge badge-warn">Pendente</span>
+                    <span class="activity-eyebrow">Recência</span>
+                    <span class="activity-time">18 min atrás</span>
+                  </div>
+                  <div class="activity-title" style="font-size:13px">Análise de consistência — série de reels</div>
+                  <div style="font-size:12px;color:var(--muted-fg);margin-top:6px"><span style="font-weight:600;color:var(--fg)">Origem:</span> instagram.com/reel/…</div>
+                </div>
+                <div class="activity-row" style="cursor:pointer" onmouseover="this.style.background='hsl(211 100% 96%)'" onmouseout="this.style.background='hsl(38 52% 96% / 0.8)'">
+                  <div class="activity-meta">
+                    <span class="badge badge-danger">Falha</span>
+                    <span class="activity-eyebrow">Recência</span>
+                    <span class="activity-time">3 horas atrás</span>
+                  </div>
+                  <div class="activity-title" style="font-size:13px">Timeout ao processar vídeo de 12min — reformatar e reenviar</div>
+                  <div style="font-size:12px;color:var(--muted-fg);margin-top:6px"><span style="font-weight:600;color:var(--fg)">Origem:</span> youtube.com/watch?v=…</div>
+                </div>
+                <div class="activity-row" style="cursor:pointer" onmouseover="this.style.background='hsl(211 100% 96%)'" onmouseout="this.style.background='hsl(38 52% 96% / 0.8)'">
+                  <div class="activity-meta">
+                    <span class="badge badge-warn">Pendente</span>
+                    <span class="activity-eyebrow">Recência</span>
+                    <span class="activity-time">5 horas atrás</span>
+                  </div>
+                  <div class="activity-title" style="font-size:13px">Análise de CTA — vídeo de lançamento Q2</div>
+                  <div style="font-size:12px;color:var(--muted-fg);margin-top:6px"><span style="font-weight:600;color:var(--fg)">Origem:</span> arquivo enviado</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /dashboard -->
+
+        <!-- ── ANALYSES VIEW ── -->
+        <div class="view" id="view-analyses">
+
+          <div class="history-header">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div>
+                <div class="history-title">Histórico privado</div>
+                <div class="history-desc">Leitura rápida de status, origem e recência com filtros leves e movimento direto para o detalhe.</div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn-primary" onclick="openModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Enviar arquivo
+                </button>
+                <button class="btn-outline" onclick="showView('dashboard');setNav(document.getElementById('nav-dashboard'))">Ir para dashboard</button>
+              </div>
+            </div>
+            <div class="history-toolbar">
+              <div class="input-field">
+                <label class="input-label">Buscar por resumo, origem ou skill</label>
+                <input type="search" placeholder="Ex.: YouTube, compliance, CTA...">
+              </div>
+              <div class="input-field">
+                <label class="input-label">Status</label>
+                <select style="min-width:160px">
+                  <option>Todos</option>
+                  <option>Concluídas</option>
+                  <option>Pendentes</option>
+                  <option>Falhas</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:12px">
+              <span class="badge badge-outline">28 análises</span>
+              <span class="badge badge-outline">28 visíveis</span>
+              <span class="badge badge-outline">origem e recência sempre visíveis</span>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="history-row">
+              <div class="history-row-meta">
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span class="badge badge-success">Concluída</span>
+                    <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-fg)">Origem</span>
+                    <span style="font-size:12px;color:var(--muted-fg)">youtube.com/watch?v=dQw4w9WgXcQ</span>
+                  </div>
+                </div>
+                <button class="btn-outline" style="font-size:12px;padding:7px 14px;flex-shrink:0">Abrir detalhe <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+              </div>
+              <div class="history-row-title">Hook forte, queda no meio — oportunidade de CTA identificada no segmento 0:45–1:10</div>
+              <div class="history-row-grid">
+                <div><span>Recência:</span> 2 min atrás</div>
+                <div><span>Criada em:</span> 27 abr 2026</div>
+                <div><span>Score:</span> 87/100</div>
+              </div>
+              <div class="skill-chips">
+                <span class="badge badge-outline">hook-analysis</span>
+                <span class="badge badge-outline">engagement</span>
+                <span class="badge badge-outline">cta-review</span>
+              </div>
+            </div>
+
+            <div class="history-row">
+              <div class="history-row-meta">
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span class="badge badge-primary">Processando</span>
+                    <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-fg)">Origem</span>
+                    <span style="font-size:12px;color:var(--muted-fg)">instagram.com/reel/C9k3…</span>
+                  </div>
+                </div>
+                <button class="btn-outline" style="font-size:12px;padding:7px 14px;flex-shrink:0">Abrir detalhe <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+              </div>
+              <div class="history-row-title">Análise de consistência — série de reels de produto para campanha de lançamento Q2</div>
+              <div class="history-row-grid">
+                <div><span>Recência:</span> 18 min atrás</div>
+                <div><span>Criada em:</span> 27 abr 2026</div>
+                <div><span>Score:</span> —</div>
+              </div>
+              <div class="skill-chips">
+                <span class="badge badge-outline">brand-consistency</span>
+                <span class="badge badge-outline">series-analysis</span>
+              </div>
+            </div>
+
+            <div class="history-row">
+              <div class="history-row-meta">
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span class="badge badge-danger">Falha</span>
+                    <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted-fg)">Origem</span>
+                    <span style="font-size:12px;color:var(--muted-fg)">youtube.com/watch?v=long…</span>
+                  </div>
+                </div>
+                <button class="btn-outline" style="font-size:12px;padding:7px 14px;flex-shrink:0">Abrir detalhe <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+              </div>
+              <div class="history-row-title">Timeout ao processar vídeo de 12min — reformatar para short e reenviar</div>
+              <div class="history-row-grid">
+                <div><span>Recência:</span> 3 horas atrás</div>
+                <div><span>Criada em:</span> 27 abr 2026</div>
+                <div><span>Score:</span> —</div>
+              </div>
+              <div class="skill-chips">
+                <span class="badge badge-outline">Sem skills selecionadas</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /analyses -->
+
+      </div><!-- /inner -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ── MODAL: New Analysis ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Enviar arquivo</div>
+    <div class="modal-desc">Cole uma URL pública ou envie um arquivo diretamente. Selecione as skills para leitura especializada.</div>
+    <div class="modal-form">
+      <div class="form-group">
+        <label class="form-label">URL do vídeo</label>
+        <input type="text" placeholder="https://www.youtube.com/watch?v=...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Plataforma</label>
+        <select>
+          <option>YouTube Shorts</option>
+          <option>Instagram Reels</option>
+          <option>TikTok</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Skills</label>
+        <div class="radio-group">
+          <div class="radio-option selected" onclick="toggleOption(this)">hook-analysis — análise do hook nos primeiros 3s</div>
+          <div class="radio-option" onclick="toggleOption(this)">engagement — leitura de engajamento e retenção</div>
+          <div class="radio-option" onclick="toggleOption(this)">cta-review — avaliação do call-to-action</div>
+          <div class="radio-option" onclick="toggleOption(this)">brand-consistency — aprovação de marca</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="closeModal()">Iniciar análise</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  const meta = {
+    dashboard: { eyebrow:'Workspace', title:'Painel de decisão', desc:'Veja o que exige ação agora, o que já foi concluído e o melhor próximo movimento.' },
+    analyses: { eyebrow:'Histórico', title:'Histórico privado', desc:'Filtre, compare procedência e retome rapidamente qualquer investigação.' }
+  };
+  const m = meta[name];
+  document.getElementById('tb-eyebrow').textContent = m.eyebrow;
+  document.getElementById('tb-title').textContent = m.title;
+  document.getElementById('tb-desc').textContent = m.desc;
+  document.querySelector('.content').scrollTop = 0;
+}
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function toggleOption(el) {
+  el.classList.toggle('selected');
+}
+</script>
+</body>
+</html>

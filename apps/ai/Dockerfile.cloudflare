@@ -1,0 +1,43 @@
+FROM python:3.12-alpine AS build
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir uv
+
+COPY pyproject.toml uv.lock README.md ./
+COPY src/ ./src/
+RUN UV_LINK_MODE=copy uv sync --frozen --no-dev --no-editable
+
+FROM python:3.12-alpine AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Keep the FFmpeg dependency graph in bounded layers. Cloudflare's container
+# registry can time out while committing the single ~52 MB compressed layer
+# produced by `apk add ffmpeg` in one transaction.
+RUN apk upgrade --no-cache \
+    && apk add --no-cache ca-certificates
+RUN apk add --no-cache ffmpeg-libavutil
+RUN apk add --no-cache ffmpeg-libavcodec
+RUN apk add --no-cache ffmpeg-libavformat
+RUN apk add --no-cache ffmpeg-libavfilter
+RUN apk add --no-cache ffmpeg \
+    && addgroup -S -g 1654 capyra \
+    && adduser -S -D -u 1654 -G capyra -h /app -s /sbin/nologin capyra
+
+COPY --from=build --chown=capyra:capyra /app/.venv /app/.venv
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+EXPOSE 8080
+
+USER capyra
+
+CMD ["uvicorn", "capyra_analytic_agent.api:app", "--host", "0.0.0.0", "--port", "8080"]

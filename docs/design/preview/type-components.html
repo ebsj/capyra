@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: rgb(250 246 239); padding: 20px; font-family: 'IBM Plex Sans', sans-serif; }
+
+.card { border-radius: 24px; border: 1px solid rgb(227 217 205); background: rgb(255 252 247); padding: 20px 22px; margin-bottom: 12px; }
+.kicker { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: rgb(1 118 211); }
+.headline { font-family: 'Kanit', sans-serif; line-height: 1.2; color: rgb(17 57 102); margin-top: 6px; text-wrap: balance; }
+.body-text { font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; line-height: 1.7; color: rgb(94 78 64); margin-top: 8px; max-width: 480px; }
+
+.eyebrow-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.eyebrow { font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(94 78 64); }
+.badge { padding: 3px 10px; border-radius: 999px; font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; }
+.badge-blue { background: hsl(211 100% 96%); color: hsl(207 99% 42%); border: 1px solid hsl(207 99% 85%); }
+.badge-sage { background: rgb(235 243 219); color: rgb(40 80 15); }
+
+.meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.meta-label { font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(94 78 64); }
+.meta-value { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500; color: rgb(28 40 59); margin-top: 2px; }
+
+/* Pairing grid */
+.pairing { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 600px) { .pairing { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- Card 1: hero section specimen -->
+<div class="card">
+  <div class="kicker">Análise de vídeo curto</div>
+  <div class="headline" style="font-size:32px;font-weight:800;letter-spacing:-0.01em">Leitura estruturada, evidências e recomendações</div>
+  <div class="body-text">Priorize o que precisa de ação sem perder a procedência do histórico. A ação principal fica explícita e o detalhe continua a um clique de distância.</div>
+</div>
+
+<!-- Card 2: workspace / dashboard header -->
+<div class="card">
+  <div class="eyebrow-row">
+    <div class="eyebrow">Workspace</div>
+    <span class="badge badge-blue">evidence ledger</span>
+    <span class="badge badge-sage">deep link preservado</span>
+  </div>
+  <div class="headline" style="font-size:24px;font-weight:600">Painel de decisão</div>
+  <div class="body-text">Veja o que exige ação agora, o que já foi concluído e o melhor próximo movimento.</div>
+  <div class="meta-grid">
+    <div><div class="meta-label">Recência</div><div class="meta-value">2 min atrás</div></div>
+    <div><div class="meta-label">Score médio</div><div class="meta-value">87/100</div></div>
+    <div><div class="meta-label">Status</div><div class="meta-value">Concluída</div></div>
+  </div>
+</div>
+
+<!-- Card 3: feature card pairing — Kanit display vs. IBM Plex body -->
+<div class="pairing">
+  <div class="card" style="margin-bottom:0">
+    <div class="kicker">Skills</div>
+    <div class="headline" style="font-size:22px;font-weight:700">Especialização por plataforma</div>
+    <div class="body-text" style="font-size:13px">Catálogo de skills para Instagram, TikTok e YouTube Shorts — cada um com leitura própria.</div>
+  </div>
+  <div class="card" style="margin-bottom:0;background:rgb(235 243 219);border-color:rgb(152 184 88 / 0.35)">
+    <div class="kicker" style="color:rgb(40 80 15)">Relatório</div>
+    <div class="headline" style="font-size:22px;font-weight:700;color:rgb(17 57 102)">Snapshot público</div>
+    <div class="body-text" style="font-size:13px">Relatório congelado, compartilhável com token único e revogável a qualquer hora.</div>
+  </div>
+</div>
+
+<!-- Card 4: Kanit weight showcase in context -->
+<div class="card">
+  <div class="kicker">Kanit — pesos em uso</div>
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:'Kanit',sans-serif;font-size:38px;font-weight:900;line-height:1;color:rgb(17 57 102)">Capyra Black 900</div>
+    <div style="font-family:'Kanit',sans-serif;font-size:32px;font-weight:800;line-height:1.1;color:rgb(17 57 102)">ExtraBold 800 — hero headline</div>
+    <div style="font-family:'Kanit',sans-serif;font-size:26px;font-weight:700;line-height:1.15;color:rgb(17 57 102)">Bold 700 — section title</div>
+    <div style="font-family:'Kanit',sans-serif;font-size:22px;font-weight:600;line-height:1.2;color:rgb(17 57 102)">SemiBold 600 — card title</div>
+    <div style="font-family:'Kanit',sans-serif;font-size:18px;font-weight:500;line-height:1.3;color:rgb(17 57 102)">Medium 500 — sub-heading</div>
+    <div style="font-family:'Kanit',sans-serif;font-size:16px;font-weight:400;line-height:1.4;color:rgb(94 78 64)">Regular 400 — display body copy</div>
+    <div style="font-family:'Kanit',sans-serif;font-size:14px;font-weight:300;line-height:1.5;color:rgb(94 78 64)">Light 300 — fine print / captions</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style id="kanit-local">
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-ExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('../fonts/Kanit-BlackItalic.ttf') format('truetype'); font-weight: 900; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: rgb(250 246 239); padding: 24px; font-family: 'IBM Plex Sans', sans-serif; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: rgb(1 118 211); margin-bottom: 12px; }
+.row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+.radius-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.radius-box { width: 64px; height: 64px; background: rgb(234 244 255); border: 2px solid rgb(1 118 211 / 0.25); }
+.radius-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: rgb(94 78 64); text-align: center; }
+.radius-value { font-size: 9px; font-family: monospace; color: rgb(94 78 64 / 0.7); }
+</style>
+</head>
+<body>
+<div class="section-label">Border Radii</div>
+<div class="row">
+  <div class="radius-item"><div class="radius-box" style="border-radius:0"></div><div class="radius-label">Square</div><div class="radius-value">0px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">sm</div><div class="radius-value">8px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">md / Badge</div><div class="radius-value">12px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">xl / Icon box</div><div class="radius-value">16px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">2xl / Button</div><div class="radius-value">20px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">3xl / Card</div><div class="radius-value">24px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:32px"></div><div class="radius-label">[2rem] / Panel</div><div class="radius-value">32px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:36px"></div><div class="radius-label">[2.25rem] / Hero</div><div class="radius-value">36px</div></div>
+  <div class="radius-item"><div class="radius-box" style="border-radius:999px"></div><div class="radius-label">full / Pill</div><div class="radius-value">999px</div></div>
+</div>
+
+<div class="section-label">Radius in Use</div>
+<div class="row">
+  <div style="border-radius:20px;background:rgb(1 118 211);color:white;padding:10px 20px;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif">rounded-2xl Button</div>
+  <div style="border-radius:999px;background:rgb(1 118 211);color:white;padding:10px 20px;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif">rounded-full CTA</div>
+  <div style="border-radius:24px;border:1px solid rgb(227 217 205);background:rgb(255 252 247);padding:16px 18px;font-size:13px;font-family:'IBM Plex Sans',sans-serif;color:rgb(28 40 59)">rounded-3xl Card</div>
+  <div style="border-radius:36px;border:1px solid rgb(227 217 205);background:rgb(255 252 247);padding:16px 18px;font-size:13px;font-family:'IBM Plex Sans',sans-serif;color:rgb(28 40 59)">[2.25rem] Hero card</div>
+  <div style="border-radius:8px;background:rgb(234 244 255);color:rgb(1 118 211);padding:4px 10px;font-size:11px;font-weight:600;font-family:'IBM Plex Sans',sans-serif">Badge</div>
+</div>
+</body>
+</html>
