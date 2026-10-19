@@ -1,0 +1,129 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "capyra-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "api.capyra.co", "custom_domain": true }
+  ],
+  "vars": {
+    "CAPYRA_ENVIRONMENT": "production",
+    "CAPYRA_SOCIAL_PROVIDER": "zernio",
+    "ZERNIO_API_BASE_URL": "https://zernio.com/api/v1",
+    "CAPYRA_AUTH_ISSUER": "https://api.capyra.co",
+    "CAPYRA_AUTH_AUDIENCE": "capyra-api",
+    "CAPYRA_WEB_BASE_URL": "https://web.capyra.co",
+    "CAPYRA_FIREBASE_PROJECT_ID": "capyra-co",
+    "CAPYRA_R2_BUCKET_NAME": "capyra-production",
+    "CAPYRA_R2_PUBLIC_ENDPOINT": "https://435d0e123c36055d1c99ac4cbb78e443.r2.cloudflarestorage.com",
+    "CAPYRA_OAUTH_MCP_REDIRECT_URIS": "https://mcp.capyra.co/*",
+    "CAPYRA_AUTH_ACCESS_TOKEN_LIFETIME_MINUTES": "10080",
+    "CAPYRA_OAUTH_AUTHORIZATION_CODE_LIFETIME_MINUTES": "10",
+    "CAPYRA_OAUTH_REFRESH_TOKEN_LIFETIME_DAYS": "30",
+    "CAPYRA_OAUTH_DEVICE_CODE_LIFETIME_MINUTES": "10",
+    "CAPYRA_OAUTH_DEVICE_POLLING_INTERVAL_SECONDS": "5",
+    "CAPYRA_OAUTH_UPLOAD_SESSION_LIFETIME_MINUTES": "15"
+  },
+  "secrets": {
+    "required": [
+      "CAPYRA_AUTH_SIGNING_KEY",
+      "CAPYRA_R2_ACCESS_KEY_ID",
+      "CAPYRA_R2_SECRET_ACCESS_KEY",
+      "OPENAI_API_KEY"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "capyra-production",
+      "database_id": "3bb539e8-dac4-408a-80e6-01e9eded31bb",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "capyra-production"
+    }
+  ],
+  "queues": {
+    "producers": [
+      { "binding": "ANALYSIS_QUEUE", "queue": "capyra-analyses" },
+      { "binding": "SOCIAL_QUEUE", "queue": "capyra-social" }
+    ],
+    "consumers": [
+      {
+        "queue": "capyra-social",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "dead_letter_queue": "capyra-social-dlq",
+        "max_concurrency": 2
+      },
+      {
+        "queue": "capyra-social-dlq",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 0,
+        "max_concurrency": 1
+      },
+      {
+        "queue": "capyra-analyses",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "dead_letter_queue": "capyra-analyses-dlq",
+        "max_concurrency": 2
+      },
+      {
+        "queue": "capyra-analyses-dlq",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 0,
+        "max_concurrency": 1
+      }
+    ]
+  },
+  "ratelimits": [
+    { "name": "SOCIAL_RATE_LIMITER", "namespace_id": "1003", "simple": { "limit": 30, "period": 60 } },
+    {
+      "name": "AUTH_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 20, "period": 60 }
+    },
+    {
+      "name": "ANALYSIS_RATE_LIMITER",
+      "namespace_id": "1002",
+      "simple": { "limit": 20, "period": 60 }
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "ANALYSIS_CONTAINER", "class_name": "AnalysisContainer" }
+    ]
+  },
+  "containers": [
+    {
+      "class_name": "AnalysisContainer",
+      "image": "../ai/Dockerfile.cloudflare",
+      "max_instances": 2,
+      "instance_type": "basic"
+    }
+  ],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["AnalysisContainer"] }
+  ],
+  "triggers": {
+    "crons": ["*/5 * * * *", "17 3 * * *"]
+  },
+  "limits": {
+    "cpu_ms": 300000,
+    "subrequests": 1000
+  },
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "head_sampling_rate": 0.1 },
+    "traces": { "enabled": true, "head_sampling_rate": 0.01 }
+  }
+}

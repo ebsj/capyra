@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 38 52% 96%;
+    --foreground: 217 36% 17%;
+    --card: 38 100% 98%;
+    --card-foreground: 217 36% 17%;
+    --popover: 38 100% 98%;
+    --popover-foreground: 217 36% 17%;
+    --primary: 207 99% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 39 28% 90%;
+    --secondary-foreground: 217 36% 17%;
+    --muted: 39 28% 90%;
+    --muted-foreground: 28 19% 31%;
+    --accent: 211 100% 96%;
+    --accent-foreground: 217 36% 17%;
+    --destructive: 0 51% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 33 28% 85%;
+    --input: 33 28% 85%;
+    --ring: 207 99% 42%;
+    --surface-muted: 12 12% 92%;
+    --surface-strong: 36 45% 93%;
+    --sidebar: 212 71% 23%;
+    --sidebar-background: 212 71% 23%;
+    --sidebar-foreground: 38 100% 98%;
+    --sidebar-primary: 207 99% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 216 44% 15%;
+    --sidebar-accent-foreground: 38 100% 98%;
+    --sidebar-border: 218 35% 22%;
+    --sidebar-ring: 208 100% 70%;
+    --chart-1: 207 99% 42%;
+    --chart-2: 80 40% 53%;
+    --chart-3: 25 39% 26%;
+    --chart-4: 46 81% 79%;
+    --chart-5: 212 71% 23%;
+    --radius: 0.9rem;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 219 48% 11%;
+    --foreground: 38 100% 96%;
+    --card: 216 44% 15%;
+    --card-foreground: 38 100% 96%;
+    --popover: 216 44% 15%;
+    --popover-foreground: 38 100% 96%;
+    --primary: 208 100% 70%;
+    --primary-foreground: 219 48% 11%;
+    --secondary: 216 37% 16%;
+    --secondary-foreground: 38 100% 96%;
+    --muted: 216 37% 16%;
+    --muted-foreground: 217 23% 82%;
+    --accent: 214 31% 20%;
+    --accent-foreground: 38 100% 96%;
+    --destructive: 0 63% 50%;
+    --destructive-foreground: 38 100% 96%;
+    --border: 218 35% 22%;
+    --input: 218 35% 22%;
+    --ring: 208 100% 70%;
+    --surface-muted: 216 36% 15%;
+    --surface-strong: 217 42% 18%;
+    --sidebar: 219 48% 11%;
+    --sidebar-background: 219 48% 11%;
+    --sidebar-foreground: 38 100% 96%;
+    --sidebar-primary: 208 100% 70%;
+    --sidebar-primary-foreground: 219 48% 11%;
+    --sidebar-accent: 216 44% 15%;
+    --sidebar-accent-foreground: 38 100% 96%;
+    --sidebar-border: 218 35% 22%;
+    --sidebar-ring: 208 100% 70%;
+    --chart-1: 208 100% 70%;
+    --chart-2: 80 50% 63%;
+    --chart-3: 25 39% 46%;
+    --chart-4: 46 81% 69%;
+    --chart-5: 194 47% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply bg-background text-foreground;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    margin: 0;
+    background-image:
+      radial-gradient(circle at top right, hsl(var(--primary) / 0.14), transparent 30%),
+      radial-gradient(circle at 12% 20%, hsl(var(--accent) / 0.18), transparent 22%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--card)) 34%, hsl(var(--muted)) 100%);
+    background-attachment: fixed;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(hsl(var(--foreground) / 0.07) 1px, transparent 1px);
+    background-position: 0 0;
+    background-size: 24px 24px;
+    opacity: 0.16;
+    mask-image: linear-gradient(180deg, hsl(0 0% 0% / 0.9), transparent 76%);
+    -webkit-mask-image: linear-gradient(180deg, hsl(0 0% 0% / 0.9), transparent 76%);
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background) / 0.4);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: hsl(var(--border));
+    background-clip: padding-box;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.18);
+    color: hsl(var(--primary-foreground));
+  }
+}

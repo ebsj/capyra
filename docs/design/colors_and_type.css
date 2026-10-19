@@ -1,0 +1,223 @@
+/*
+ * Capyra Design System — Colors & Typography
+ * Sources: apps/site/src/app/globals.css, apps/web/app/globals.css,
+ *          apps/site/tailwind.config.ts, docs/design/README.md
+ * Derived runtime summary: docs/design/site.md
+ *
+ * Fonts: Kanit (display) — local TTF files in fonts/
+ *        IBM Plex Sans (body) — Google Fonts (no local files provided)
+ */
+
+/* ─── Kanit — local @font-face (all weights + italics) ─────────────────── */
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-ExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-Black.ttf') format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Kanit'; src: url('fonts/Kanit-BlackItalic.ttf') format('truetype'); font-weight: 900; font-style: italic; font-display: swap; }
+
+/* ─── IBM Plex Sans — local @font-face ─────────────────────────────────── */
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+
+/* ─── Font variables ────────────────────────────────────────────────────── */
+:root {
+  --font-display: 'Kanit', sans-serif;
+  --font-sans:    'IBM Plex Sans', sans-serif;
+}
+
+/* ─── Site palette (rgb channel values — use with rgb(var(--token) / alpha)) */
+:root {
+  /* Canvas & text */
+  --background:       250 246 239;   /* warm cream */
+  --foreground:       28 40 59;      /* deep slate-navy */
+  --muted:            237 232 223;
+  --muted-foreground: 94 78 64;      /* warm cocoa-brown */
+  --card:             255 252 247;   /* off-white warm */
+  --card-foreground:  28 40 59;
+  --border:           227 217 205;   /* warm beige */
+
+  /* Brand blues */
+  --brand:            1 118 211;     /* primary CTA blue */
+  --brand-foreground: 255 255 255;
+  --brand-soft:       234 244 255;   /* light blue tint */
+
+  /* Accent palette */
+  --navy:             17 57 102;     /* deep navy for headings */
+  --cocoa:            93 63 41;      /* warm brown */
+  --sand:             245 224 157;   /* warm yellow */
+  --sage:             152 184 88;    /* calm green */
+  --sage-soft:        235 243 219;   /* soft sage tint */
+}
+
+/* ─── Web app palette (HSL — use with hsl(var(--token))) ─────────────────── */
+:root {
+  /* Light mode */
+  --web-background:   38 52% 96%;
+  --web-foreground:   217 36% 17%;
+  --web-card:         38 100% 98%;
+  --web-card-fg:      217 36% 17%;
+  --web-primary:      207 99% 42%;       /* brand blue */
+  --web-primary-fg:   0 0% 100%;
+  --web-secondary:    39 28% 90%;
+  --web-muted:        39 28% 90%;
+  --web-muted-fg:     28 19% 31%;
+  --web-accent:       211 100% 96%;
+  --web-border:       33 28% 85%;
+  --web-destructive:  0 51% 51%;
+
+  /* Sidebar (dark navy) */
+  --web-sidebar:      212 71% 23%;
+  --web-sidebar-fg:   38 100% 98%;
+  --web-sidebar-primary: 207 99% 42%;
+  --web-sidebar-accent:  216 44% 15%;
+  --web-sidebar-border:  218 35% 22%;
+  --web-sidebar-ring:    208 100% 70%;
+
+  /* Charts */
+  --web-chart-1: 207 99% 42%;
+  --web-chart-2: 80 40% 53%;
+  --web-chart-3: 25 39% 26%;
+  --web-chart-4: 46 81% 79%;
+  --web-chart-5: 212 71% 23%;
+
+  /* Border radius */
+  --radius: 0.9rem;
+}
+
+/* Dark mode overrides for web app */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --web-background:  219 48% 11%;
+    --web-foreground:  38 100% 96%;
+    --web-card:        216 44% 15%;
+    --web-primary:     208 100% 70%;
+    --web-primary-fg:  219 48% 11%;
+    --web-muted:       216 37% 16%;
+    --web-muted-fg:    217 23% 82%;
+    --web-accent:      214 31% 20%;
+    --web-border:      218 35% 22%;
+
+    --web-chart-1: 208 100% 70%;
+    --web-chart-2: 80 50% 63%;
+    --web-chart-3: 25 39% 46%;
+    --web-chart-4: 46 81% 69%;
+    --web-chart-5: 194 47% 55%;
+  }
+}
+
+/* ─── Shadows ────────────────────────────────────────────────────────────── */
+:root {
+  --shadow-glow:  0 0 0 1px rgb(var(--brand) / 0.08), 0 25px 60px rgb(15 23 42 / 0.12);
+  --shadow-panel: 0 20px 50px rgb(15 23 42 / 0.10);
+  --shadow-sm:    0 1px 2px rgb(15 23 42 / 0.06);
+}
+
+/* ─── Semantic type roles ────────────────────────────────────────────────── */
+.t-display-xl {
+  font-family: var(--font-display);
+  font-size: 3.5rem;       /* 56px */
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: rgb(var(--navy));
+  text-wrap: balance;
+}
+
+.t-display-lg {
+  font-family: var(--font-display);
+  font-size: 3rem;         /* 48px */
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: rgb(var(--navy));
+  text-wrap: balance;
+}
+
+.t-display-md {
+  font-family: var(--font-display);
+  font-size: 2rem;         /* 32px */
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: rgb(var(--navy));
+}
+
+.t-display-sm {
+  font-family: var(--font-display);
+  font-size: 1.5rem;       /* 24px */
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: rgb(var(--navy));
+}
+
+.t-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;      /* 12px */
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgb(var(--brand));
+}
+
+.t-body-lg {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;     /* 18px */
+  font-weight: 400;
+  line-height: 1.75;
+  color: rgb(var(--muted-foreground));
+}
+
+.t-body {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;     /* 14px */
+  font-weight: 400;
+  line-height: 1.714;
+  color: rgb(var(--muted-foreground));
+}
+
+.t-label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgb(var(--foreground));
+}
+
+.t-ui-sm {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(var(--muted-foreground));
+}
+
+/* ─── Utility classes ────────────────────────────────────────────────────── */
+.bg-background  { background-color: rgb(var(--background)); }
+.bg-card        { background-color: rgb(var(--card)); }
+.bg-brand       { background-color: rgb(var(--brand)); }
+.bg-brand-soft  { background-color: rgb(var(--brand-soft)); }
+.bg-sage-soft   { background-color: rgb(var(--sage-soft)); }
+.text-brand     { color: rgb(var(--brand)); }
+.text-navy      { color: rgb(var(--navy)); }
+.text-fg        { color: rgb(var(--foreground)); }
+.text-muted     { color: rgb(var(--muted-foreground)); }
+.border-brand   { border-color: rgb(var(--border)); }
+
+.font-display   { font-family: var(--font-display); }
+.font-sans      { font-family: var(--font-sans); }

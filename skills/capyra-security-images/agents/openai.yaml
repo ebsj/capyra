@@ -1,0 +1,4 @@
+interface:
+  display_name: "Capyra Security Images"
+  short_description: "Scan Capyra Docker images."
+  default_prompt: "Use capyra-security-images to scan and triage Capyra Docker image findings."

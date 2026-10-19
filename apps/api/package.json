@@ -1,0 +1,33 @@
+{
+  "name": "@capyra/api",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "../../node_modules/.bin/wrangler dev --port 5080",
+    "build": "../../node_modules/.bin/wrangler deploy --dry-run --outdir dist",
+    "check": "../../node_modules/.bin/wrangler types worker-configuration.d.ts --env-file /dev/null --check && tsc --noEmit && ../../node_modules/.bin/wrangler deploy --dry-run --outdir dist",
+    "types": "../../node_modules/.bin/wrangler types worker-configuration.d.ts --env-file /dev/null",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "../../node_modules/.bin/wrangler d1 migrations apply capyra-production --local",
+    "db:migrate:remote": "../../node_modules/.bin/wrangler d1 migrations apply capyra-production --remote",
+    "deploy": "../../node_modules/.bin/wrangler deploy"
+  },
+  "dependencies": {
+    "@capyra/contracts": "file:../../contracts/typescript",
+    "@cloudflare/containers": "^0.3.7",
+    "ajv": "^8.17.1",
+    "aws4fetch": "^1.0.20",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.9.9",
+    "jose": "^6.1.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  }
+}

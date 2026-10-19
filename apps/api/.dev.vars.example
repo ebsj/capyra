@@ -1,0 +1,14 @@
+CAPYRA_ENVIRONMENT=local
+CAPYRA_AUTH_ISSUER=http://localhost:5080
+CAPYRA_WEB_BASE_URL=http://localhost:3000
+CAPYRA_AUTH_SIGNING_KEY=capyra-local-only-signing-key-32-chars
+CAPYRA_FIREBASE_PROJECT_ID=replace-with-firebase-project-id
+OPENAI_API_KEY=replace-with-openai-api-key
+SHORT_VIDEO_ANALYTIC_YTDLP_COOKIES_B64=
+
+# Explicit provider mode; mock is accepted only with CAPYRA_ENVIRONMENT=local.
+CAPYRA_SOCIAL_PROVIDER=mock
+# Set these only for your later real-provider test.
+ZERNIO_API_BASE_URL=https://zernio.com/api/v1
+ZERNIO_API_KEY=
+ZERNIO_WEBHOOK_SECRET=

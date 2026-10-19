@@ -1,0 +1,41 @@
+[project]
+name = "capyra-analytic-agent"
+version = "0.1.0"
+description = "Internal HTTP service to analyze short-form public videos from video evidence only"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "openai>=2.0.0",
+    "pydantic>=2.11.2",
+    "python-dotenv>=1.2.2",
+    "tenacity>=9.1.2",
+    "urllib3>=2.7.0",
+    "uvicorn>=0.35.0",
+    "yt-dlp>=2026.7.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "black>=26.3.1",
+    "isort>=8.0.1",
+    "pytest>=8.4.2",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/capyra_analytic_agent"]

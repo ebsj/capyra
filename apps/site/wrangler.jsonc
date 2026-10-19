@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "capyra-site",
+  "main": "vinext/server/fetch-handler",
+  "compatibility_date": "2026-08-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [{ "pattern": "capyra.co", "custom_domain": true }],
+  "assets": { "not_found_handling": "none" },
+  "observability": { "enabled": true, "logs": { "enabled": true, "head_sampling_rate": 0.1 } }
+}

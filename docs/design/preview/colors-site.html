@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'IBM Plex Sans', sans-serif; background: #faf6ef; padding: 20px; }
+.grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatch { border-radius: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,0.07); width: 120px; }
+.swatch-color { height: 56px; }
+.swatch-info { padding: 8px 10px; background: #fff; }
+.swatch-name { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #5e4e40; }
+.swatch-value { font-size: 9px; color: #9e8c7d; margin-top: 2px; font-family: monospace; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #5e4e40; margin: 14px 0 8px; }
+</style>
+</head>
+<body>
+<div class="section-label">Canvas & Text</div>
+<div class="grid">
+  <div class="swatch"><div class="swatch-color" style="background:rgb(250 246 239)"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-value">250 246 239</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(255 252 247)"></div><div class="swatch-info"><div class="swatch-name">Card</div><div class="swatch-value">255 252 247</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(237 232 223)"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-value">237 232 223</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(227 217 205)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-value">227 217 205</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(28 40 59)"></div><div class="swatch-info"><div class="swatch-name">Foreground</div><div class="swatch-value">28 40 59</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(94 78 64)"></div><div class="swatch-info"><div class="swatch-name">Muted FG</div><div class="swatch-value">94 78 64</div></div></div>
+</div>
+<div class="section-label">Brand & Accents</div>
+<div class="grid">
+  <div class="swatch"><div class="swatch-color" style="background:rgb(1 118 211)"></div><div class="swatch-info"><div class="swatch-name">Brand</div><div class="swatch-value">1 118 211</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(234 244 255)"></div><div class="swatch-info"><div class="swatch-name">Brand Soft</div><div class="swatch-value">234 244 255</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(17 57 102)"></div><div class="swatch-info"><div class="swatch-name">Navy</div><div class="swatch-value">17 57 102</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(93 63 41)"></div><div class="swatch-info"><div class="swatch-name">Cocoa</div><div class="swatch-value">93 63 41</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(245 224 157)"></div><div class="swatch-info"><div class="swatch-name">Sand</div><div class="swatch-value">245 224 157</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(152 184 88)"></div><div class="swatch-info"><div class="swatch-name">Sage</div><div class="swatch-value">152 184 88</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:rgb(235 243 219)"></div><div class="swatch-info"><div class="swatch-name">Sage Soft</div><div class="swatch-value">235 243 219</div></div></div>
+</div>
+</body>
+</html>

@@ -1,1685 +1,4336 @@
 openapi: 3.1.0
 info:
   title: Capyra API
-  version: "1.0.0"
-  description: |
-    Contrato público `/api/v1`. Vocabulário Capyra apenas.
-    IDs públicos: accountId, brandId, socialAccountId, publicationId, destinationId.
-    Identificadores do Fornecedor social são rejeitados.
-  contact:
-    name: Capyra
-jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+  version: v1
+  description: 'Canonical Capyra API: analysis, account collaboration and Capyra Social.
+    New analysis/upload requests require an explicit brandId, including CLI and MCP
+    consumers. All provider identifiers remain private. Live social identity verification
+    may block unsafe connections.'
 servers:
-  - url: /api/v1
-    description: Relativo ao host Capyra
-tags:
-  - name: Auth
-  - name: Brands
-  - name: Members
-  - name: SocialConnections
-  - name: Media
-  - name: Publications
-  - name: Calendar
-  - name: ExternalPosts
-  - name: Reports
-  - name: Competitors
-  - name: Billing
-  - name: Notifications
-  - name: Audit
+- url: http://localhost:5080
 security:
-  - cookieAuth: []
+- bearerAuth: []
 paths:
-  /auth/request:
-    post:
-      tags: [Auth]
+  /:
+    get:
       security: []
-      operationId: requestAccess
-      summary: Envia link mágico e código para o e-mail
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RequestAccessInput"
       responses:
-        "202":
-          description: Pedido aceito (não revela se o e-mail já existe além do fluxo normal)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Accepted"
-        "429":
-          $ref: "#/components/responses/RateLimited"
-  /auth/complete:
-    post:
-      tags: [Auth]
+        '200':
+          description: Service metadata.
+  /health/live:
+    get:
       security: []
-      operationId: completeAccess
-      summary: Autentica com link ou código; provisiona Conta se o e-mail for novo
+      responses:
+        '200':
+          description: Live health.
+  /health/ready:
+    get:
+      security: []
+      responses:
+        '200':
+          description: Ready health.
+  /api/v1/health:
+    get:
+      security: []
+      responses:
+        '200':
+          description: Versioned health.
+  /api/v1/auth/register:
+    post:
+      summary: Register with a local password for legacy API compatibility
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CompleteAccessInput"
+              $ref: '#/components/schemas/RegisterRequest'
       responses:
-        "200":
-          description: Sessão criada
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
+        '201':
+          description: Authenticated session.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionView"
-        "400":
-          $ref: "#/components/responses/Error"
-        "401":
-          $ref: "#/components/responses/Error"
-  /auth/logout:
+                $ref: '#/components/schemas/AuthSessionResponse'
+  /api/v1/auth/login:
     post:
-      tags: [Auth]
-      operationId: logout
-      summary: Encerra só este acesso
-      responses:
-        "204":
-          description: Logout local
-  /auth/me:
-    get:
-      tags: [Auth]
-      operationId: getMe
-      responses:
-        "200":
-          description: Operador autenticado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperatorView"
-        "401":
-          $ref: "#/components/responses/Unauthenticated"
-  /brands:
-    get:
-      tags: [Brands]
-      operationId: listBrands
-      parameters:
-        - $ref: "#/components/parameters/IncludeArchived"
-      responses:
-        "200":
-          description: Marcas visíveis ao Operador
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BrandList"
-    post:
-      tags: [Brands]
-      operationId: createBrand
-      summary: Só Proprietário
+      summary: Sign in with a local password for legacy API compatibility
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BrandWrite"
+              $ref: '#/components/schemas/LoginRequest'
       responses:
-        "201":
-          description: Marca criada
+        '200':
+          description: Authenticated session.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BrandView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-  /brands/{brandId}:
-    parameters:
-      - $ref: "#/components/parameters/BrandId"
-    get:
-      tags: [Brands]
-      operationId: getBrand
+                $ref: '#/components/schemas/AuthSessionResponse'
+  /api/v1/auth/email-link:
+    post:
+      summary: Sign in and provision an account from a verified Firebase email link
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FirebaseEmailLinkSignInRequest'
       responses:
-        "200":
-          description: Marca
+        '200':
+          description: Authenticated session for an existing or newly provisioned
+            account.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BrandView"
-        "404":
-          $ref: "#/components/responses/NotFound"
+                $ref: '#/components/schemas/AuthSessionResponse'
+  /api/v1/auth/firebase:
+    post:
+      summary: Sign in and provision an account from a verified Firebase identity
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FirebaseSignInRequest'
+      responses:
+        '200':
+          description: Authenticated session for an existing or newly provisioned
+            account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSessionResponse'
+  /api/v1/auth/account:
     patch:
-      tags: [Brands]
-      operationId: updateBrand
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BrandWrite"
+              $ref: '#/components/schemas/UpdateAccountProfileRequest'
       responses:
-        "200":
-          description: Marca atualizada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BrandView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-  /brands/{brandId}/archive:
-    post:
-      tags: [Brands]
-      operationId: archiveBrand
-      parameters:
-        - $ref: "#/components/parameters/BrandId"
-      responses:
-        "200":
-          description: Marca arquivada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BrandView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-  /brands/{brandId}/restore:
-    post:
-      tags: [Brands]
-      operationId: restoreBrand
-      parameters:
-        - $ref: "#/components/parameters/BrandId"
-      responses:
-        "200":
-          description: Marca restaurada; conexões não são reatribuídas
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BrandView"
-  /members:
+        '204':
+          description: Account profile updated.
+  /api/v1/oauth/session:
     get:
-      tags: [Members]
-      operationId: listMembers
       responses:
-        "200":
-          description: Operadores da Conta
+        '200':
+          description: Describe the current OAuth-backed session.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MemberList"
-  /members/{operatorId}:
-    patch:
-      tags: [Members]
-      operationId: updateMember
-      summary: Altera Papel e Marcas atribuídas; não promove a Proprietário
-      parameters:
-        - $ref: "#/components/parameters/OperatorId"
+                $ref: '#/components/schemas/OAuthSessionResponse'
+  /api/v1/oauth/authorization-codes:
+    post:
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MemberUpdate"
+              $ref: '#/components/schemas/OAuthAuthorizationCodeCreateRequest'
       responses:
-        "200":
-          description: Operador atualizado
+        '200':
+          description: Authorization code created.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OperatorView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-    delete:
-      tags: [Members]
-      operationId: removeMember
-      parameters:
-        - $ref: "#/components/parameters/OperatorId"
-      responses:
-        "204":
-          description: Autorização revogada na hora
-        "403":
-          $ref: "#/components/responses/Forbidden"
-  /member-invitations:
-    get:
-      tags: [Members]
-      operationId: listInvitations
-      responses:
-        "200":
-          description: Convites pendentes
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InvitationList"
+                $ref: '#/components/schemas/OAuthAuthorizationCodeResponse'
+  /api/v1/oauth/device/activate:
     post:
-      tags: [Members]
-      operationId: createInvitation
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InvitationCreate"
+              $ref: '#/components/schemas/OAuthDeviceActivationRequest'
       responses:
-        "201":
-          description: Convite criado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InvitationView"
-        "409":
-          description: E-mail já pertence a outra Conta Capyra
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorBody"
-  /brands/{brandId}/social-connections:
-    parameters:
-      - $ref: "#/components/parameters/BrandId"
-    get:
-      tags: [SocialConnections]
-      operationId: listSocialConnections
-      responses:
-        "200":
-          description: Contas sociais da Marca
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SocialAccountList"
+        '204':
+          description: Device code approved by the authenticated user.
+  /api/v1/oauth/device/code:
     post:
-      tags: [SocialConnections]
-      operationId: startSocialConnection
-      summary: Só Proprietário; inicia OAuth headless
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/StartConnectionInput"
-      responses:
-        "201":
-          description: URL oficial da rede (não do Fornecedor social)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthorizationSessionView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "409":
-          description: Slot ocupado, identidade tomada ou inadimplência
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorBody"
-  /brands/{brandId}/social-connections/{socialAccountId}:
-    parameters:
-      - $ref: "#/components/parameters/BrandId"
-      - $ref: "#/components/parameters/SocialAccountId"
-    get:
-      tags: [SocialConnections]
-      operationId: getSocialConnection
-      responses:
-        "200":
-          description: Conta social
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SocialAccountView"
-    delete:
-      tags: [SocialConnections]
-      operationId: disconnectSocialAccount
-      responses:
-        "202":
-          description: Desconexão em andamento até cancelamento confirmado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SocialAccountView"
-  /brands/{brandId}/social-connections/{socialAccountId}/reconnect:
-    post:
-      tags: [SocialConnections]
-      operationId: reconnectSocialAccount
-      parameters:
-        - $ref: "#/components/parameters/BrandId"
-        - $ref: "#/components/parameters/SocialAccountId"
-      responses:
-        "201":
-          description: Nova sessão de autorização da mesma identidade
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthorizationSessionView"
-  /authz/callback:
-    get:
-      tags: [SocialConnections]
       security: []
-      operationId: socialOAuthCallback
-      summary: Callback no domínio Capyra
-      parameters:
-        - name: state
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        "302":
-          description: Redirect para o webapp Capyra
-        "400":
-          $ref: "#/components/responses/Error"
-  /brands/{brandId}/social-connections/{socialAccountId}/linkedin-target:
-    post:
-      tags: [SocialConnections]
-      operationId: selectLinkedInTarget
-      summary: Seleção de organização ou perfil na UI Capyra
-      parameters:
-        - $ref: "#/components/parameters/BrandId"
-        - $ref: "#/components/parameters/SocialAccountId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LinkedInTargetInput"
+              $ref: '#/components/schemas/OAuthDeviceCodeRequest'
       responses:
-        "200":
-          description: Alvo gravado
+        '200':
+          description: Device code created.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SocialAccountView"
-  /media:
-    get:
-      tags: [Media]
-      operationId: listMedia
-      parameters:
-        - $ref: "#/components/parameters/BrandIdQuery"
-      responses:
-        "200":
-          description: Biblioteca da Marca
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MediaList"
+                $ref: '#/components/schemas/OAuthDeviceCodeResponse'
+  /api/v1/oauth/token:
     post:
-      tags: [Media]
-      operationId: createMedia
-      summary: Proprietário ou Criador; até 200 MB; sem transcodificação
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - grant_type
+              - client_id
+              properties:
+                grant_type:
+                  type: string
+                client_id:
+                  type: string
+                code:
+                  type: string
+                redirect_uri:
+                  type: string
+                  format: uri
+                code_verifier:
+                  type: string
+                device_code:
+                  type: string
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: OAuth token issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+  /api/v1/oauth/revoke:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthRevokeRequest'
+      responses:
+        '204':
+          description: Refresh token revoked.
+  /api/v1/analysis-skills:
+    get:
+      summary: List currently published analysis skills
+      description: Returns selectable skills for new analyses. The `compliance` id
+        remains valid for historical analysis data but is not currently published
+        for new analysis creation.
+      responses:
+        '200':
+          description: Published analysis skill catalog.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisSkillCatalogResponse'
+  /api/v1/source-assets:
+    get:
+      responses:
+        '200':
+          description: Reusable uploaded source assets for the authenticated account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetListResponse'
       parameters:
-        - $ref: "#/components/parameters/BrandIdQueryRequired"
+      - name: brandId
+        in: query
+        schema: &id001
+          type: string
+          format: uuid
+    post:
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
-              required: [file, kind]
+              required:
+              - file
+              - brandId
               properties:
                 file:
                   type: string
                   format: binary
-                kind:
-                  $ref: "#/components/schemas/MediaKind"
+                brandId: *id001
+                variantOfAssetId: *id001
       responses:
-        "201":
-          description: Mídia referenciada
+        '201':
+          description: Source asset created.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "413":
-          $ref: "#/components/responses/Error"
-  /media/{mediaId}:
+                $ref: '#/components/schemas/SourceAssetItem'
+  /api/v1/source-assets/direct-uploads:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceAssetDirectUploadCreateRequest'
+      responses:
+        '200':
+          description: Temporary Azure Blob upload URL created for a reusable source
+            asset. The client uploads the binary directly to Blob Storage and then
+            completes the source asset with JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetDirectUploadResponse'
+  /api/v1/source-assets/direct-uploads/{sourceAssetId}/complete:
+    post:
+      parameters:
+      - in: path
+        name: sourceAssetId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceAssetDirectUploadCompleteRequest'
+      responses:
+        '201':
+          description: Source asset created from a previously uploaded Blob object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetItem'
+  /api/v1/integrations/source-asset-sessions:
+    post:
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceAssetUploadSessionCreateRequest'
+      responses:
+        '200':
+          description: Browser-mediated upload session created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetUploadSessionResponse'
+  /api/v1/integrations/source-asset-sessions/{id}:
+    get:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Upload session state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetUploadSessionResponse'
+  /api/v1/integrations/source-asset-sessions/{id}/complete:
+    post:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceAssetUploadSessionCompleteRequest'
+      responses:
+        '200':
+          description: Upload session completed with a selected source asset.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetUploadSessionResponse'
+  /api/v1/analyses:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/CreateAnalysisFromUrlRequest'
+              - $ref: '#/components/schemas/CreateAnalysisFromSourceAssetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateAnalysisUploadRequest'
+      responses:
+        '201':
+          description: Analysis created in pending state. Processing continues asynchronously;
+            poll GET /api/v1/analyses/{id} for completion or failure.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisDetailResponse'
+        '422':
+          description: Validation error when skills are empty, duplicated, invalid,
+            or retained but unpublished such as `compliance`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+    get:
+      responses:
+        '200':
+          description: Account analysis history.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisListResponse'
+      parameters:
+      - name: brandId
+        in: query
+        schema: *id001
+  /api/v1/analyses/latest:
+    get:
+      summary: List latest analyses with conversational metadata.
+      description: Returns the latest visible analyses for the authenticated account
+        with count context, cursor pagination, flattened table fields, and optional
+        presentation helpers. The raw GET /api/v1/analyses response remains unchanged.
+      parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 10
+      - in: query
+        name: cursor
+        description: Opaque continuation cursor returned as nextCursor.
+        schema:
+          type: string
+          nullable: true
+      - in: query
+        name: includeSummary
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: includeSkillDetails
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: includePresentation
+        schema:
+          type: boolean
+          default: true
+      responses:
+        '200':
+          description: Latest analysis listing response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LatestAnalysisListResponse'
+  /api/v1/analyses/{id}:
+    get:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Detailed analysis.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisDetailResponse'
+        '404':
+          description: Not found.
     delete:
-      tags: [Media]
-      operationId: deleteMedia
-      parameters:
-        - $ref: "#/components/parameters/MediaId"
       responses:
-        "204":
-          description: Eliminada
-        "409":
-          description: Em uso por Destino não concluído
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorBody"
-  /publications:
+        '204':
+          description: Soft delete the analysis.
+        '404':
+          description: Not found.
+  /api/v1/analyses/{id}/feedback-reactions/mine:
     get:
-      tags: [Publications]
-      operationId: listPublications
+      summary: List current-user feedback reactions for one analysis.
+      description: Returns only the first-party web session user's active reactions
+        for eligible recommendation feedback items.
       parameters:
-        - $ref: "#/components/parameters/BrandIdQuery"
-        - $ref: "#/components/parameters/Page"
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
-        "200":
-          description: Publicações da Marca
+        '200':
+          description: Current-user reaction state.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicationList"
-    post:
-      tags: [Publications]
-      operationId: createPublication
+                $ref: '#/components/schemas/MyFeedbackReactionListResponse'
+        '400':
+          description: Analysis is not completed or has no generated report available
+            for feedback reactions.
+        '403':
+          description: Request is not from a first-party authenticated web session.
+        '404':
+          description: Analysis not found.
+  /api/v1/analyses/{id}/feedback-reactions/{feedbackItemKey}:
+    put:
+      summary: Create or update the current user's feedback for one AI feedback item.
+      description: Upserts one active reaction and/or comment for the first-party
+        web session user and feedback item.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: feedbackItemKey
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 256
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PublicationCreate"
+              $ref: '#/components/schemas/FeedbackReactionUpsertRequest'
       responses:
-        "201":
-          description: Publicação com Destinos
+        '200':
+          description: Feedback saved.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicationView"
-  /publications/{publicationId}:
-    parameters:
-      - $ref: "#/components/parameters/PublicationId"
+                $ref: '#/components/schemas/MyFeedbackReaction'
+        '400':
+          description: Invalid feedback item reference or unavailable analysis state.
+        '403':
+          description: Request is not from a first-party authenticated web session.
+        '404':
+          description: Analysis or feedback item not found.
+        '422':
+          description: Field validation error such as empty feedback or comment length.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+    delete:
+      summary: Clear the current user's active reaction for one AI feedback item.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: feedbackItemKey
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 256
+      responses:
+        '204':
+          description: Reaction cleared or already absent.
+        '400':
+          description: Analysis is not available for feedback reactions.
+        '403':
+          description: Request is not from a first-party authenticated web session.
+        '404':
+          description: Analysis or feedback item not found.
+  /api/v1/analyses/{id}/feedback-reactions/review:
     get:
-      tags: [Publications]
-      operationId: getPublication
+      summary: Review tester feedback reactions for one analysis.
+      description: Account-owner-only first-party web endpoint for reviewing contextual
+        tester reactions and comments in the owner account.
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 50
+      - in: query
+        name: cursor
+        schema:
+          type: string
+          nullable: true
       responses:
-        "200":
-          description: Publicação
+        '200':
+          description: Owner-visible reaction review page.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicationView"
+                $ref: '#/components/schemas/FeedbackReactionReviewResponse'
+        '400':
+          description: Invalid cursor.
+        '403':
+          description: Authenticated user is not an account owner or request is not
+            first-party web.
+        '404':
+          description: Analysis not found.
+  /api/v1/analyses/{id}/artifacts/{path}:
+    get:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Artifact stream.
+        '404':
+          description: Not found.
+  /api/v1/brands:
+    get:
+      summary: GET /brands
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandListResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Role does not permit this operation.
+        '422':
+          description: Invalid input.
+    post:
+      summary: POST /brands
+      responses:
+        '201':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Role does not permit this operation.
+        '422':
+          description: Invalid input.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandCreateRequest'
+  /api/v1/brands/{id}:
     patch:
-      tags: [Publications]
-      operationId: updatePublicationDraft
+      summary: PATCH /brands/{id}
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Role does not permit this operation.
+        '422':
+          description: Invalid input.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id001
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PublicationCreate"
+              $ref: '#/components/schemas/BrandUpdateRequest'
+  /api/v1/brands/{id}/archive:
+    post:
+      summary: POST /brands/{id}/archive
       responses:
-        "200":
-          description: Rascunho atualizado
+        '200':
+          description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicationView"
-  /destinations/{destinationId}:
-    parameters:
-      - $ref: "#/components/parameters/DestinationId"
-    get:
-      tags: [Publications]
-      operationId: getDestination
-      responses:
-        "200":
-          description: Destino
+                $ref: '#/components/schemas/Brand'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Role does not permit this operation.
+        '422':
+          description: Invalid input.
+        '202':
+          description: Waiting for confirmed cancellation and disconnection.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DestinationView"
+                $ref: '#/components/schemas/Brand'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id001
+  /api/v1/brands/{id}/restore:
+    post:
+      summary: POST /brands/{id}/restore
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Role does not permit this operation.
+        '422':
+          description: Invalid input.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id001
+  /api/v1/analyses/{id}/brand:
     patch:
-      tags: [Publications]
-      operationId: updateDestination
+      summary: PATCH /analyses/{id}/brand
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisDetailResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Role does not permit this operation.
+        '422':
+          description: Invalid input.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id001
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DestinationWrite"
+              $ref: '#/components/schemas/AssignAnalysisBrandRequest'
+  /api/v1/members:
+    get:
+      summary: GET /members
       responses:
-        "200":
-          description: Destino atualizado (pode reabrir revisão)
+        '200':
+          description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DestinationView"
-  /destinations/{destinationId}/submit:
-    post:
-      tags: [Publications]
-      operationId: submitDestination
-      parameters:
-        - $ref: "#/components/parameters/DestinationId"
+                $ref: '#/components/schemas/MemberListResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
+  /api/v1/member-invitations:
+    get:
+      summary: GET /member-invitations
       responses:
-        "200":
-          description: em_revisao
+        '200':
+          description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DestinationView"
-  /destinations/{destinationId}/approve:
+                $ref: '#/components/schemas/MemberInvitationListResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
     post:
-      tags: [Publications]
-      operationId: approveDestination
-      parameters:
-        - $ref: "#/components/parameters/DestinationId"
+      summary: POST /member-invitations
       responses:
-        "200":
-          description: aprovado ou agendado se já houver horário
+        '201':
+          description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DestinationView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "402":
-          $ref: "#/components/responses/Delinquent"
-  /destinations/{destinationId}/reject:
-    post:
-      tags: [Publications]
-      operationId: rejectDestination
-      parameters:
-        - $ref: "#/components/parameters/DestinationId"
-      responses:
-        "200":
-          description: rejeitado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DestinationView"
-  /destinations/{destinationId}/request-changes:
-    post:
-      tags: [Publications]
-      operationId: requestDestinationChanges
-      parameters:
-        - $ref: "#/components/parameters/DestinationId"
+                $ref: '#/components/schemas/MemberInvitationCreateResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CommentCreate"
+              $ref: '#/components/schemas/MemberInvitationCreateRequest'
+  /api/v1/usage:
+    get:
+      summary: GET /usage
       responses:
-        "200":
-          description: alteracoes_solicitadas
+        '200':
+          description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DestinationView"
-  /destinations/{destinationId}/schedule:
-    post:
-      tags: [Publications]
-      operationId: scheduleDestination
+                $ref: '#/components/schemas/UsageResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
+  /api/v1/notifications:
+    get:
+      summary: GET /notifications
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
       parameters:
-        - $ref: "#/components/parameters/DestinationId"
+      - name: cursor
+        in: query
+        schema: &id002
+          type: string
+          format: uuid
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 30
+  /api/v1/audit-events:
+    get:
+      summary: GET /audit-events
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditEventListResponse'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
+      parameters:
+      - name: cursor
+        in: query
+        schema: *id002
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 30
+  /api/v1/source-assets/{id}:
+    get:
+      summary: GET /source-assets/{id}
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceAssetItem'
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id002
+    delete:
+      summary: DELETE /source-assets/{id}
+      responses:
+        '204':
+          description: Success.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id002
+  /api/v1/member-invitations/accept:
+    post:
+      summary: POST /member-invitations/accept
+      responses:
+        '204':
+          description: Success.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ScheduleInput"
+              $ref: '#/components/schemas/MemberInvitationAcceptRequest'
+  /api/v1/members/{id}:
+    delete:
+      summary: DELETE /members/{id}
       responses:
-        "200":
-          description: agendado (cria Versão de destino)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DestinationView"
-        "402":
-          $ref: "#/components/responses/Delinquent"
-  /destinations/{destinationId}/publish:
-    post:
-      tags: [Publications]
-      operationId: publishDestinationNow
+        '204':
+          description: Success.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
       parameters:
-        - $ref: "#/components/parameters/DestinationId"
-      responses:
-        "200":
-          description: submetido; estado publicado ou entrega_desconhecida
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DestinationView"
-        "402":
-          $ref: "#/components/responses/Delinquent"
-  /destinations/{destinationId}/cancel:
-    post:
-      tags: [Publications]
-      operationId: cancelDestination
-      parameters:
-        - $ref: "#/components/parameters/DestinationId"
-      responses:
-        "202":
-          description: cancelamento pedido; só vira cancelado com confirmação da rede
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DestinationView"
-  /destinations/{destinationId}/retry:
-    post:
-      tags: [Publications]
-      operationId: retryDestination
-      parameters:
-        - $ref: "#/components/parameters/DestinationId"
-      responses:
-        "200":
-          description: nova tentativa só se falha_definitiva; não repete concluídos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DestinationView"
-  /destinations/{destinationId}/comments:
-    parameters:
-      - $ref: "#/components/parameters/DestinationId"
-    get:
-      tags: [Publications]
-      operationId: listDestinationComments
-      responses:
-        "200":
-          description: Comentários do Destino
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CommentList"
-    post:
-      tags: [Publications]
-      operationId: createDestinationComment
-      requestBody:
+      - name: id
+        in: path
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CommentCreate"
+        schema: *id002
+  /api/v1/member-invitations/{id}:
+    delete:
+      summary: DELETE /member-invitations/{id}
       responses:
-        "201":
-          description: Comentário
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CommentView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-  /calendar:
-    get:
-      tags: [Calendar]
-      operationId: getCalendar
+        '204':
+          description: Success.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
       parameters:
-        - $ref: "#/components/parameters/BrandIdQuery"
-        - name: from
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: to
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: network
-          in: query
-          schema:
-            $ref: "#/components/schemas/Network"
+      - name: id
+        in: path
+        required: true
+        schema: *id002
+  /api/v1/notifications/{id}/read:
+    post:
+      summary: POST /notifications/{id}/read
       responses:
-        "200":
-          description: Destinos por dia, rede e estado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CalendarView"
-  /external-posts:
-    get:
-      tags: [ExternalPosts]
-      operationId: listExternalPosts
+        '204':
+          description: Success.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
       parameters:
-        - $ref: "#/components/parameters/BrandIdQueryRequired"
-        - $ref: "#/components/parameters/SocialAccountIdQuery"
-        - $ref: "#/components/parameters/Page"
-      responses:
-        "200":
-          description: Posts externos importados
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ExternalPostList"
-  /reports:
+      - name: id
+        in: path
+        required: true
+        schema: *id002
+  /api/v1/source-assets/{id}/content:
     get:
-      tags: [Reports]
-      operationId: getReport
-      parameters:
-        - $ref: "#/components/parameters/BrandIdQueryRequired"
-        - name: from
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: to
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: network
-          in: query
-          schema:
-            $ref: "#/components/schemas/Network"
-        - name: destinationId
-          in: query
-          schema:
-            $ref: "#/components/schemas/CapyraId"
+      summary: GET /source-assets/{id}/content
       responses:
-        "200":
-          description: Relatório; métrica ausente omitida (não zero)
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReportView"
-  /reports/export:
-    get:
-      tags: [Reports]
-      operationId: exportReport
-      parameters:
-        - $ref: "#/components/parameters/BrandIdQueryRequired"
-        - name: from
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: to
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: format
-          in: query
-          required: true
-          schema:
-            type: string
-            enum: [pdf, csv]
-      responses:
-        "200":
-          description: PDF Capyra ou CSV só dados
-          content:
-            application/pdf:
+        '200':
+          description: Success.
+          content: &id003
+            application/octet-stream:
               schema:
                 type: string
                 format: binary
-            text/csv:
+        '401':
+          description: Authentication required.
+        '403':
+          description: Operation forbidden for this member.
+        '409':
+          description: State, quota or idempotency conflict.
+        '422':
+          description: Invalid fields.
+        '206':
+          description: Requested byte range.
+          content: *id003
+        '416':
+          description: Range not satisfiable.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema: *id002
+      - name: Range
+        in: header
+        schema:
+          type: string
+  /api/v1/brands/{brandId}/social-connections:
+    get:
+      operationId: listSocialConnections
+      summary: listSocialConnections
+      tags:
+      - Social
+      parameters:
+      - name: brandId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAccountList'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+    post:
+      operationId: createSocialAuthorization
+      summary: createSocialAuthorization
+      tags:
+      - Social
+      parameters:
+      - name: brandId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAuthorization'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialAuthorizationRequest'
+  /api/v1/social-connections/{id}/disconnect:
+    post:
+      operationId: disconnectSocialAccount
+      summary: disconnectSocialAccount
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAccount'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-connections/{id}/capabilities:
+    get:
+      operationId: getSocialCapabilities
+      summary: getSocialCapabilities
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialCapabilities'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-connections/{id}/sync:
+    post:
+      operationId: syncSocialAccount
+      summary: syncSocialAccount
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialPending'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-publications:
+    get:
+      operationId: listSocialPublications
+      summary: listSocialPublications
+      tags:
+      - Social
+      parameters:
+      - name: brandId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialPublicationList'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+    post:
+      operationId: createSocialPublication
+      summary: createSocialPublication
+      tags:
+      - Social
+      parameters: []
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialPublication'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialPublicationCreate'
+  /api/v1/social-publications/{id}:
+    get:
+      operationId: getSocialPublication
+      summary: getSocialPublication
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialPublication'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-publications/{id}/destinations:
+    post:
+      operationId: createSocialDestination
+      summary: createSocialDestination
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialDestination'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialDestinationInput'
+  /api/v1/social-publications/{id}/destinations/{destinationId}:
+    patch:
+      operationId: updateSocialDestination
+      summary: updateSocialDestination
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: destinationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialDestination'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialDestinationInput'
+  /api/v1/social-publications/{id}/destinations/{destinationId}/preflight:
+    post:
+      operationId: preflightSocialDestination
+      summary: preflightSocialDestination
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: destinationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialPreflight'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-publications/{id}/destinations/{destinationId}/submit:
+    post:
+      operationId: submitSocialDestination
+      summary: submitSocialDestination
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: destinationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 200
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialDestination'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialSubmit'
+  /api/v1/social-publications/{id}/destinations/{destinationId}/cancel:
+    post:
+      operationId: cancelSocialDestination
+      summary: cancelSocialDestination
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: destinationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 200
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialDestination'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-publications/{id}/destinations/{destinationId}/retry:
+    post:
+      operationId: retrySocialDestination
+      summary: retrySocialDestination
+      tags:
+      - Social
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: destinationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 200
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialDestination'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/external-posts:
+    get:
+      operationId: listExternalPosts
+      summary: listExternalPosts
+      tags:
+      - Social
+      parameters:
+      - name: brandId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalPostList'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/external-posts/import:
+    post:
+      operationId: importExternalPost
+      summary: importExternalPost
+      tags:
+      - Social
+      parameters: []
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialPending'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalPostImport'
+  /api/v1/social-metrics:
+    get:
+      operationId: listSocialMetrics
+      summary: listSocialMetrics
+      tags:
+      - Social
+      parameters:
+      - name: brandId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cursor
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: socialAccountId
+        in: query
+        schema:
+          type: string
+      - name: destinationId
+        in: query
+        schema:
+          type: string
+      - name: metric
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialMetricList'
+        '400':
+          description: Invalid request
+        '401':
+          description: Authentication required
+        '403':
+          description: Role or scope denied
+        '404':
+          description: Resource not found in account
+        '409':
+          description: State, identity, idempotency or quota conflict
+        '422':
+          description: Preflight or validation rejected
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Social provider not configured or unavailable
+  /api/v1/social-connections/callback:
+    get:
+      operationId: completeSocialAuthorizationGet
+      summary: Complete a single-use social authorization or display Instagram identity
+        selection
+      tags:
+      - Social
+      security: []
+      responses:
+        '302':
+          description: Redirect to brand connections
+        '200':
+          description: Capyra Instagram account selection
+          content:
+            text/html:
               schema:
                 type: string
-  /metrics:
-    get:
-      tags: [Reports]
-      operationId: listMetricSnapshots
-      parameters:
-        - $ref: "#/components/parameters/BrandIdQueryRequired"
-      responses:
-        "200":
-          description: Snapshots; value pode ser null
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MetricSnapshotList"
-  /competitors/ads:
-    get:
-      tags: [Competitors]
-      operationId: searchCompetitorAds
-      parameters:
-        - $ref: "#/components/parameters/BrandIdQueryRequired"
-        - name: library
-          in: query
-          required: true
-          schema:
-            type: string
-            enum: [meta, linkedin]
-        - name: query
-          in: query
-          schema:
-            type: string
-        - name: country
-          in: query
-          schema:
-            type: string
-        - name: from
-          in: query
-          schema:
-            type: string
-            format: date
-        - name: to
-          in: query
-          schema:
-            type: string
-            format: date
-      responses:
-        "200":
-          description: Resultados em modelo Capyra
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CompetitorAdList"
-        "400":
-          description: Conexão exigida ausente
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorBody"
-  /billing:
-    get:
-      tags: [Billing]
-      operationId: getBilling
-      summary: Só Proprietário
-      responses:
-        "200":
-          description: Ciclo, identidades cobradas, próxima cobrança
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BillingView"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-  /billing/checkout:
+        '400':
+          description: Invalid or expired session
+        '409':
+          description: Identity verification failed
     post:
-      tags: [Billing]
-      operationId: startCheckout
+      operationId: completeSocialAuthorizationPost
+      summary: Complete a single-use social authorization or display Instagram identity
+        selection
+      tags:
+      - Social
+      security: []
       responses:
-        "201":
-          description: URL do checkout hospedado
+        '302':
+          description: Redirect to brand connections
+        '200':
+          description: Capyra Instagram account selection
           content:
-            application/json:
+            text/html:
               schema:
-                $ref: "#/components/schemas/CheckoutView"
-  /billing/portal:
+                type: string
+        '400':
+          description: Invalid or expired session
+        '409':
+          description: Identity verification failed
+  /api/v1/social-webhooks/zernio:
     post:
-      tags: [Billing]
-      operationId: startBillingPortal
+      operationId: receiveSocialWebhook
+      summary: Durably receive HMAC-authenticated provider event
+      tags:
+      - Social
+      security: []
+      parameters:
+      - name: X-Zernio-Signature
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - id
+              - event
+              properties:
+                id:
+                  type: string
+                event:
+                  type: string
+              additionalProperties: true
       responses:
-        "201":
-          description: URL do portal de faturas e método de pagamento
+        '200':
+          description: Persisted or duplicate event
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CheckoutView"
-  /notifications:
-    get:
-      tags: [Notifications]
-      operationId: listNotifications
-      responses:
-        "200":
-          description: Notificações in-app
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/NotificationList"
-  /audit-events:
-    get:
-      tags: [Audit]
-      operationId: listAuditEvents
-      summary: Só Proprietário
-      responses:
-        "200":
-          description: Ações sensíveis sem segredos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuditEventList"
-        "403":
-          $ref: "#/components/responses/Forbidden"
+                type: object
+                properties:
+                  received:
+                    type: boolean
+                required:
+                - received
+                additionalProperties: false
+        '401':
+          description: Invalid signature
+        '400':
+          description: Invalid event
+        '413':
+          description: Event too large
 components:
   securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: capyra_session
-  parameters:
-    BrandId:
-      name: brandId
-      in: path
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    BrandIdQuery:
-      name: brandId
-      in: query
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    BrandIdQueryRequired:
-      name: brandId
-      in: query
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    SocialAccountId:
-      name: socialAccountId
-      in: path
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    SocialAccountIdQuery:
-      name: socialAccountId
-      in: query
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    PublicationId:
-      name: publicationId
-      in: path
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    DestinationId:
-      name: destinationId
-      in: path
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    OperatorId:
-      name: operatorId
-      in: path
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    MediaId:
-      name: mediaId
-      in: path
-      required: true
-      schema:
-        $ref: "#/components/schemas/CapyraId"
-    IncludeArchived:
-      name: includeArchived
-      in: query
-      schema:
-        type: boolean
-        default: false
-    Page:
-      name: cursor
-      in: query
-      schema:
-        type: string
-  responses:
-    Unauthenticated:
-      description: Sem sessão
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorBody"
-    Forbidden:
-      description: Papel ou Marcas atribuídas insuficientes
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorBody"
-    NotFound:
-      description: Recurso inexistente nesta Conta/Marcas
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorBody"
-    Error:
-      description: Erro Capyra
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorBody"
-    RateLimited:
-      description: Rate limit de acesso
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorBody"
-    Delinquent:
-      description: Inadimplência bloqueia agendar/publicar/conectar
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorBody"
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-    CapyraId:
-      type: string
-      minLength: 8
-      maxLength: 64
-      pattern: "^[A-Za-z0-9_-]+$"
-      description: ID Capyra. IDs de Fornecedor social são rejeitados.
-    ErrorBody:
+    FieldError:
       type: object
-      required: [code, message]
+      required:
+      - field
+      - message
+      additionalProperties: false
       properties:
-        code:
+        field:
           type: string
-          description: Estável, inglês
-          enum:
-            - unauthenticated
-            - forbidden_role
-            - brand_not_assigned
-            - approval_required
-            - authorization_required
-            - identity_unverified
-            - identity_taken
-            - slot_occupied
-            - delivery_unknown
-            - platform_rejected
-            - delinquent
-            - invite_mismatch
-            - invite_expired
-            - email_in_other_account
-            - media_in_use
-            - invalid_timezone
-            - validation_error
-            - rate_limited
-            - not_found
         message:
           type: string
-          description: Humana, no Idioma do Operador ou Accept-Language
-        details:
-          type: object
-          additionalProperties: true
-    Accepted:
+    ErrorResponse:
       type: object
-      required: [accepted]
+      required:
+      - code
+      - message
+      additionalProperties: false
       properties:
-        accepted:
-          type: boolean
-          const: true
-    RequestAccessInput:
-      type: object
-      required: [email]
-      properties:
-        email:
-          type: string
-          format: email
-        accountType:
-          $ref: "#/components/schemas/AccountType"
-        inviteId:
-          type: string
-    CompleteAccessInput:
-      type: object
-      required: [email]
-      properties:
-        email:
-          type: string
-          format: email
-        token:
-          type: string
-          description: Segredo do link mágico
         code:
           type: string
-          description: Código numérico
-        accountType:
-          $ref: "#/components/schemas/AccountType"
-        locale:
-          $ref: "#/components/schemas/Locale"
-        inviteId:
+        message:
           type: string
-    AccountType:
-      type: string
-      enum: [agency, creator]
-    Locale:
-      type: string
-      enum: [pt-BR, en, es]
-    Role:
-      type: string
-      enum: [owner, creator, approver, viewer]
-    Network:
-      type: string
-      enum: [instagram, tiktok, linkedin]
-    DestinationState:
-      type: string
-      enum:
-        - rascunho
-        - em_revisao
-        - aprovado
-        - rejeitado
-        - alteracoes_solicitadas
-        - agendado
-        - publicado
-        - cancelado
-        - falha_definitiva
-        - entrega_desconhecida
-    ConnectionStatus:
-      type: string
-      enum: [pending_verification, active, action_required, disconnecting, disconnected]
-    MediaKind:
-      type: string
-      enum: [original, variant]
-    SessionView:
+        traceId:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+    ValidationErrorResponse:
+      allOf:
+      - $ref: '#/components/schemas/ErrorResponse'
+      - type: object
+        required:
+        - fieldErrors
+        properties:
+          fieldErrors:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldError'
+    RegisterRequest:
       type: object
-      required: [operator, account]
+      required:
+      - displayName
+      - accountType
+      - ownerName
+      - email
+      - password
       properties:
-        operator:
-          $ref: "#/components/schemas/OperatorView"
+        displayName:
+          type: string
+        accountType:
+          type: string
+          enum:
+          - agency
+          - creator
+          - team
+        ownerName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    LoginRequest:
+      type: object
+      required:
+      - email
+      - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    UpdateAccountProfileRequest:
+      type: object
+      required:
+      - displayName
+      - accountType
+      - ownerName
+      properties:
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 120
+        accountType:
+          type: string
+          enum:
+          - agency
+          - creator
+          - team
+        ownerName:
+          type: string
+          minLength: 2
+          maxLength: 120
+    FirebaseEmailLinkSignInRequest:
+      type: object
+      required:
+      - idToken
+      properties:
+        idToken:
+          type: string
+        invitationToken:
+          type: string
+          minLength: 1
+          maxLength: 256
+    FirebaseSignInRequest:
+      type: object
+      required:
+      - idToken
+      properties:
+        idToken:
+          type: string
+        invitationToken:
+          type: string
+          minLength: 1
+          maxLength: 256
+    AuthSessionResponse:
+      type: object
+      required:
+      - accessToken
+      - tokenType
+      - expiresAt
+      - user
+      - account
+      - brands
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/AccountUserResponse'
         account:
-          $ref: "#/components/schemas/AccountView"
-    AccountView:
-      type: object
-      required: [accountId, type, billingStatus]
-      properties:
-        accountId:
-          $ref: "#/components/schemas/CapyraId"
-        type:
-          $ref: "#/components/schemas/AccountType"
-        billingStatus:
-          type: string
-          enum: [ok, delinquent]
-    OperatorView:
-      type: object
-      required: [operatorId, email, role, locale, brandIds, accountId]
-      properties:
-        operatorId:
-          $ref: "#/components/schemas/CapyraId"
-        accountId:
-          $ref: "#/components/schemas/CapyraId"
-        email:
-          type: string
-          format: email
-        role:
-          $ref: "#/components/schemas/Role"
-        locale:
-          $ref: "#/components/schemas/Locale"
-        brandIds:
+          $ref: '#/components/schemas/AccountResponse'
+        brands:
           type: array
           items:
-            $ref: "#/components/schemas/CapyraId"
-    BrandWrite:
+            $ref: '#/components/schemas/Brand'
+    AccountResponse:
       type: object
+      required:
+      - id
+      - displayName
+      - accountType
+      - createdAt
+      - memberCount
       properties:
-        name:
+        id:
           type: string
-          minLength: 1
-        timezone:
+          format: uuid
+        displayName:
           type: string
-          description: IANA
-        approvalPolicy:
-          type: string
-          enum: [required, optional]
         accountType:
-          $ref: "#/components/schemas/AccountType"
-    BrandView:
-      type: object
-      required: [brandId, accountId, name, timezone, approvalPolicy]
-      properties:
-        brandId:
-          $ref: "#/components/schemas/CapyraId"
-        accountId:
-          $ref: "#/components/schemas/CapyraId"
-        name:
           type: string
-        timezone:
-          type: string
-        approvalPolicy:
-          type: string
-          enum: [required, optional]
-        archivedAt:
-          type: string
-          format: date-time
-          nullable: true
-    BrandList:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/BrandView"
-    MemberList:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/OperatorView"
-    MemberUpdate:
-      type: object
-      properties:
-        role:
-          type: string
-          enum: [creator, approver, viewer]
-        brandIds:
-          type: array
-          items:
-            $ref: "#/components/schemas/CapyraId"
-        locale:
-          $ref: "#/components/schemas/Locale"
-    InvitationCreate:
-      type: object
-      required: [email, role]
-      properties:
-        email:
-          type: string
-          format: email
-        role:
-          type: string
-          enum: [creator, approver, viewer]
-        brandIds:
-          type: array
-          items:
-            $ref: "#/components/schemas/CapyraId"
-          default: []
-    InvitationView:
-      type: object
-      required: [inviteId, email, role, brandIds, expiresAt]
-      properties:
-        inviteId:
-          type: string
-        email:
-          type: string
-          format: email
-        role:
-          type: string
-          enum: [creator, approver, viewer]
-        brandIds:
-          type: array
-          items:
-            $ref: "#/components/schemas/CapyraId"
-        expiresAt:
-          type: string
-          format: date-time
-    InvitationList:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/InvitationView"
-    StartConnectionInput:
-      type: object
-      required: [network]
-      properties:
-        network:
-          $ref: "#/components/schemas/Network"
-    AuthorizationSessionView:
-      type: object
-      required: [authorizationUrl, expiresAt, network]
-      properties:
-        authorizationUrl:
-          type: string
-          format: uri
-          description: URL oficial da rede, não do Fornecedor social
-        expiresAt:
-          type: string
-          format: date-time
-        network:
-          $ref: "#/components/schemas/Network"
-    LinkedInTargetInput:
-      type: object
-      required: [target]
-      properties:
-        target:
-          type: string
-          enum: [organization, person]
-        organizationId:
-          type: string
-          description: ID Capyra da opção listada na UI, não ID do fornecedor
-    SocialAccountView:
-      type: object
-      required: [socialAccountId, brandId, network, status]
-      properties:
-        socialAccountId:
-          $ref: "#/components/schemas/CapyraId"
-        brandId:
-          $ref: "#/components/schemas/CapyraId"
-        network:
-          $ref: "#/components/schemas/Network"
-        displayHandle:
-          type: string
-        status:
-          $ref: "#/components/schemas/ConnectionStatus"
-        connectedAt:
-          type: string
-          format: date-time
-          nullable: true
-    SocialAccountList:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/SocialAccountView"
-    MediaView:
-      type: object
-      required: [mediaId, brandId, kind]
-      properties:
-        mediaId:
-          $ref: "#/components/schemas/CapyraId"
-        brandId:
-          $ref: "#/components/schemas/CapyraId"
-        kind:
-          $ref: "#/components/schemas/MediaKind"
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-          maximum: 209715200
-    MediaList:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/MediaView"
-    PublicationCreate:
-      type: object
-      required: [brandId, destinations]
-      properties:
-        brandId:
-          $ref: "#/components/schemas/CapyraId"
-        destinations:
-          type: array
-          minItems: 1
-          items:
-            $ref: "#/components/schemas/DestinationWrite"
-    PublicationView:
-      type: object
-      required: [publicationId, brandId, destinations]
-      properties:
-        publicationId:
-          $ref: "#/components/schemas/CapyraId"
-        brandId:
-          $ref: "#/components/schemas/CapyraId"
-        destinations:
-          type: array
-          items:
-            $ref: "#/components/schemas/DestinationView"
-    PublicationList:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/PublicationView"
-        nextCursor:
-          type: string
-          nullable: true
-    DestinationWrite:
-      type: object
-      required: [socialAccountId]
-      properties:
-        socialAccountId:
-          $ref: "#/components/schemas/CapyraId"
-        copy:
-          type: string
-        hashtags:
-          type: array
-          items:
-            type: string
-        mediaIds:
-          type: array
-          items:
-            $ref: "#/components/schemas/CapyraId"
-        scheduledLocal:
-          type: string
-          description: Horário civil no Fuso da marca; DST inválido recusado
-    DestinationView:
-      type: object
-      required: [destinationId, publicationId, socialAccountId, state]
-      properties:
-        destinationId:
-          $ref: "#/components/schemas/CapyraId"
-        publicationId:
-          $ref: "#/components/schemas/CapyraId"
-        socialAccountId:
-          $ref: "#/components/schemas/CapyraId"
-        state:
-          $ref: "#/components/schemas/DestinationState"
-        copy:
-          type: string
-        mediaIds:
-          type: array
-          items:
-            $ref: "#/components/schemas/CapyraId"
-        scheduledAt:
-          type: string
-          format: date-time
-          nullable: true
-        timezoneAtWrite:
-          type: string
-    ScheduleInput:
-      type: object
-      required: [scheduledLocal]
-      properties:
-        scheduledLocal:
-          type: string
-    CommentCreate:
-      type: object
-      required: [body]
-      properties:
-        body:
-          type: string
-          minLength: 1
-    CommentView:
-      type: object
-      required: [commentId, destinationId, authorOperatorId, body, createdAt]
-      properties:
-        commentId:
-          $ref: "#/components/schemas/CapyraId"
-        destinationId:
-          $ref: "#/components/schemas/CapyraId"
-        authorOperatorId:
-          $ref: "#/components/schemas/CapyraId"
-        body:
-          type: string
+          enum:
+          - agency
+          - creator
+          - team
         createdAt:
           type: string
           format: date-time
-    CommentList:
+        memberCount:
+          type: integer
+          minimum: 0
+    AccountUserResponse:
       type: object
-      required: [items]
+      required:
+      - id
+      - name
+      - email
+      - role
+      - createdAt
       properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/CommentView"
-    CalendarView:
-      type: object
-      required: [days]
-      properties:
-        days:
-          type: array
-          items:
-            type: object
-            required: [date, destinations]
-            properties:
-              date:
-                type: string
-                format: date
-              destinations:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DestinationView"
-    ExternalPostView:
-      type: object
-      required: [externalPostId, socialAccountId]
-      properties:
-        externalPostId:
-          $ref: "#/components/schemas/CapyraId"
-        socialAccountId:
-          $ref: "#/components/schemas/CapyraId"
-        publishedAt:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum:
+          - owner
+          - member
+        createdAt:
           type: string
           format: date-time
-        metrics:
+    OAuthAuthorizationCodeCreateRequest:
+      type: object
+      required:
+      - clientId
+      - redirectUri
+      - codeChallenge
+      - codeChallengeMethod
+      properties:
+        clientId:
+          type: string
+        redirectUri:
+          type: string
+          format: uri
+        codeChallenge:
+          type: string
+        codeChallengeMethod:
+          type: string
+          enum:
+          - S256
+        scopes:
           type: array
           items:
-            $ref: "#/components/schemas/MetricSnapshot"
-    ExternalPostList:
+            type: string
+    OAuthAuthorizationCodeResponse:
       type: object
-      required: [items]
+      required:
+      - code
+      - redirectUri
+      - expiresAt
+      properties:
+        code:
+          type: string
+        redirectUri:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    OAuthDeviceCodeRequest:
+      type: object
+      required:
+      - clientId
+      properties:
+        clientId:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+    OAuthDeviceActivationRequest:
+      type: object
+      required:
+      - userCode
+      properties:
+        userCode:
+          type: string
+    OAuthDeviceCodeResponse:
+      type: object
+      required:
+      - deviceCode
+      - userCode
+      - verificationUri
+      - verificationUriComplete
+      - expiresIn
+      - interval
+      - scope
+      properties:
+        deviceCode:
+          type: string
+        userCode:
+          type: string
+        verificationUri:
+          type: string
+          format: uri
+        verificationUriComplete:
+          type: string
+          format: uri
+        expiresIn:
+          type: integer
+          minimum: 1
+        interval:
+          type: integer
+          minimum: 1
+        scope:
+          type: string
+    OAuthTokenResponse:
+      type: object
+      required:
+      - access_token
+      - token_type
+      - expires_in
+      - refresh_token
+      - scope
+      - user
+      - account
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum:
+          - Bearer
+        expires_in:
+          type: integer
+          minimum: 1
+        refresh_token:
+          type: string
+        scope:
+          type: string
+        user:
+          $ref: '#/components/schemas/AccountUserResponse'
+        account:
+          $ref: '#/components/schemas/AccountResponse'
+    OAuthSessionResponse:
+      type: object
+      required:
+      - tokenType
+      - expiresAt
+      - scopes
+      - user
+      - account
+      - brands
+      properties:
+        tokenType:
+          type: string
+          enum:
+          - Bearer
+        expiresAt:
+          type: string
+          format: date-time
+        clientId:
+          type: string
+          nullable: true
+        scopes:
+          type: array
+          items:
+            type: string
+        user:
+          $ref: '#/components/schemas/AccountUserResponse'
+        account:
+          $ref: '#/components/schemas/AccountResponse'
+        brands:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+    OAuthRevokeRequest:
+      type: object
+      required:
+      - clientId
+      - refreshToken
+      properties:
+        clientId:
+          type: string
+        refreshToken:
+          type: string
+    CreateAnalysisFromUrlRequest:
+      type: object
+      required:
+      - url
+      - skills
+      - brandId
+      description: Submitted skills must exist in the currently published skill catalog.
+        Retained but unpublished skill ids such as `compliance` are rejected for new
+        analyses.
+      properties:
+        url:
+          type: string
+          format: uri
+        skills:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AnalysisSkillId'
+        language:
+          type: string
+          default: pt-BR
+          description: Requested report language. If omitted, the API defaults to
+            Brazilian Portuguese (`pt-BR`).
+        intent:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 1000
+          description: Optional user-approved objective for this analysis. Empty or
+            whitespace-only submissions are treated as omitted.
+        brandId: *id001
+    CreateAnalysisFromSourceAssetRequest:
+      type: object
+      required:
+      - sourceAssetId
+      - skills
+      - brandId
+      description: Submitted skills must exist in the currently published skill catalog.
+        Retained but unpublished skill ids such as `compliance` are rejected for new
+        analyses.
+      properties:
+        sourceAssetId:
+          type: string
+          format: uuid
+        skills:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AnalysisSkillId'
+        language:
+          type: string
+          default: pt-BR
+          description: Requested report language. If omitted, the API defaults to
+            Brazilian Portuguese (`pt-BR`).
+        intent:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 1000
+          description: Optional user-approved objective for this analysis. Empty or
+            whitespace-only submissions are treated as omitted.
+        brandId: *id001
+    CreateAnalysisUploadRequest:
+      type: object
+      required:
+      - file
+      - skills
+      - brandId
+      description: Submitted skills must exist in the currently published skill catalog.
+        Retained but unpublished skill ids such as `compliance` are rejected for new
+        analyses.
+      properties:
+        file:
+          type: string
+          format: binary
+        skills:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AnalysisSkillId'
+        language:
+          type: string
+          default: pt-BR
+          description: Requested report language. If omitted, the API defaults to
+            Brazilian Portuguese (`pt-BR`).
+        intent:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 1000
+          description: Optional user-approved objective for this analysis. Empty or
+            whitespace-only submissions are treated as omitted.
+        brandId: *id001
+    AnalysisSkillId:
+      type: string
+      description: Stable analysis skill identifier. `compliance` is retained for
+        historical analysis data but is not currently published for new analysis creation.
+      enum:
+      - content_strategy
+      - filming
+      - editing
+      - audio_music
+      - compliance
+    AnalysisSkillStatus:
+      type: string
+      enum:
+      - published
+      - unpublished
+    AnalysisSourceKind:
+      type: string
+      enum:
+      - public_url
+      - public_url_best_effort
+      - file_upload
+      - owned_asset
+      - connected_media
+    ExecutedAnalysisSkillStatus:
+      type: string
+      enum:
+      - completed
+      - insufficient_evidence
+      - failed
+    FeedbackReactionValue:
+      type: string
+      enum:
+      - positive
+      - negative
+    FeedbackItemKind:
+      type: string
+      enum:
+      - recommendation
+    FeedbackReactionUpsertRequest:
+      type: object
+      required:
+      - feedbackItemKind
+      - skillId
+      - itemIndex
+      properties:
+        feedbackItemKind:
+          $ref: '#/components/schemas/FeedbackItemKind'
+        skillId:
+          $ref: '#/components/schemas/AnalysisSkillId'
+        itemIndex:
+          type: integer
+          minimum: 0
+        reaction:
+          allOf:
+          - $ref: '#/components/schemas/FeedbackReactionValue'
+          nullable: true
+        comment:
+          type: string
+          maxLength: 1000
+          nullable: true
+    MyFeedbackReactionListResponse:
+      type: object
+      required:
+      - items
       properties:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/ExternalPostView"
+            $ref: '#/components/schemas/MyFeedbackReaction'
+    MyFeedbackReaction:
+      type: object
+      required:
+      - feedbackItemKey
+      - feedbackItemKind
+      - skillId
+      - itemIndex
+      - reaction
+      - comment
+      - updatedAt
+      properties:
+        feedbackItemKey:
+          type: string
+        feedbackItemKind:
+          $ref: '#/components/schemas/FeedbackItemKind'
+        skillId:
+          $ref: '#/components/schemas/AnalysisSkillId'
+        itemIndex:
+          type: integer
+          minimum: 0
+        reaction:
+          allOf:
+          - $ref: '#/components/schemas/FeedbackReactionValue'
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+    FeedbackReactionReviewResponse:
+      type: object
+      required:
+      - items
+      - pagination
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackReactionReviewItem'
+        pagination:
+          $ref: '#/components/schemas/FeedbackReactionReviewPagination'
+    FeedbackReactionReviewPagination:
+      type: object
+      required:
+      - limit
+      - returned
+      - hasMore
+      - nextCursor
+      properties:
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        returned:
+          type: integer
+          minimum: 0
+        hasMore:
+          type: boolean
         nextCursor:
           type: string
           nullable: true
-    MetricSnapshot:
+    FeedbackReactionReviewItem:
       type: object
-      required: [metric, observedAt]
+      required:
+      - id
+      - analysisId
+      - analysisSummary
+      - sourceLabel
+      - testerUserId
+      - testerName
+      - testerEmail
+      - feedbackItemKey
+      - feedbackItemKind
+      - skillId
+      - itemIndex
+      - feedbackTitleSnapshot
+      - reaction
+      - comment
+      - createdAt
+      - updatedAt
       properties:
-        metric:
+        id:
           type: string
-        value:
-          type: number
+          format: uuid
+        analysisId:
+          type: string
+          format: uuid
+        analysisSummary:
+          type: string
+        sourceLabel:
+          type: string
+        testerUserId:
+          type: string
+          format: uuid
+        testerName:
+          type: string
+        testerEmail:
+          type: string
+          format: email
+        feedbackItemKey:
+          type: string
+        feedbackItemKind:
+          $ref: '#/components/schemas/FeedbackItemKind'
+        skillId:
+          $ref: '#/components/schemas/AnalysisSkillId'
+        itemIndex:
+          type: integer
+          minimum: 0
+        feedbackTitleSnapshot:
+          type: string
+        feedbackActionSnapshot:
+          type: string
           nullable: true
-          description: null = ausente, nunca coercido a zero
-        observedAt:
+        feedbackRationaleSnapshot:
+          type: string
+          nullable: true
+        reaction:
+          allOf:
+          - $ref: '#/components/schemas/FeedbackReactionValue'
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-    MetricSnapshotList:
+    SourceAssetItem:
       type: object
-      required: [items]
+      required:
+      - id
+      - sourceLabel
+      - contentType
+      - contentLength
+      - analysisCount
+      - createdAt
+      - brandId
+      - mediaKind
+      - metadataStatus
+      - metadata
+      - variantOfAssetId
+      properties:
+        id:
+          type: string
+          format: uuid
+        sourceLabel:
+          type: string
+        contentType:
+          type: string
+        contentLength:
+          type: integer
+          format: int64
+          minimum: 0
+        analysisCount:
+          type: integer
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        lastAnalyzedAt:
+          type: string
+          format: date-time
+          nullable: true
+        brandId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        mediaKind:
+          type: string
+          enum:
+          - video
+          - image
+        metadataStatus:
+          type: string
+          enum:
+          - pending
+          - ready
+          - failed
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/MediaMetadata'
+          - type: 'null'
+        variantOfAssetId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    SourceAssetListResponse:
+      type: object
+      required:
+      - items
       properties:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/MetricSnapshot"
-    ReportView:
+            $ref: '#/components/schemas/SourceAssetItem'
+    SourceAssetDirectUploadCreateRequest:
       type: object
-      required: [brandId, from, to, destinations]
+      required:
+      - fileName
+      - contentLength
+      - brandId
       properties:
+        fileName:
+          type: string
+        contentType:
+          type: string
+          nullable: true
+        contentLength:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 209715200
+        brandId: *id001
+        variantOfAssetId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    SourceAssetDirectUploadCompleteRequest:
+      type: object
+      required:
+      - fileName
+      - contentLength
+      - brandId
+      properties:
+        fileName:
+          type: string
+        contentType:
+          type: string
+          nullable: true
+        contentLength:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 209715200
+        brandId: *id001
+        variantOfAssetId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    SourceAssetDirectUploadResponse:
+      type: object
+      required:
+      - sourceAssetId
+      - uploadUrl
+      - method
+      - headers
+      - maxFileSizeBytes
+      - expiresAt
+      properties:
+        sourceAssetId:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+          format: uri
+        method:
+          type: string
+          enum:
+          - PUT
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+        maxFileSizeBytes:
+          type: integer
+          format: int64
+          minimum: 1
+        expiresAt:
+          type: string
+          format: date-time
+    SourceAssetUploadSessionCreateRequest:
+      type: object
+      properties:
+        clientId:
+          type: string
+          nullable: true
+        brandId: *id001
+      required:
+      - brandId
+    SourceAssetUploadSessionCompleteRequest:
+      type: object
+      required:
+      - sourceAssetId
+      properties:
+        sourceAssetId:
+          type: string
+          format: uuid
+    SourceAssetUploadSessionResponse:
+      type: object
+      required:
+      - id
+      - status
+      - browserUrl
+      - createdAt
+      - expiresAt
+      - brandId
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - expired
+        browserUrl:
+          type: string
+          format: uri
+        clientId:
+          type: string
+          nullable: true
+        sourceAssetId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        brandId: *id001
+    EvidenceItem:
+      type: object
+      required:
+      - timestampSeconds
+      - kind
+      - observation
+      properties:
+        timestampSeconds:
+          type: number
+        kind:
+          type: string
+        observation:
+          type: string
+        transcriptQuote:
+          type: string
+          nullable: true
+    TranscriptSegment:
+      type: object
+      required:
+      - startSeconds
+      - endSeconds
+      - text
+      properties:
+        startSeconds:
+          type: number
+          minimum: 0
+        endSeconds:
+          type: number
+          minimum: 0
+        text:
+          type: string
+    Transcript:
+      type: object
+      required:
+      - text
+      - language
+      - segments
+      properties:
+        text:
+          type: string
+        language:
+          type: string
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscriptSegment'
+    PropertyScore:
+      type: object
+      required:
+      - propertyId
+      - label
+      - score
+      - rationale
+      - confidence
+      properties:
+        propertyId:
+          type: string
+        label:
+          type: string
+        score:
+          type: number
+          minimum: 0
+          maximum: 10
+        rationale:
+          type: string
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+    TranscriptExcerpt:
+      type: object
+      required:
+      - startSeconds
+      - endSeconds
+      - text
+      - whyItMatters
+      properties:
+        startSeconds:
+          type: number
+          minimum: 0
+        endSeconds:
+          type: number
+          minimum: 0
+        text:
+          type: string
+        whyItMatters:
+          type: string
+    Recommendation:
+      type: object
+      required:
+      - priority
+      - title
+      - rationale
+      - action
+      properties:
+        priority:
+          type: string
+        title:
+          type: string
+        rationale:
+          type: string
+        action:
+          type: string
+    AnalysisSkillCatalogResponse:
+      type: object
+      required:
+      - version
+      - publishedAt
+      - items
+      properties:
+        version:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/AnalysisSkillCatalogItem'
+    AnalysisSkillCatalogItem:
+      type: object
+      required:
+      - id
+      - slug
+      - name
+      - description
+      - coverageSummary
+      - criteria
+      - safeLanguageNotes
+      - status
+      properties:
+        id:
+          $ref: '#/components/schemas/AnalysisSkillId'
+        slug:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        coverageSummary:
+          type: string
+        criteria:
+          type: array
+          items:
+            type: string
+        safeLanguageNotes:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/AnalysisSkillStatus'
+    ExecutedAnalysisSkill:
+      type: object
+      required:
+      - skillId
+      - status
+      - evaluatedItems
+      - summary
+      - skillScore
+      - propertyScores
+      - detailedAssessment
+      - strengths
+      - improvementOpportunities
+      - recommendations
+      - keySignals
+      - evidence
+      - evidenceGaps
+      - transcriptExcerpts
+      - warnings
+      properties:
+        skillId:
+          $ref: '#/components/schemas/AnalysisSkillId'
+        status:
+          $ref: '#/components/schemas/ExecutedAnalysisSkillStatus'
+        evaluatedItems:
+          type: array
+          items:
+            type: string
+        summary:
+          type: string
+        skillScore:
+          type: number
+          minimum: 0
+          maximum: 10
+        propertyScores:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyScore'
+        detailedAssessment:
+          type: string
+        strengths:
+          type: array
+          items:
+            type: string
+        improvementOpportunities:
+          type: array
+          items:
+            type: string
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recommendation'
+        keySignals:
+          type: array
+          items:
+            type: string
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvidenceItem'
+        evidenceGaps:
+          type: array
+          items:
+            type: string
+        transcriptExcerpts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscriptExcerpt'
+        warnings:
+          type: array
+          items:
+            type: string
+        disclaimer:
+          type: string
+          nullable: true
+    ShortVideoAnalysisReport:
+      type: object
+      required:
+      - source
+      - catalogVersion
+      - selectedSkillIds
+      - executedSkills
+      - transcript
+      - warnings
+      properties:
+        source:
+          $ref: '#/components/schemas/SourceSection'
+        catalogVersion:
+          type: string
+        selectedSkillIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysisSkillId'
+        executedSkills:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExecutedAnalysisSkill'
+        transcript:
+          $ref: '#/components/schemas/Transcript'
+        overallScore:
+          type: number
+          minimum: 0
+          maximum: 10
+          nullable: true
+        warnings:
+          type: array
+          items:
+            type: string
+    SourceSection:
+      type: object
+      required:
+      - sourceType
+      - sourceLabel
+      - durationSeconds
+      - width
+      - height
+      - fps
+      - hasAudio
+      - ingestStatus
+      properties:
+        sourceType:
+          $ref: '#/components/schemas/AnalysisSourceKind'
+        sourceLabel:
+          type: string
+        sourceUrl:
+          type: string
+          nullable: true
+        canonicalUrl:
+          type: string
+          nullable: true
+        platform:
+          type: string
+          enum:
+          - instagram_reels
+          - youtube_shorts
+          - tiktok
+          nullable: true
+        contentId:
+          type: string
+          nullable: true
+        durationSeconds:
+          type: number
+          minimum: 0
+        width:
+          type: integer
+          minimum: 0
+        height:
+          type: integer
+          minimum: 0
+        fps:
+          type: number
+          minimum: 0
+        hasAudio:
+          type: boolean
+        ingestStatus:
+          type: string
+          enum:
+          - downloaded
+          - uploaded
+          - partial
+        artifactDirectory:
+          type: string
+          nullable: true
+    AnalysisListResponse:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysisListItem'
+    LatestAnalysisListResponse:
+      type: object
+      required:
+      - total
+      - returned
+      - limit
+      - sort
+      - hasMore
+      - nextCursor
+      - defaultView
+      - message
+      - summary
+      - tableColumns
+      - recommendedResponse
+      - pagination
+      - items
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        returned:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+        sort:
+          type: string
+          enum:
+          - createdAt_desc
+        hasMore:
+          type: boolean
+        nextCursor:
+          type: string
+          nullable: true
+        defaultView:
+          type: string
+          enum:
+          - latest_analyses_table
+        message:
+          type: string
+        summary:
+          type: string
+        tableColumns:
+          type: array
+          items:
+            type: string
+            enum:
+            - createdAt
+            - fileName
+            - status
+            - skills
+            - overallScore
+            - mainOpportunity
+        recommendedResponse:
+          $ref: '#/components/schemas/RecommendedAnalysisResponse'
+        presentation:
+          $ref: '#/components/schemas/AnalysisPresentation'
+          nullable: true
+        pagination:
+          $ref: '#/components/schemas/LatestAnalysisPagination'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LatestAnalysisListItem'
+    LatestAnalysisPagination:
+      type: object
+      required:
+      - totalItems
+      - limit
+      - returned
+      - hasMore
+      - nextCursor
+      properties:
+        totalItems:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+        returned:
+          type: integer
+          minimum: 0
+        hasMore:
+          type: boolean
+        nextCursor:
+          type: string
+          nullable: true
+    LatestAnalysisListItem:
+      type: object
+      required:
+      - id
+      - createdAt
+      - completedAt
+      - status
+      - fileName
+      - sourceLabel
+      - sourceType
+      - selectedSkills
+      - executedSkills
+      - overallScore
+      - mainOpportunity
+      - oneLineSummary
+      - detailHint
+      - intent
+      - brandId
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+        fileName:
+          type: string
+        sourceLabel:
+          type: string
+        sourceType:
+          $ref: '#/components/schemas/AnalysisSourceKind'
+        selectedSkills:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysisSkillId'
+        executedSkills:
+          type: array
+          items:
+            type: string
+        overallScore:
+          type: number
+          nullable: true
+        mainOpportunity:
+          type: string
+          nullable: true
+        oneLineSummary:
+          type: string
+        detailHint:
+          $ref: '#/components/schemas/AnalysisDetailHint'
+        intent:
+          type: string
+          nullable: true
+          maxLength: 1000
+          description: Submitted analysis objective for lightweight history and conversational
+            summaries.
         brandId:
-          $ref: "#/components/schemas/CapyraId"
-        from:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    RecommendedAnalysisResponse:
+      type: object
+      required:
+      - format
+      - columns
+      - instructions
+      properties:
+        format:
           type: string
-          format: date
-        to:
+          enum:
+          - table
+          - brief
+          - detailed
+        columns:
+          type: array
+          items:
+            type: string
+        instructions:
           type: string
-          format: date
+    AnalysisPresentation:
+      type: object
+      required:
+      - title
+      - markdownTable
+      - answer
+      - language
+      properties:
+        title:
+          type: string
+        markdownTable:
+          type: string
+          nullable: true
+        answer:
+          type: string
+          nullable: true
+        language:
+          type: string
+          enum:
+          - pt-BR
+          - en
+          - es
+          nullable: true
+    AnalysisDetailHint:
+      type: object
+      required:
+      - analysisId
+      - tool
+      - message
+      properties:
+        analysisId:
+          type: string
+          format: uuid
+        tool:
+          type: string
+        message:
+          type: string
+    AnalysisListItem:
+      type: object
+      required:
+      - id
+      - status
+      - sourceType
+      - sourceLabel
+      - catalogVersion
+      - selectedSkillIds
+      - executedSkills
+      - summary
+      - createdAt
+      - intent
+      - brandId
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - failed
+        sourceType:
+          $ref: '#/components/schemas/AnalysisSourceKind'
+        sourceLabel:
+          type: string
+        sourceUrl:
+          type: string
+          nullable: true
+        platform:
+          type: string
+          enum:
+          - instagram_reels
+          - youtube_shorts
+          - tiktok
+          nullable: true
+        contentId:
+          type: string
+          nullable: true
+        catalogVersion:
+          type: string
+        selectedSkillIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysisSkillId'
+        executedSkills:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExecutedAnalysisSkill'
+        summary:
+          type: string
+        overallScore:
+          type: number
+          nullable: true
+        blobPathPrefix:
+          type: string
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        intent:
+          type: string
+          nullable: true
+          maxLength: 1000
+          description: Submitted analysis objective visible to authorized analysis
+            readers.
+        brandId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    AnalysisDetailResponse:
+      allOf:
+      - $ref: '#/components/schemas/AnalysisListItem'
+      - type: object
+        required:
+        - accountId
+        - artifacts
+        properties:
+          accountId:
+            type: string
+            format: uuid
+          canonicalUrl:
+            type: string
+            nullable: true
+          artifacts:
+            $ref: ../schemas/analysis-artifacts.v1.json
+          report:
+            $ref: ../schemas/analysis-report.v1.json
+    Brand:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - timeZone
+      - confirmedAt
+      - status
+      - createdAt
+      - archivedAt
+      properties:
+        id: *id001
+        name:
+          type: string
+          minLength: 1
+          maxLength: 160
+        timeZone:
+          type: string
+        confirmedAt: &id004
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          type: string
+          enum:
+          - active
+          - archiving
+          - archived
+        createdAt:
+          type: string
+          format: date-time
+        archivedAt: *id004
+    BrandCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - timeZone
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 160
+        timeZone:
+          type: string
+          minLength: 1
+          maxLength: 80
+    BrandUpdateRequest:
+      type: object
+      additionalProperties: false
+      required: []
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 160
+        timeZone:
+          type: string
+          minLength: 1
+          maxLength: 80
+        confirmed:
+          type: boolean
+    BrandListResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+    MediaMetadata:
+      type: object
+      additionalProperties: false
+      required:
+      - width
+      - height
+      properties:
+        width:
+          type: integer
+          minimum: 1
+        height:
+          type: integer
+          minimum: 1
+        durationSeconds:
+          type:
+          - number
+          - 'null'
+          minimum: 0
+        codec:
+          type:
+          - string
+          - 'null'
+        format:
+          type:
+          - string
+          - 'null'
+    AssignAnalysisBrandRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - brandId
+      properties:
+        brandId: *id001
+    MemberInvitation:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - email
+      - expiresAt
+      - status
+      properties:
+        id: *id002
+        email:
+          type: string
+          format: email
+        expiresAt: &id005
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - pending
+          - accepted
+          - revoked
+          - expired
+    MemberInvitationCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - email
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+    MemberInvitationCreateResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - email
+      - expiresAt
+      - inviteUrl
+      properties:
+        id: *id002
+        email:
+          type: string
+          format: email
+        expiresAt: *id005
+        inviteUrl:
+          type: string
+          format: uri
+    MemberInvitationAcceptRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - token
+      properties:
+        token:
+          type: string
+          minLength: 20
+          maxLength: 200
+    MemberListResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountUserResponse'
+    MemberInvitationListResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberInvitation'
+    UsageResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - cycleStart
+      - cycleEnd
+      - subscriptionStatus
+      - limits
+      - usage
+      - credits
+      properties:
+        cycleStart: *id005
+        cycleEnd: *id005
+        subscriptionStatus:
+          type: string
+          enum:
+          - active
+          - inactive
+        limits:
+          type: object
+          additionalProperties: false
+          required:
+          - brands
+          - socialIdentities
+          - operators
+          - analyses
+          properties:
+            brands: &id006
+              type: integer
+              minimum: 0
+            socialIdentities: *id006
+            operators: *id006
+            analyses: *id006
+        usage:
+          type: object
+          additionalProperties: false
+          required:
+          - brands
+          - socialIdentities
+          - operators
+          - analyses
+          - reservedAnalyses
+          properties:
+            brands: *id006
+            socialIdentities: *id006
+            operators: *id006
+            analyses: *id006
+            reservedAnalyses: *id006
+        credits:
+          type: object
+          additionalProperties: false
+          required:
+          - includedRemaining
+          - purchasedRemaining
+          properties:
+            includedRemaining: *id006
+            purchasedRemaining: *id006
+    Notification:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - code
+      - message
+      - brandId
+      - resourceId
+      - createdAt
+      - readAt
+      properties:
+        id: *id002
+        code:
+          type: string
+        message:
+          type: string
+          maxLength: 500
+        brandId: &id007
+          type:
+          - string
+          - 'null'
+          format: uuid
+        resourceId:
+          type:
+          - string
+          - 'null'
+        createdAt: *id005
+        readAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    AuditEvent:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - action
+      - actorId
+      - brandId
+      - resourceType
+      - resourceId
+      - createdAt
+      - correlationId
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+        actorId:
+          type: string
+        brandId: *id007
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+        createdAt: *id005
+        correlationId:
+          type: string
+    NotificationListResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        nextCursor:
+          type: string
+          format: uuid
+    AuditEventListResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditEvent'
+        nextCursor:
+          type: string
+          format: uuid
+    SocialDestinationSettings:
+      type: object
+      properties:
+        privacyLevel:
+          type: string
+          enum:
+          - PUBLIC_TO_EVERYONE
+          - MUTUAL_FOLLOW_FRIENDS
+          - FOLLOWER_OF_CREATOR
+          - SELF_ONLY
+          - public
+          - private
+          - unlisted
+        previewConfirmed:
+          type: boolean
+        expressConsentGiven:
+          type: boolean
+        allowComment:
+          type: boolean
+        allowDuet:
+          type: boolean
+        allowStitch:
+          type: boolean
+        isAiGenerated:
+          type: boolean
+        commercialContentType:
+          type: string
+          enum:
+          - none
+          - brand_organic
+          - brand_content
+        shareToFeed:
+          type: boolean
+        madeForKids:
+          type: boolean
+        containsSyntheticMedia:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        coverTimestampMs:
+          type: number
+      required: []
+      additionalProperties: false
+    SocialDestinationInput:
+      type: object
+      properties:
+        socialAccountId:
+          type: string
+          format: uuid
+        format:
+          type: string
+          enum:
+          - feed
+          - reel
+          - story
+          - carousel
+          - video
+          - photo_carousel
+          - short
+        content:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        mediaAssetIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        coverAssetId:
+          type: string
+          format: uuid
+        analysisId:
+          type: string
+          format: uuid
+        settings:
+          $ref: '#/components/schemas/SocialDestinationSettings'
+      required:
+      - socialAccountId
+      - format
+      - content
+      - mediaAssetIds
+      - settings
+      additionalProperties: false
+    SocialAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        brandId:
+          type: string
+          format: uuid
+        platform:
+          type: string
+          enum:
+          - instagram
+          - tiktok
+          - youtube
+        displayName:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - active
+          - requires_action
+          - disconnecting
+          - disconnected
+        identityStatus:
+          type: string
+          enum:
+          - verified
+          - unavailable
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - brandId
+      - platform
+      - displayName
+      - status
+      - identityStatus
+      - createdAt
+      additionalProperties: false
+    SocialAuthorizationRequest:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum:
+          - instagram
+          - tiktok
+          - youtube
+        reconnectAccountId:
+          type: string
+          format: uuid
+      required:
+      - platform
+      additionalProperties: false
+    SocialAuthorization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        authorizationUrl:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - authorizationUrl
+      - expiresAt
+      additionalProperties: false
+    SocialCapabilities:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum:
+          - instagram
+          - tiktok
+          - youtube
+        formats:
+          type: array
+          items:
+            type: string
+        limits:
+          type: object
+          properties:
+            maxBytes:
+              type: number
+            maxImages:
+              type: number
+            maxContentLength:
+              type: number
+            minVideoSeconds:
+              type: number
+            maxVideoSeconds:
+              type: number
+          required:
+          - maxBytes
+          - maxImages
+          - maxContentLength
+          - minVideoSeconds
+          - maxVideoSeconds
+          additionalProperties: false
+        privacyLevels:
+          type: array
+          items:
+            type: string
+        identityStatus:
+          type: string
+          enum:
+          - verified
+          - unavailable
+        canPost:
+          type: boolean
+        interactionSettings:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+              required:
+                type: boolean
+            required:
+            - enabled
+            - required
+            additionalProperties: false
+      required:
+      - platform
+      - formats
+      - limits
+      - identityStatus
+      - canPost
+      additionalProperties: false
+    SocialDestinationVersion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        scheduledAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        snapshot:
+          $ref: '#/components/schemas/SocialDestinationInput'
+        timeZone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        localDateTime:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - id
+      - createdAt
+      - scheduledAt
+      - snapshot
+      - timeZone
+      - localDateTime
+      additionalProperties: false
+    SocialDeliveryAttempt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        lastError:
+          anyOf:
+          - type: string
+          - type: 'null'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - status
+      - lastError
+      - createdAt
+      - updatedAt
+      additionalProperties: false
+    SocialDestination:
+      type: object
+      properties:
+        socialAccountId:
+          type: string
+          format: uuid
+        format:
+          type: string
+          enum:
+          - feed
+          - reel
+          - story
+          - carousel
+          - video
+          - photo_carousel
+          - short
+        content:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        mediaAssetIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        coverAssetId:
+          type: string
+          format: uuid
+        analysisId:
+          type: string
+          format: uuid
+        settings:
+          $ref: '#/components/schemas/SocialDestinationSettings'
+        id:
+          type: string
+          format: uuid
+        publicationId:
+          type: string
+          format: uuid
+        platform:
+          type: string
+          enum:
+          - instagram
+          - tiktok
+          - youtube
+        status:
+          type: string
+          enum:
+          - draft
+          - awaiting_handoff
+          - submitting
+          - scheduled
+          - publishing
+          - published
+          - cancellation_requested
+          - cancelled
+          - unknown
+          - failed
+        scheduledAt:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        timeZone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        localDateTime:
+          anyOf:
+          - type: string
+          - type: 'null'
+        lastError:
+          anyOf:
+          - type: string
+          - type: 'null'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialDestinationVersion'
+        attempts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialDeliveryAttempt'
+      required:
+      - id
+      - publicationId
+      - socialAccountId
+      - platform
+      - format
+      - content
+      - mediaAssetIds
+      - settings
+      - status
+      - scheduledAt
+      - timeZone
+      - localDateTime
+      - lastError
+      additionalProperties: false
+    SocialPublication:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        brandId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
         destinations:
           type: array
           items:
-            type: object
-            properties:
-              destinationId:
-                $ref: "#/components/schemas/CapyraId"
-              metrics:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MetricSnapshot"
-    CompetitorAdView:
+            $ref: '#/components/schemas/SocialDestination'
+      required:
+      - id
+      - brandId
+      - title
+      - status
+      - createdAt
+      - updatedAt
+      - destinations
+      additionalProperties: false
+    SocialPublicationCreate:
       type: object
-      required: [adId, library]
       properties:
-        adId:
-          $ref: "#/components/schemas/CapyraId"
-        library:
+        brandId:
           type: string
-          enum: [meta, linkedin]
-        advertiserName:
+          format: uuid
+        title:
           type: string
-        creativeUrl:
-          type: string
-          format: uri
-        startedOn:
-          type: string
-          format: date
-          nullable: true
-        endedOn:
-          type: string
-          format: date
-          nullable: true
-    CompetitorAdList:
+          minLength: 1
+          maxLength: 160
+      required:
+      - brandId
+      - title
+      additionalProperties: false
+    SocialPreflight:
       type: object
-      required: [items]
       properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/CompetitorAdView"
-    BillingView:
-      type: object
-      required: [cycle, identities, listPriceBRL, estimatedNextChargeBRL]
-      properties:
-        cycle:
-          type: object
-          required: [start, end]
-          properties:
-            start:
-              type: string
-              format: date
-            end:
-              type: string
-              format: date
-        identities:
+        valid:
+          type: boolean
+        issues:
           type: array
           items:
             type: object
-            required: [brandId, network, connectedAt]
             properties:
-              brandId:
-                $ref: "#/components/schemas/CapyraId"
-              network:
-                $ref: "#/components/schemas/Network"
-              displayHandle:
+              field:
                 type: string
-              connectedAt:
+              code:
                 type: string
-                format: date-time
-        listPriceBRL:
-          type: number
-          description: 49.90 por identidade
-        estimatedNextChargeBRL:
-          type: number
-        billingStatus:
-          type: string
-          enum: [ok, delinquent]
-    CheckoutView:
+              message:
+                type: string
+            required:
+            - field
+            - code
+            - message
+            additionalProperties: false
+        capabilities:
+          $ref: '#/components/schemas/SocialCapabilities'
+      required:
+      - valid
+      - issues
+      - capabilities
+      additionalProperties: false
+    SocialSubmit:
       type: object
-      required: [url]
       properties:
+        publishNow:
+          type: boolean
+        localDateTime:
+          type: string
+      required:
+      - publishNow
+      additionalProperties: false
+    SocialPending:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - pending
+      required:
+      - status
+      additionalProperties: false
+    ExternalPost:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        brandId:
+          type: string
+          format: uuid
+        socialAccountId:
+          type: string
+          format: uuid
+        platform:
+          type: string
+          enum:
+          - instagram
+          - tiktok
+          - youtube
+        nativePostId:
+          type: string
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+        content:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - brandId
+      - socialAccountId
+      - platform
+      - nativePostId
+      - url
+      - content
+      - publishedAt
+      additionalProperties: false
+    ExternalPostImport:
+      type: object
+      properties:
+        socialAccountId:
+          type: string
+          format: uuid
         url:
           type: string
           format: uri
-    NotificationView:
+          maxLength: 2048
+      required:
+      - socialAccountId
+      - url
+      additionalProperties: false
+    SocialMetricSnapshot:
       type: object
-      required: [notificationId, kind, createdAt]
       properties:
-        notificationId:
-          $ref: "#/components/schemas/CapyraId"
-        kind:
+        id:
+          type: string
+          format: uuid
+        brandId:
+          type: string
+          format: uuid
+        socialAccountId:
+          type: string
+          format: uuid
+        destinationId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+        externalPostId:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+        platform:
           type: string
           enum:
-            - invite
-            - access_code
-            - approval_pending
-            - approval_decision
-            - connection_action_required
-            - destination_failed
-            - invoice
-            - receipt
-        readAt:
+          - instagram
+          - tiktok
+          - youtube
+        metric:
+          type: string
+        value:
+          anyOf:
+          - type: number
+          - type: 'null'
+        availability:
+          type: string
+          enum:
+          - available
+          - unavailable
+        periodStart:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        periodEnd:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        observedAt:
           type: string
           format: date-time
-          nullable: true
-        createdAt:
+        dataThrough:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        source:
           type: string
-          format: date-time
-    NotificationList:
+      required:
+      - id
+      - brandId
+      - socialAccountId
+      - destinationId
+      - externalPostId
+      - platform
+      - metric
+      - value
+      - availability
+      - periodStart
+      - periodEnd
+      - observedAt
+      - dataThrough
+      - source
+      additionalProperties: false
+    SocialAccountList:
       type: object
-      required: [items]
       properties:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/NotificationView"
-    AuditEventView:
+            $ref: '#/components/schemas/SocialAccount'
+      required:
+      - items
+      additionalProperties: false
+    SocialPublicationList:
       type: object
-      required: [eventId, actorOperatorId, accountId, action, createdAt]
-      properties:
-        eventId:
-          $ref: "#/components/schemas/CapyraId"
-        actorOperatorId:
-          $ref: "#/components/schemas/CapyraId"
-        accountId:
-          $ref: "#/components/schemas/CapyraId"
-        brandId:
-          $ref: "#/components/schemas/CapyraId"
-        action:
-          type: string
-        resource:
-          type: string
-        correlationId:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-    AuditEventList:
-      type: object
-      required: [items]
       properties:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/AuditEventView"
+            $ref: '#/components/schemas/SocialPublication'
+        nextCursor:
+          type: string
+      required:
+      - items
+      additionalProperties: false
+    ExternalPostList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalPost'
+        nextCursor:
+          type: string
+      required:
+      - items
+      additionalProperties: false
+    SocialMetricList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMetricSnapshot'
+        nextCursor:
+          type: string
+      required:
+      - items
+      additionalProperties: false

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-MediumItalic.ttf') format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; src: url('../fonts/IBMPlexSans-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+</style>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'IBM Plex Sans', sans-serif; background: #f5f0e8; padding: 20px; }
+.row { display: flex; gap: 20px; }
+.col { flex: 1; }
+.col-label { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #5e4e40; margin-bottom: 10px; }
+.grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.swatch { border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.08); width: 110px; }
+.swatch-color { height: 48px; }
+.swatch-info { padding: 7px 9px; background: rgba(255,255,255,0.9); }
+.swatch-name { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: #5e4e40; }
+.swatch-value { font-size: 8px; color: #9e8c7d; margin-top: 2px; font-family: monospace; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #5e4e40; margin: 14px 0 8px; }
+</style>
+</head>
+<body>
+<div class="section-label">Light Mode</div>
+<div class="grid">
+  <div class="swatch"><div class="swatch-color" style="background:hsl(38 52% 96%)"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-value">38 52% 96%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(38 100% 98%)"></div><div class="swatch-info"><div class="swatch-name">Card</div><div class="swatch-value">38 100% 98%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(207 99% 42%)"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-value">207 99% 42%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(211 100% 96%)"></div><div class="swatch-info"><div class="swatch-name">Accent</div><div class="swatch-value">211 100% 96%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(39 28% 90%)"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-value">39 28% 90%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(217 36% 17%)"></div><div class="swatch-info"><div class="swatch-name">Foreground</div><div class="swatch-value">217 36% 17%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(0 51% 51%)"></div><div class="swatch-info"><div class="swatch-name">Destructive</div><div class="swatch-value">0 51% 51%</div></div></div>
+</div>
+<div class="section-label">Sidebar (Dark Navy)</div>
+<div class="grid">
+  <div class="swatch"><div class="swatch-color" style="background:hsl(212 71% 23%)"></div><div class="swatch-info"><div class="swatch-name">Sidebar BG</div><div class="swatch-value">212 71% 23%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(38 100% 98%)"></div><div class="swatch-info"><div class="swatch-name">Sidebar FG</div><div class="swatch-value">38 100% 98%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(207 99% 42%)"></div><div class="swatch-info"><div class="swatch-name">Sidebar Primary</div><div class="swatch-value">207 99% 42%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(216 44% 15%)"></div><div class="swatch-info"><div class="swatch-name">Sidebar Accent</div><div class="swatch-value">216 44% 15%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(218 35% 22%)"></div><div class="swatch-info"><div class="swatch-name">Sidebar Border</div><div class="swatch-value">218 35% 22%</div></div></div>
+</div>
+<div class="section-label">Dark Mode</div>
+<div class="grid">
+  <div class="swatch"><div class="swatch-color" style="background:hsl(219 48% 11%)"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-value">219 48% 11%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(216 44% 15%)"></div><div class="swatch-info"><div class="swatch-name">Card</div><div class="swatch-value">216 44% 15%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(208 100% 70%)"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-value">208 100% 70%</div></div></div>
+  <div class="swatch"><div class="swatch-color" style="background:hsl(38 100% 96%)"></div><div class="swatch-info"><div class="swatch-name">Foreground</div><div class="swatch-value">38 100% 96%</div></div></div>
+</div>
+</body>
+</html>

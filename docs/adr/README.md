@@ -1,17 +1,20 @@
-# ADRs
+# Decisoes do Capyra Social
 
-O glossário canônico está em [`CONTEXT.md`](../../CONTEXT.md). O produto está em [`PRD.md`](../PRD.md). A stack está em [`stack.md`](../stack.md). Logo e mascotes estão em [`docs/design/`](../design/README.md).
+Este diretorio registra decisoes consolidadas durante a revisao do
+[plano Capyra Social](../plans/capyra-social.md). Cada arquivo descreve uma
+decisao duravel e sua principal consequencia; detalhes operacionais permanecem
+no plano e, quando implementados, na spec e nos contratos canonicos.
 
-| ADR | Decisão |
-| --- | --- |
-| [0001](0001-conta-capyra-is-the-isolation-boundary.md) | **Conta Capyra** é o isolamento e quem paga; **Marca** não é tenant |
-| [0002](0002-one-email-one-conta.md) | Um e-mail autenticado participa de no máximo uma **Conta Capyra** |
-| [0003](0003-native-identity-is-globally-exclusive.md) | Uma **Identidade nativa** tem no máximo uma **Conexão social** ativa no produto |
-| [0004](0004-social-provider-is-an-internal-adapter.md) | Fornecedor social só existe atrás de `SocialProvider` |
-| [0005](0005-white-label-journey-is-a-commercial-gate.md) | Rede só é vendida depois do **Gate white label** prático |
-| [0006](0006-web-standard-runtime-and-cloud-adapters.md) | TypeScript web-standard; nuvem é adapter; Cloudflare primeiro |
-| [0007](0007-hono-vite-isolated-next-site.md) | Hono + Vite/React; Site Next.js isolado; sem Nest nem Python neste corte |
-| [0008](0008-drizzle-and-in-api-auth.md) | Drizzle/SQL; auth de Operador na API, não Firebase/Clerk |
-| [0009](0009-stripe-checkout-and-resend-email.md) | Stripe no checkout; Resend no e-mail transacional |
-| [0010](0010-mcp-stateless-sdk-v2.md) | MCP headless stateless: `@modelcontextprotocol/server` + `createMcpHandler` |
-| [0011](0011-shadcn-default-ui.md) | Site e webapp usam só shadcn/ui no tema padrão |
+1. [Propriedade exclusiva de conexoes sociais](0001-exclusive-social-connection-ownership.md)
+2. [Marca como contexto obrigatorio](0002-brand-context-is-mandatory.md)
+3. [Arquivamento de marcas com historico](0003-archive-brands-with-history.md)
+4. [Retencao de midias originais](0004-original-media-retention.md)
+5. [Destinos independentes por publicacao](0005-publications-have-independent-destinations.md)
+6. [Versoes imutaveis e cancelamento confirmado](0006-destination-versions-and-confirmed-cancellation.md)
+7. [Reconciliacao antes de retry](0007-reconcile-unknown-deliveries-before-retry.md)
+8. [Fuso da marca nos agendamentos](0008-brand-time-zone-governs-schedules.md)
+9. [Snapshots de metricas nativas](0009-preserve-native-metric-snapshots.md)
+10. [Posts externos somente leitura](0010-external-posts-are-read-only-records.md)
+11. [Interrupcao segura apos perda de conexao](0011-connection-loss-fails-safe.md)
+12. [Reserva de creditos de analise](0012-analysis-credits-use-reservations.md)
+13. [Handoff tardio de agendamentos distantes](0013-defer-provider-handoff-for-distant-schedules.md)

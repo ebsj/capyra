@@ -1,0 +1,19 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "capyra-web",
+  "main": "vinext/server/fetch-handler",
+  "compatibility_date": "2026-08-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [{ "pattern": "web.capyra.co", "custom_domain": true }],
+  "assets": { "not_found_handling": "none" },
+  "services": [{ "binding": "API", "service": "capyra-api" }],
+  "vars": {
+    "CAPYRA_ENVIRONMENT": "production",
+    "CAPYRA_API_BASE_URL": "https://api.capyra.co/api/v1",
+    "CAPYRA_FIREBASE_API_KEY": "AIzaSyACeBOFGosc24C82xHLJljfsgW8jbOmTYk",
+    "CAPYRA_FIREBASE_AUTH_DOMAIN": "capyra-co.firebaseapp.com",
+    "CAPYRA_FIREBASE_PROJECT_ID": "capyra-co",
+    "CAPYRA_FIREBASE_APP_ID": "1:648732450182:web:a0281df840246ee52b6007"
+  },
+  "observability": { "enabled": true, "logs": { "enabled": true, "head_sampling_rate": 0.1 } }
+}

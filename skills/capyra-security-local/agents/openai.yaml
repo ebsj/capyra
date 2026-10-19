@@ -1,0 +1,4 @@
+interface:
+  display_name: "Capyra Security Local"
+  short_description: "Run local code security baseline."
+  default_prompt: "Use capyra-security-local to run and interpret the local security baseline."
