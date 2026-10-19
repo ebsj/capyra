@@ -2,6 +2,7 @@
 
 import { SystemState } from "@/components/system-state";
 import { useI18n } from "@/components/i18n/i18n-provider";
+import { APP_HOME_PATH, VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 
 export default function AppError({
   error,
@@ -25,10 +26,10 @@ export default function AppError({
       description={error.message}
       primaryAction={{ label: t("Recarregar"), onClick: reset }}
       secondaryAction={{
-        label: maybeExpiredSession ? t("Voltar ao login") : t("Ir para dashboard"),
+        label: maybeExpiredSession ? t("Voltar ao login") : VIDEO_ANALYSIS_ENABLED ? t("Ir para dashboard") : t("Ir para Publicações"),
         href: maybeExpiredSession
-          ? `${href("/login")}?reason=session-expired&next=${encodeURIComponent(href("/dashboard"))}`
-          : href("/dashboard"),
+          ? `${href("/login")}?reason=session-expired&next=${encodeURIComponent(href(APP_HOME_PATH))}`
+          : href(APP_HOME_PATH),
         variant: "outline",
       }}
     />

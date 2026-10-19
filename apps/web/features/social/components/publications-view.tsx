@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,7 +59,7 @@ export function PublicationsView({ accessToken, initialBrandId = "", analysisId 
               setBusy(true);
               try {
                 const p = await createPublication(accessToken, brandId, title);
-                window.location.assign(href(`/social-publications/${p.id}${analysisId ? `?analysisId=${encodeURIComponent(analysisId)}` : ""}`));
+                window.location.assign(href(`/social-publications/${p.id}${VIDEO_ANALYSIS_ENABLED && analysisId ? `?analysisId=${encodeURIComponent(analysisId)}` : ""}`));
               } catch (e) {
                 setError(e instanceof Error ? e.message : t("Não foi possível concluir."));
                 setBusy(false);
@@ -68,7 +69,7 @@ export function PublicationsView({ accessToken, initialBrandId = "", analysisId 
             <Input aria-label={t("Título da publicação")} className="max-w-lg" required value={title} onChange={(e) => setTitle(e.target.value)} />
             <Button disabled={!brandId || busy || selectedBrand?.status !== "active"}>{t("Criar rascunho")}</Button>
           </form>
-          <p className="mt-3 text-sm text-muted-foreground">{t("Uma Publicação reúne Destinos independentes. A análise é opcional.")}</p>
+          <p className="mt-3 text-sm text-muted-foreground">{VIDEO_ANALYSIS_ENABLED ? t("Uma Publicação reúne Destinos independentes. A análise é opcional.") : t("Uma Publicação reúne Destinos independentes.")}</p>
         </CardContent>
       </Card>
       <div className="flex gap-2">

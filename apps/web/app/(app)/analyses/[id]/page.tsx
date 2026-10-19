@@ -1,3 +1,5 @@
+import { APP_HOME_PATH, VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
+import { localizePath } from "@/lib/i18n/config";
 import { notFound, redirect } from "next/navigation";
 
 import { AnalysisDetailView } from "@/features/analyses";
@@ -56,6 +58,10 @@ export default async function AnalysisDetailPage({ params }: Props) {
 
   if (!accessToken) {
     redirect(buildLoginRedirect(`/analyses/${id}`, getAuthRedirectReason(rawSession), locale));
+  }
+
+  if (!VIDEO_ANALYSIS_ENABLED) {
+    redirect(localizePath(APP_HOME_PATH, locale));
   }
 
   try {

@@ -16,6 +16,28 @@ const {createBrowserApiRequest,ApiError}=await import(new URL("lib/http.ts",root
 const {actOnDestination,saveDestination}=await import(new URL("features/social/api/social-api.ts",root));
 const {invitationTokenFromNext}=await import(new URL("features/auth/utils/invitation-token.ts",root));
 const {canCancel,canEdit,metricIsStale}=await import(new URL("features/social/utils/state.ts",root));
+const {saveBrand}=await import(new URL("features/brands/api/brands-api.ts",root));
+
+test("brand creation omits the update-only confirmation field supplied by the form",async(t)=>{
+ const form={name:"New Brand",timeZone:"America/Recife",confirmed:true};
+ const created={id:"new-brand",name:form.name,timeZone:form.timeZone,confirmedAt:"2026-10-19T00:00:00Z",status:"active"};
+ t.mock.method(globalThis,"fetch",async(url,init)=>{
+  assert.equal(url,"/api/v1/brands");assert.equal(init.method,"POST");
+  assert.deepEqual(JSON.parse(init.body),{name:form.name,timeZone:form.timeZone});
+  return Response.json(created,{status:201});
+ });
+ assert.deepEqual(await saveBrand("token",form),created);
+});
+
+test("brand editing preserves explicit confirmation in the update payload",async(t)=>{
+ const form={name:"Updated Brand",timeZone:"UTC",confirmed:true};
+ t.mock.method(globalThis,"fetch",async(url,init)=>{
+  assert.equal(url,"/api/v1/brands/existing-brand");assert.equal(init.method,"PATCH");
+  assert.deepEqual(JSON.parse(init.body),form);
+  return Response.json({...form,id:"existing-brand"});
+ });
+ const saved=await saveBrand("token",form,"existing-brand");assert.equal(saved.name,form.name);
+});
 
 test("owner-only 403 remains an actionable error without destroying a valid session",async(t)=>{
  const oldWindow=globalThis.window,oldDocument=globalThis.document;

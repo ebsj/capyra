@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { useI18n } from "@/components/i18n/i18n-provider";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 
 export function AuthIntroPanel() {
   const { t } = useI18n();
@@ -29,7 +30,9 @@ export function AuthIntroPanel() {
 
         <div className="space-y-4">
           <h1 className="max-w-xl font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            {t("Entre com Google ou link no e-mail e volte direto para a análise.")}
+            {VIDEO_ANALYSIS_ENABLED
+              ? t("Entre com Google ou link no e-mail e volte direto para a análise.")
+              : t("Gerencie suas Marcas e publicações em um só lugar.")}
           </h1>
           <p className="max-w-xl text-base leading-7 text-muted-foreground">
             {t("Escolha o Google ou receba um link de acesso para continuar de onde parou, sem precisar lembrar da senha.")}

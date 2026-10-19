@@ -1,6 +1,7 @@
 import { defaultLocale, normalizeLocale, stripLocalePrefix, type Locale } from "@/lib/i18n/config";
+import { APP_HOME_PATH } from "@/lib/features";
 
-export function normalizeNextHref(nextHref?: string | null, fallbackHref = "/dashboard") {
+export function normalizeNextHref(nextHref?: string | null, fallbackHref = APP_HOME_PATH) {
   if (!nextHref || !nextHref.startsWith("/") || nextHref.startsWith("//") || nextHref.includes("\\")) {
     return fallbackHref;
   }

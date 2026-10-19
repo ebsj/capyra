@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,7 +42,7 @@ export function DestinationEditor({
   const [description, setDescription] = useState(initial?.description ?? "");
   const [media, setMedia] = useState(initial?.mediaAssetIds ?? []);
   const [cover, setCover] = useState(initial?.coverAssetId ?? "");
-  const [analysis, setAnalysis] = useState(initial?.analysisId ?? analysisId ?? "");
+  const [analysis, setAnalysis] = useState(initial?.analysisId ?? (VIDEO_ANALYSIS_ENABLED ? analysisId : undefined) ?? "");
   const [settings, setSettings] = useState<Record<string, unknown>>(initial?.settings ?? {});
   const [caps, setCaps] = useState<Capabilities | null>(null);
   const [error, setError] = useState("");
@@ -90,7 +91,7 @@ export function DestinationEditor({
                 description,
                 mediaAssetIds: media,
                 coverAssetId: cover || undefined,
-                analysisId: analysis || undefined,
+                analysisId: VIDEO_ANALYSIS_ENABLED ? analysis || undefined : initial?.analysisId ?? undefined,
                 settings,
               };
               await saveDestination(accessToken, publicationId, body, initial?.id);
@@ -218,6 +219,7 @@ export function DestinationEditor({
                 ))}
             </select>
           </label>
+          {VIDEO_ANALYSIS_ENABLED ? <>
           <label>
             {t("Vínculo de análise (opcional)")}
             <select
@@ -235,6 +237,7 @@ export function DestinationEditor({
             </select>
           </label>
           <p className="text-sm text-muted-foreground">{t("O vínculo é observacional e não comprova que a análise causou o desempenho.")}</p>
+          </> : null}
           {caps && !caps.canPost ? (
             <p role="alert" className="text-destructive">
               {t("Esta Conta social não pode publicar no momento.")}

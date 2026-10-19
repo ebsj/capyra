@@ -1,3 +1,4 @@
+import { APP_HOME_PATH } from "@/lib/features";
 import type { BrandContract, AccountResponseContract, AccountUserResponseContract } from "@/lib/models";
 
 export const AUTH_SESSION_COOKIE = "capyra_session";
@@ -79,7 +80,7 @@ export function clearClientAuthSession() {
 }
 
 export function buildSessionExpiredLoginHref(nextPath?: string | null) {
-  const safeNextPath = nextPath?.startsWith("/") ? nextPath : "/dashboard";
+  const safeNextPath = nextPath?.startsWith("/") ? nextPath : APP_HOME_PATH;
   const params = new URLSearchParams({
     reason: "session-expired",
     next: safeNextPath,

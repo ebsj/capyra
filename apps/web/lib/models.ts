@@ -1,3 +1,5 @@
+export type { BrandCreateRequestContract, BrandUpdateRequestContract } from "@capyra/contracts";
+
 import type {
   BrandContract,
   AccountResponseContract,

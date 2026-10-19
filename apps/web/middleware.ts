@@ -11,6 +11,7 @@ import {
   type Locale,
 } from "@/lib/i18n/config";
 import { AUTH_SESSION_COOKIE, type AuthSessionSnapshot } from "@/lib/session";
+import { APP_HOME_PATH } from "@/lib/features";
 
 const protectedPathPrefixes = ["/dashboard", "/analyses", "/integrations", "/brands", "/library", "/team", "/usage", "/notifications", "/social-publications", "/social-metrics", "/invitations", "/profile"];
 const publicFile = /\.[^/]+$/;
@@ -198,7 +199,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (!hasLocale) {
-    const targetPath = appPathname === "/" ? (hasActiveSession ? "/dashboard" : "/login") : appPathname;
+    const targetPath = appPathname === "/" ? (hasActiveSession ? APP_HOME_PATH : "/login") : appPathname;
     const targetUrl = new URL(localizePath(targetPath, defaultLocale), request.url);
     targetUrl.search = request.nextUrl.search;
     return redirectWithHeaders(targetUrl, contentSecurityPolicy);

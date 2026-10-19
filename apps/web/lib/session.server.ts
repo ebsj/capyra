@@ -1,5 +1,6 @@
 import "server-only";
 
+import { APP_HOME_PATH } from "@/lib/features";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ApiError } from "@/lib/http";
@@ -44,7 +45,7 @@ export function getAuthRedirectReason(session: AuthSessionSnapshot | null | unde
 }
 
 export function buildLoginRedirect(nextPath: string, reason: AuthRedirectReason = "auth-required", locale?: Locale) {
-  const safeNextPath = nextPath.startsWith("/") ? nextPath : "/dashboard";
+  const safeNextPath = nextPath.startsWith("/") ? nextPath : APP_HOME_PATH;
   const params = new URLSearchParams({
     next: locale ? localizePath(safeNextPath, locale) : safeNextPath,
     reason,

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -55,7 +56,7 @@ export function AnalyticsView({ accessToken, initialBrandId = "" }: { accessToke
     <div className="grid gap-6">
       <BrandSelect accessToken={accessToken} value={brandId} onChange={setBrandId} disabled={busy} includeArchived />
       <p className="text-muted-foreground">
-        {t("Métricas nativas por rede. Dados indisponíveis não são zero; comparações são observacionais, sem atribuição causal à análise.")}
+        {VIDEO_ANALYSIS_ENABLED ? t("Métricas nativas por rede. Dados indisponíveis não são zero; comparações são observacionais, sem atribuição causal à análise.") : t("Métricas nativas por rede. Dados indisponíveis não são zero; comparações são observacionais.")}
       </p>
       {error ? (
         <p role="alert" className="text-destructive">

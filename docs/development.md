@@ -49,6 +49,13 @@ Wrangler devem ser gerados com `--env-file /dev/null` para nao ler secrets.
 
 ## Desenvolvimento do Capyra Social
 
+A visibilidade da análise de vídeo no webapp é controlada por
+`VIDEO_ANALYSIS_ENABLED` em `apps/web/lib/features.ts` (atualmente `false`).
+Com o módulo oculto, a entrada abre Publicações e as URLs antigas redirecionam
+para essa tela após autenticação. Reative alterando a configuração para `true`
+e reconstruindo/reiniciando a web. Dados, vínculos existentes, API, CLI, MCP e
+site público permanecem preservados.
+
 O [quickstart](../specs/002-capyra-social/quickstart.md) separa simulador local e validação real. A Queue `capyra-social`/DLQ processa entregas, importações, webhooks e probe de mídia sem misturar o consumer de análises. O dispatcher/reconciliador roda a cada cinco minutos; snapshots e retenção diariamente. A simulação deve ser explicitamente configurada e não comprova viabilidade do fornecedor.
 
 Provisionamento de adicionais: `node tools/provision-social.mjs --help`. Sem `--apply`, o comando apenas apresenta SQL; com `--apply`, opera exclusivamente no D1 local. Uma Marca adicional concede três identidades; um pacote concede cinquenta análises. Cada operação exige UUID de idempotência e motivo. Não há endpoint público concedendo créditos.

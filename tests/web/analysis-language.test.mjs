@@ -23,11 +23,11 @@ test("analysis detail navigation preserves the active locale", async () => {
   assert.doesNotMatch(view, /router\.push\(`\/analyses\/\$\{analysis\.id\}`\)/);
 });
 
-test("shell navigation resolves dashboard and new-analysis links from the active locale", async () => {
+test("shell navigation resolves configured home and new-analysis links from the active locale", async () => {
   const shell = await readFile(new URL("../../apps/web/components/app-shell.tsx", import.meta.url), "utf8");
 
   assert.match(shell, /const \{ href \} = useI18n\(\)/);
-  assert.match(shell, /href\("\/dashboard"\)/);
+  assert.match(shell, /href\(APP_HOME_PATH\)/);
   assert.match(shell, /href\("\/analyses\/new"\)/);
   assert.doesNotMatch(shell, /dashboardHref: string/);
   assert.doesNotMatch(shell, /newAnalysisHref: string/);

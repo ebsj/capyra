@@ -37,6 +37,7 @@ import { clearClientAuthSession } from "@/lib/session";
 import { useI18n } from "@/components/i18n/i18n-provider";
 import { getAppPathname } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
+import { APP_HOME_PATH, VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 
 type Props = {
   session: AuthSessionResponseContract;
@@ -82,7 +83,7 @@ function ShellBrand({
 
   return (
     <Link
-      href={href("/dashboard")}
+      href={href(APP_HOME_PATH)}
       className="flex items-start gap-3 rounded-[1.6rem] border border-sidebar-border bg-sidebar-accent/25 p-4 transition-colors hover:bg-sidebar-accent/45 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-12 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-[1.15rem] group-data-[collapsible=icon]:p-0"
     >
       <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-sidebar-border bg-background/95 p-2 shadow-sm group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-[1rem]">
@@ -127,7 +128,7 @@ function ShellNavigation({
     ...(session.user.role === "owner" ? [{ href: "/team", label: t("Equipe"), icon: Users }] : []),
     { href: "/usage", label: t("Uso"), icon: Wallet },
     { href: "/notifications", label: t("Notificações"), icon: Bell },
-    {
+    ...(VIDEO_ANALYSIS_ENABLED ? [{
       href: "/dashboard",
       label: t("Dashboard"),
       icon: LayoutDashboard,
@@ -136,7 +137,7 @@ function ShellNavigation({
       href: "/analyses",
       label: t("Análises"),
       icon: ListVideo,
-    },
+    }] : []),
     {
       href: "/profile",
       label: t("Perfil"),
@@ -152,7 +153,7 @@ function ShellNavigation({
     >
       <SidebarHeader className="gap-3 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0">
         <ShellBrand session={session} />
-        <Button
+        {VIDEO_ANALYSIS_ENABLED ? <Button
           asChild
           className="w-full justify-start rounded-2xl bg-sidebar-primary text-sidebar-primary-foreground shadow-lg shadow-black/15 hover:bg-sidebar-primary/90 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
         >
@@ -162,7 +163,7 @@ function ShellNavigation({
               {t("Nova análise")}
             </span>
           </Link>
-        </Button>
+        </Button> : null}
       </SidebarHeader>
 
       <SidebarSeparator className="group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:w-8" />
@@ -277,7 +278,7 @@ export function AppShell({
 
             <div className="flex shrink-0 items-center gap-2">
               <LocaleToggle />
-              <Button
+              {VIDEO_ANALYSIS_ENABLED ? <Button
                 asChild
                 className="hidden rounded-2xl px-4 sm:inline-flex"
               >
@@ -285,7 +286,7 @@ export function AppShell({
                   <Plus />
                   {t("Nova análise")}
                 </Link>
-              </Button>
+              </Button> : null}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

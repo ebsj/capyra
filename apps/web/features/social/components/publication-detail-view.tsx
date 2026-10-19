@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/components/i18n/i18n-provider";
 import type { Brand } from "@/features/brands";
@@ -29,7 +30,7 @@ export function PublicationDetailView({ accessToken, id, analysisId }: { accessT
         listBrands(accessToken),
         listConnections(accessToken, p.brandId),
         listLibraryAssets(accessToken, p.brandId),
-        listLinkableAnalyses(accessToken, p.brandId),
+        VIDEO_ANALYSIS_ENABLED ? listLinkableAnalyses(accessToken, p.brandId) : Promise.resolve({ items: [] }),
       ]);
       setBrand(b.items.find((b) => b.id === p.brandId) ?? null);
       setAccounts(c.items);

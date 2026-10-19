@@ -1,4 +1,5 @@
 "use client";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { useI18n } from "@/components/i18n/i18n-provider";
 import type { Destination } from "../types/social";
 import { stateLabels, formatLabels, privacyLabels } from "../utils/state";
@@ -41,7 +42,7 @@ export function DestinationHistory({ destination }: { destination: Destination }
             <p>
               {t("Mídias")}: {v.snapshot.mediaAssetIds.length}
             </p>
-            {v.snapshot.analysisId ? (
+            {VIDEO_ANALYSIS_ENABLED && v.snapshot.analysisId ? (
               <p>
                 {t("Análise vinculada")}: {v.snapshot.analysisId}
               </p>

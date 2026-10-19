@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { useEffect, useState, useTransition } from "react";
 import { trackGoogleAnalyticsEvent } from "@/lib/google-analytics-client";
 import type { SourceAssetItem, SourceAssetUploadSessionResponseContract } from "@/lib/models";
@@ -211,7 +212,8 @@ export function UploadSessionView({ accessToken, initialSession }: Props) {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-foreground">{asset.sourceLabel}</p>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {formatSourceAssetFileSize(asset.contentLength)} • {asset.analysisCount} {asset.analysisCount === 1 ? t("análise") : t("análises")}
+                        {formatSourceAssetFileSize(asset.contentLength)}
+                        {VIDEO_ANALYSIS_ENABLED ? <> • {asset.analysisCount} {asset.analysisCount === 1 ? t("análise") : t("análises")}</> : null}
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">

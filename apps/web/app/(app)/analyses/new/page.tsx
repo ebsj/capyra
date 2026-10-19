@@ -1,3 +1,5 @@
+import { APP_HOME_PATH, VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
+import { localizePath } from "@/lib/i18n/config";
 import { NewAnalysisView } from "@/features/analyses";
 import { listAnalysisSkillsForServer } from "@/features/analyses/api/analyses-api";
 import { listSourceAssetsForServer } from "@/features/source-assets/api/source-assets-api";
@@ -23,6 +25,10 @@ export default async function NewAnalysisPage() {
 
   if (!accessToken) {
     redirect(buildLoginRedirect("/analyses/new", getAuthRedirectReason(rawSession), locale));
+  }
+
+  if (!VIDEO_ANALYSIS_ENABLED) {
+    redirect(localizePath(APP_HOME_PATH, locale));
   }
 
   try {

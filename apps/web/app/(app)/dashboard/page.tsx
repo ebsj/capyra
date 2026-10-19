@@ -1,3 +1,5 @@
+import { APP_HOME_PATH, VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
+import { localizePath } from "@/lib/i18n/config";
 import { DashboardView } from "@/features/analyses";
 import { listAnalyses } from "@/features/analyses/api/analyses-api";
 import { getRequestLocale } from "@/lib/i18n/server";
@@ -22,6 +24,10 @@ export default async function DashboardPage() {
 
   if (!accessToken) {
     redirect(buildLoginRedirect("/dashboard", getAuthRedirectReason(rawSession), locale));
+  }
+
+  if (!VIDEO_ANALYSIS_ENABLED) {
+    redirect(localizePath(APP_HOME_PATH, locale));
   }
 
   try {

@@ -1,3 +1,4 @@
+import { APP_HOME_PATH } from "@/lib/features";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { listBrandsForServer } from "@/features/brands/api/brands-api.server";
@@ -20,7 +21,7 @@ export default async function AppLayout({
   const session = await readActiveAuthSessionFromCookieStore();
 
   if (!session?.accessToken) {
-    redirect(buildLoginRedirect("/dashboard", getAuthRedirectReason(rawSession), locale));
+    redirect(buildLoginRedirect(APP_HOME_PATH, getAuthRedirectReason(rawSession), locale));
   }
 
   const accessToken = session.accessToken;

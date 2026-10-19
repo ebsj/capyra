@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/components/i18n/i18n-provider";
@@ -33,8 +34,8 @@ export function UsageView({ accessToken }: { accessToken: string }) {
             {t("Ciclo")}: {new Date(usage.cycleStart).toLocaleDateString(locale)} — {new Date(usage.cycleEnd).toLocaleDateString(locale)} ·{" "}
             {t(usage.subscriptionStatus)}
           </p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {(Object.keys(labels) as (keyof typeof labels)[]).map((k) => (
+          <div className={`grid gap-4 sm:grid-cols-2 ${VIDEO_ANALYSIS_ENABLED ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+            {(Object.keys(labels) as (keyof typeof labels)[]).filter((key) => VIDEO_ANALYSIS_ENABLED || key !== "analyses").map((k) => (
               <Card key={k}>
                 <CardHeader>
                   <CardTitle className="text-base">{t(labels[k])}</CardTitle>
@@ -47,7 +48,7 @@ export function UsageView({ accessToken }: { accessToken: string }) {
               </Card>
             ))}
           </div>
-          <Card>
+          {VIDEO_ANALYSIS_ENABLED ? <Card>
             <CardHeader>
               <CardTitle>{t("Créditos de análise")}</CardTitle>
             </CardHeader>
@@ -67,7 +68,7 @@ export function UsageView({ accessToken }: { accessToken: string }) {
                 )}
               </p>
             </CardContent>
-          </Card>
+          </Card> : null}
           <p className="text-muted-foreground">
             {t("Identidades desconectadas continuam contando neste ciclo. Reconectar a mesma identidade não consome outra unidade.")}
           </p>

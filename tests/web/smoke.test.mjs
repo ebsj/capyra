@@ -13,10 +13,10 @@ test("tailwind scans feature modules for moved UI classes", async () => {
   assert.match(tailwindConfig, /"\.\/features\/\*\*\/\*\.\{ts,tsx\}"/);
 });
 
-test("root redirects to login without session and dashboard with session", async () => {
+test("root redirects to login without session and the configured home with session", async () => {
   const page = await readFile(new URL("../../apps/web/app/page.tsx", import.meta.url), "utf8");
   assert.match(page, /readActiveAuthSessionFromCookieStore/);
-  assert.match(page, /localizePath\(session \? "\/dashboard" : "\/login", locale\)/);
+  assert.match(page, /localizePath\(session \? APP_HOME_PATH : "\/login", locale\)/);
 });
 
 test("authenticated routes preserve the shell, route map, and investigation flow", async () => {

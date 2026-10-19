@@ -1,5 +1,6 @@
 "use client";
 
+import { APP_HOME_PATH } from "@/lib/features";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
@@ -46,7 +47,7 @@ export function EmailLinkLoginForm({
   const [email, setEmail] = useState(() => readPendingFirebaseEmail() ?? initialEmail ?? "");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const safeNextHref = normalizeNextHref(nextHref, href("/dashboard"));
+  const safeNextHref = normalizeNextHref(nextHref, href(APP_HOME_PATH));
   const resumeMessage = buildLoginResumeMessage(reason, t);
   const isBusy = isSending || isGoogleSigningIn;
 
@@ -121,7 +122,7 @@ export function EmailLinkLoginForm({
     <Card className="overflow-hidden border-border/80 bg-card/95 shadow-xl shadow-foreground/5">
       <CardHeader className="gap-4 border-b border-border/70 bg-background/70">
         {/* <div className="flex flex-wrap items-center gap-2">
-          {safeNextHref !== "/dashboard" ? (
+          {safeNextHref !== APP_HOME_PATH ? (
             <Badge className="border-transparent bg-primary/10 text-primary hover:bg-primary/10">
               {t("retorno para {href}", { href: safeNextHref })}
             </Badge>

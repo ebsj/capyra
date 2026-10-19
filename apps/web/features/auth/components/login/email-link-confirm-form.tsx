@@ -1,5 +1,6 @@
 "use client";
 
+import { APP_HOME_PATH } from "@/lib/features";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -40,7 +41,7 @@ export function EmailLinkConfirmForm({ nextHref }: { nextHref?: string | null })
   const [email, setEmail] = useState(() => readPendingFirebaseEmail() ?? "");
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const safeNextHref = normalizeNextHref(nextHref, href("/dashboard"));
+  const safeNextHref = normalizeNextHref(nextHref, href(APP_HOME_PATH));
   const didBootstrap = useRef(false);
 
   const completeSignIn = async (candidateEmail: string) => {
@@ -137,7 +138,7 @@ export function EmailLinkConfirmForm({ nextHref }: { nextHref?: string | null })
             {t("Confirmar acesso")}
           </Badge>
           <Badge variant="secondary">{t("email link")}</Badge>
-          {safeNextHref !== "/dashboard" ? (
+          {safeNextHref !== APP_HOME_PATH ? (
             <Badge variant="outline">{invitationTokenFromNext(safeNextHref) ? t("Convite para a equipe") : t("retorno para {href}", { href: safeNextHref })}</Badge>
           ) : null}
         </div>
