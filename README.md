@@ -8,7 +8,6 @@ Container Python executa `yt-dlp`, `ffmpeg` e chamadas diretas a OpenAI.
 ## Comece por aqui
 
 - [AGENT.md](AGENT.md): contrato operacional do repositorio.
-- [spec V2](specs/001-cloudflare-v2/spec.md): requisitos e compatibilidade.
 - [docs/architecture.md](docs/architecture.md): arquitetura e fluxos.
 - [docs/setup.md](docs/setup.md): setup local e producao.
 - [docs/development.md](docs/development.md): runbook de desenvolvimento.
@@ -56,4 +55,8 @@ removidos do repositorio.
 
 ## Capyra Social
 
-Implementação orientada pelo [Spec Kit](specs/002-capyra-social/spec.md), com [tarefas e evidências](specs/002-capyra-social/tasks.md) e [validação local](specs/002-capyra-social/quickstart.md). Marcas são explícitas em novas análises e uploads, incluindo CLI/MCP. O teste real do Zernio e o gate white label permanecem pendentes; esta entrega não realiza deploy.
+O [plano Capyra Social](docs/plans/capyra-social.md) registra decisões de produto
+e gates do piloto; o [runbook de desenvolvimento](docs/development.md) orienta
+o uso local. Marcas são explícitas em novas análises e uploads, incluindo
+CLI/MCP. O teste real do Zernio e o gate white label permanecem pendentes;
+esta entrega não realiza deploy.

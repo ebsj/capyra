@@ -56,6 +56,11 @@ para essa tela após autenticação. Reative alterando a configuração para `tr
 e reconstruindo/reiniciando a web. Dados, vínculos existentes, API, CLI, MCP e
 site público permanecem preservados.
 
-O [quickstart](../specs/002-capyra-social/quickstart.md) separa simulador local e validação real. A Queue `capyra-social`/DLQ processa entregas, importações, webhooks e probe de mídia sem misturar o consumer de análises. O dispatcher/reconciliador roda a cada cinco minutos; snapshots e retenção diariamente. A simulação deve ser explicitamente configurada e não comprova viabilidade do fornecedor.
+O [setup Social](setup.md#capyra-social-local) orienta a configuração do simulador
+local e do fornecedor real. A Queue `capyra-social`/DLQ processa entregas,
+importações, webhooks e probe de mídia sem misturar o consumer de análises.
+O dispatcher/reconciliador roda a cada cinco minutos; snapshots e retenção
+diariamente. A simulação deve ser explicitamente configurada e não comprova
+viabilidade do fornecedor; a homologação segue os [gates do piloto](plans/capyra-social.md#5-gate-de-viabilidade-com-o-zernio).
 
 Provisionamento de adicionais: `node tools/provision-social.mjs --help`. Sem `--apply`, o comando apenas apresenta SQL; com `--apply`, opera exclusivamente no D1 local. Uma Marca adicional concede três identidades; um pacote concede cinquenta análises. Cada operação exige UUID de idempotência e motivo. Não há endpoint público concedendo créditos.

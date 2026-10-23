@@ -9,7 +9,7 @@ com detalhes de implementacao por app.
 Escolha pelo impacto da tarefa; esta lista nao e uma sequencia obrigatoria.
 
 1. [Agent workflow](agent-workflow.md)
-2. [Constituicao Spec Kit](../.specify/memory/constitution.md)
+2. [Contrato operacional](../AGENT.md)
 3. [Arquitetura](architecture.md)
 4. [Setup local](setup.md)
 5. [Runbook de desenvolvimento](development.md)
@@ -21,9 +21,8 @@ Escolha pelo impacto da tarefa; esta lista nao e uma sequencia obrigatoria.
 
 - [Agent workflow](agent-workflow.md): matriz de impacto, comandos canonicos e
   criterios de handoff para agentes.
-- [Spec Kit](speckit.md): versao, atualizacao e uso das skills do projeto.
-- [Constituicao Spec Kit](../.specify/memory/constitution.md): principios,
-  constraints e gates obrigatorios para specs, planos e tarefas.
+- [Contrato operacional](../AGENT.md): regras de arquitetura, seguranca,
+  isolamento, filas, custos e migrations.
 - [Arquitetura](architecture.md): mapa de apps, dependencias e fluxos de
   analyses.
 - [Setup local](setup.md): Wrangler, bindings, secrets, URLs e troubleshooting.
@@ -64,8 +63,6 @@ Escolha pelo impacto da tarefa; esta lista nao e uma sequencia obrigatoria.
 - `README.md` e ponto de entrada; nao deve virar backlog ou runbook longo.
 - `AGENT.md` na raiz e o contrato operacional padrao para agentes; `AGENTS.md`
   e `CLAUDE.md` sao entrypoints finos para Codex App e Claude Code.
-- `.specify/memory/constitution.md` define os gates obrigatorios para specs,
-  planos, tarefas e handoff.
 - `docs/agent-workflow.md` define como escolher docs, testes e contratos
   afetados.
 - Mudancas cross-app devem atualizar docs globais, docs locais, contratos e
