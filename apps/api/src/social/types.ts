@@ -1,5 +1,5 @@
 import type { RuntimeEnv } from "../runtime";
-export type Platform = "instagram" | "tiktok" | "youtube";
+export type Platform = "instagram" | "tiktok" | "youtube" | "linkedin";
 export type DestinationState =
   | "draft"
   | "awaiting_handoff"

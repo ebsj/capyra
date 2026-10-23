@@ -31,11 +31,13 @@ export function DestinationSettings({
           ["madeForKids", "Conteúdo para crianças"],
           ["containsSyntheticMedia", "Contém mídia sintética"],
         ]
-      : [["shareToFeed", "Compartilhar no feed"]];
+      : platform === "instagram"
+      ? [["shareToFeed", "Compartilhar no feed"]]
+      : [];
   return (
     <fieldset className="grid gap-3 rounded-xl border p-4">
       <legend className="px-2 font-medium">{t("Configurações do Destino")}</legend>
-      {platform !== "instagram" ? (
+      {(capabilities?.privacyLevels?.length ?? 0) > 0 ? (
         <label>
           {t("Privacidade")}
           <select
@@ -111,7 +113,7 @@ export function DestinationSettings({
             }
           />
         </label>
-      ) : (
+      ) : platform !== "linkedin" ? (
         <label>
           {t("Instante da capa (ms)")}
           <Input
@@ -121,7 +123,8 @@ export function DestinationSettings({
             onChange={(e) => set("coverTimestampMs", e.target.value ? Number(e.target.value) : undefined)}
           />
         </label>
-      )}
+      ) : null}
+      {platform === "linkedin" ? <p className="text-sm text-muted-foreground">{t("Publicação no perfil ou página selecionado na conexão. Texto: até 3.000 caracteres; carrossel: até 20 imagens.")}</p> : null}
     </fieldset>
   );
 }

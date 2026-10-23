@@ -1,3 +1,4 @@
+import { selectLinkedInIdentity } from "./linkedin";
 import { ApiError, nowIso } from "../common";
 import type {
   Asset,
@@ -30,6 +31,14 @@ export function baseline(
     minVideoSeconds: 3,
     maxVideoSeconds: 90,
   };
+  if (platform === "linkedin")
+    return {
+      platform,
+      formats: ["text", "feed", "carousel", "video"],
+      limits: { ...limits, maxImages: 20, maxContentLength: 3000, maxVideoSeconds: 600 },
+      identityStatus,
+      canPost: true,
+    };
   if (platform === "instagram")
     return {
       platform,
@@ -167,6 +176,8 @@ export function postBody(
 ): Record<string, unknown> {
   const s = payload.settings;
   const data: Record<string, unknown> = {};
+  if (account.platform === "linkedin" && account.native_identity_id?.startsWith("urn:li:organization:"))
+    data.organizationUrn = account.native_identity_id;
   if (account.platform === "instagram")
     Object.assign(data, {
       ...(payload.format === "story" ? { contentType: "story" } : {}),
@@ -316,6 +327,7 @@ class ZernioProvider implements SocialProvider {
       headless: "true",
     });
     if (platform === "instagram") q.set("loginMethod", "facebook_login");
+    if (platform === "linkedin") q.set("scopes", "posting,analytics");
     const data = await this.call(`/connect/${platform}?${q}`);
     if (typeof data.authUrl !== "string")
       throw new ProviderError("provider_invalid_response");
@@ -332,6 +344,11 @@ class ZernioProvider implements SocialProvider {
       throw new ProviderError("social_authorization_denied");
     let nativeIdentityId: string | null = null;
     let selectedId: string | null = null;
+    if (platform === "linkedin") {
+      ({ nativeIdentityId, selectedId } = await selectLinkedInIdentity(
+        this.call.bind(this), profileId, query, expectedIdentity, verifyIdentity,
+      ));
+    }
     if (platform === "instagram" && query.get("tempToken")) {
       const tempToken = query.get("tempToken")!;
       const q = new URLSearchParams({ profileId, tempToken });
@@ -397,6 +414,8 @@ class ZernioProvider implements SocialProvider {
   }
   async capabilities(account: SocialAccountRow, format?: string) {
     const result = baseline(account.platform, account.identity_status);
+    if (account.platform === "linkedin" && account.native_identity_id?.startsWith("urn:li:organization:"))
+      result.limits.maxVideoSeconds = 1800;
     const health = await this.call(
       `/accounts/${encodeURIComponent(account.provider_account_id!)}/health`
     );
@@ -631,7 +650,10 @@ class MockProvider implements SocialProvider {
     };
   }
   async capabilities(account: SocialAccountRow) {
-    return baseline(account.platform, account.identity_status);
+    const result = baseline(account.platform, account.identity_status);
+    if (account.platform === "linkedin" && account.native_identity_id?.startsWith("urn:li:organization:"))
+      result.limits.maxVideoSeconds = 1800;
+    return result;
   }
   async transfer(asset: Asset, body: ReadableStream) {
     await this.env.STORAGE.put(`social-mock/${asset.id}`, body);

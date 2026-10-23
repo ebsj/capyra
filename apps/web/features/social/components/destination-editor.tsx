@@ -11,7 +11,7 @@ import type { AnalysisListItemContract } from "@/lib/models";
 import type { SourceAssetItemContract } from "@/lib/models";
 import { getCapabilities, saveDestination } from "../api/social-api";
 import type { SocialAccount, Destination, Capabilities, DestinationInput } from "../types/social";
-import { formatLabels } from "../utils/state";
+import { formatLabels, platformLabels } from "../utils/state";
 import { DestinationSettings } from "./destination-settings";
 export function DestinationEditor({
   accessToken,
@@ -115,6 +115,7 @@ export function DestinationEditor({
                   setAccountId(e.target.value);
                   setFormat("");
                   setSettings({});
+                  setCover("");
                 }}
                 className="mt-1 h-10 w-full rounded-md border bg-background px-3"
               >
@@ -123,7 +124,7 @@ export function DestinationEditor({
                   .filter((a) => a.status === "active" && a.identityStatus === "verified")
                   .map((a) => (
                     <option key={a.id} value={a.id}>
-                      {a.platform} · {a.displayName}
+                      {platformLabels[a.platform]} · {a.displayName}
                     </option>
                   ))}
               </select>
@@ -137,6 +138,10 @@ export function DestinationEditor({
                 onChange={(e) => {
                   invalidateConsent();
                   setFormat(e.target.value);
+                  if (account?.platform === "linkedin" && e.target.value === "text") {
+                    setMedia([]);
+                    setCover("");
+                  }
                 }}
                 className="mt-1 h-10 w-full rounded-md border bg-background px-3"
               >
@@ -162,6 +167,7 @@ export function DestinationEditor({
           <label>
             {t("Conteúdo")}
             <Textarea
+              maxLength={caps?.limits.maxContentLength}
               value={content}
               onChange={(e) => {
                 invalidateConsent();
@@ -179,7 +185,7 @@ export function DestinationEditor({
               }}
             />
           </label>
-          <fieldset className="grid gap-3">
+          {account?.platform !== "linkedin" || format !== "text" ? <fieldset className="grid gap-3">
             <legend className="mb-2 font-medium">{t("Mídias na ordem de publicação")}</legend>
             {assets.length === 0 ? <p>{t("Envie mídia para esta Marca na Biblioteca.")}</p> : null}
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -198,8 +204,8 @@ export function DestinationEditor({
               ))}
             </div>
             <p className="text-sm text-muted-foreground">{t("A ordem segue a seleção. Desmarque e selecione novamente para reorganizar.")}</p>
-          </fieldset>
-          <label>
+          </fieldset> : null}
+          {account?.platform !== "linkedin" ? <label>
             {t("Capa (opcional)")}
             <select
               value={cover}
@@ -218,7 +224,7 @@ export function DestinationEditor({
                   </option>
                 ))}
             </select>
-          </label>
+          </label> : null}
           {VIDEO_ANALYSIS_ENABLED ? <>
           <label>
             {t("Vínculo de análise (opcional)")}

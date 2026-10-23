@@ -1,3 +1,8 @@
+import type { Platform } from "../types/social";
+
+export const socialPlatforms: Platform[] = ["instagram", "tiktok", "youtube", "linkedin"];
+export const platformLabels: Record<Platform, string> = { instagram: "Instagram", tiktok: "TikTok", youtube: "YouTube", linkedin: "LinkedIn" };
+
 export const stateLabels: Record<string, string> = {
   draft: "Rascunho",
   awaiting_handoff: "Aguardando envio",
@@ -27,6 +32,7 @@ export function metricIsStale(observedAt: string, now = Date.now()) {
 }
 
 export const formatLabels: Record<string, string> = {
+  text: "Texto",
   feed: "Feed",
   reel: "Reels",
   story: "Stories",

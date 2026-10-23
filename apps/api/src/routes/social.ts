@@ -224,7 +224,7 @@ async function callback(c: import("hono").Context<AppBindings>) {
       )
         .bind(session.id)
         .run();
-      const values = ["session", "tempToken", "connect_token"];
+      const values = ["session", "tempToken", "connect_token", "pendingDataToken"];
       const hidden = values
         .map(
           (key) =>
@@ -233,8 +233,9 @@ async function callback(c: import("hono").Context<AppBindings>) {
             )}">`
         )
         .join("");
+      const network = session.platform === "linkedin" ? "LinkedIn" : "Instagram";
       return c.html(
-        `<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Capyra · Selecionar Instagram</title><body><main><h1>Selecione a conta do Instagram</h1><p>Escolha a conta profissional desta Marca.</p><form method="post" action="/api/v1/social-connections/callback">${hidden}${error.pages
+        `<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Capyra · Selecionar ${network}</title><body><main><h1>Selecione a conta do ${network}</h1><p>Escolha a conta profissional desta Marca.</p><form method="post" action="/api/v1/social-connections/callback">${hidden}${error.pages
           .map(
             (p) =>
               `<p><button name="pageId" value="${escapeHtml(
@@ -312,7 +313,7 @@ routes.use("*", async (c, next) => {
 });
 const platformSchema = z
   .object({
-    platform: z.enum(["instagram", "tiktok", "youtube"]),
+    platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
     reconnectAccountId: z.string().uuid().optional(),
   })
   .strict();
@@ -370,7 +371,7 @@ routes.post("/brands/:brandId/social-connections", async (c) => {
     existing &&
     (!existing.native_identity_id ||
       existing.identity_status !== "verified" ||
-      (!remote.mock && existing.platform !== "instagram"))
+      (!remote.mock && !["instagram", "linkedin"].includes(existing.platform)))
   )
     throw new ApiError(
       409,

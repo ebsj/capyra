@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/components/i18n/i18n-provider";
 import type { Brand } from "@/features/brands";
 import { listConnections, connectSocial, disconnectSocial, getCapabilities, syncSocial } from "../api/social-api";
-import type { SocialAccount, Platform, Capabilities } from "../types/social";
-import { stateLabels, formatLabels } from "../utils/state";
+import type { SocialAccount, Capabilities } from "../types/social";
+import { stateLabels, formatLabels, socialPlatforms, platformLabels } from "../utils/state";
 export function ConnectionsView({ accessToken, brand, owner }: { accessToken: string; brand: Brand; owner: boolean }) {
   const { t } = useI18n();
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
@@ -45,13 +45,13 @@ export function ConnectionsView({ accessToken, brand, owner }: { accessToken: st
       ) : null}
       {message ? <p role="status">{message}</p> : null}
       {!owner ? <p>{t("Somente o Proprietário administra conexões.")}</p> : null}
-      <div className="grid gap-4 lg:grid-cols-3">
-        {(["instagram", "tiktok", "youtube"] as Platform[]).map((platform) => {
+      <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+        {socialPlatforms.map((platform) => {
           const a = accounts.find((a) => a.platform === platform && a.status !== "disconnected");
           return (
             <Card key={platform}>
               <CardHeader>
-                <CardTitle className="capitalize">{platform}</CardTitle>
+                <CardTitle>{platformLabels[platform]}</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4">
                 {a ? (

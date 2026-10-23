@@ -13,10 +13,18 @@ const hooks = registerHooks({
 });
 after(()=>hooks.deregister());
 const {createBrowserApiRequest,ApiError}=await import(new URL("lib/http.ts",root));
-const {actOnDestination,saveDestination}=await import(new URL("features/social/api/social-api.ts",root));
+const {actOnDestination,saveDestination,connectSocial}=await import(new URL("features/social/api/social-api.ts",root));
 const {invitationTokenFromNext}=await import(new URL("features/auth/utils/invitation-token.ts",root));
 const {canCancel,canEdit,metricIsStale}=await import(new URL("features/social/utils/state.ts",root));
 const {saveBrand}=await import(new URL("features/brands/api/brands-api.ts",root));
+
+test("LinkedIn connection and reconnection use the canonical API without exposing provider identity",async(t)=>{
+ const bodies=[];
+ t.mock.method(globalThis,"fetch",async(url,init)=>{assert.equal(url,"/api/v1/brands/brand/social-connections");assert.equal(init.method,"POST");bodies.push(JSON.parse(init.body));return Response.json({id:"session",authorizationUrl:"http://localhost:5080/callback",expiresAt:"2026-10-19T00:00:00Z"});});
+ await connectSocial("token","brand","linkedin");
+ await connectSocial("token","brand","linkedin","connection");
+ assert.deepEqual(bodies,[{platform:"linkedin"},{platform:"linkedin",reconnectAccountId:"connection"}]);
+});
 
 test("brand creation omits the update-only confirmation field supplied by the form",async(t)=>{
  const form={name:"New Brand",timeZone:"America/Recife",confirmed:true};

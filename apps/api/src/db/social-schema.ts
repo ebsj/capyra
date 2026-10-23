@@ -147,7 +147,7 @@ export const socialAccounts = sqliteTable("social_accounts", {
   uniqueIndex("social_provider_account").on(table.providerAccountId).where(sql`provider_account_id IS NOT NULL`),
   uniqueIndex("social_native_identity").on(table.platform, table.nativeIdentityId).where(sql`status != 'disconnected' AND native_identity_id IS NOT NULL`),
   uniqueIndex("social_slot").on(table.brandId, table.platform).where(sql`status != 'disconnected'`),
-  check("social_accounts_check_1", sql`platform IN ('instagram','tiktok','youtube')`),
+  check("social_accounts_check_1", sql`platform IN ('instagram','tiktok','youtube','linkedin')`),
   check("social_accounts_check_2", sql`identity_status IN ('verified','unavailable')`),
   check("social_accounts_check_3", sql`status IN ('pending','active','requires_action','disconnecting','disconnected')`),
   check("social_accounts_check_4", sql`status != 'active' OR (native_identity_id IS NOT NULL AND identity_status = 'verified')`),

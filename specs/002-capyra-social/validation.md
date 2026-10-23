@@ -59,3 +59,22 @@ Uma credencial aparente preexistente em `apps/api/.dev.vars.example` foi substit
 ## Fora da validação local
 
 Não executados: Zernio autenticado, publicação/analytics reais, OAuth/branding white label, OpenAI pago, deploy ou migrations remotas. Identidades não verificáveis continuam bloqueadas; resultado remoto inconclusivo permanece desconhecido sem reenvio cego. O [quickstart](quickstart.md) contém token, segredo, callback, webhook e roteiro posterior. Aprovação do fornecedor e lançamento comercial continuam pendentes.
+
+
+## Extensão LinkedIn — 2026-10-19
+
+- API: 115 testes Vitest Workers aprovados; cobertura da migration `0008` sobre banco populado,
+  FKs/índices/CHECKs, OAuth restrito a posting/analytics, seleção de perfil/página
+  com dados servidor a servidor, conflitos de identidade/perfil/cota antes da
+  seleção, formulário protegido, callback de uso único, limites por formato,
+  vídeo por tipo de conta e publicação de texto idempotente via API/fila mock.
+- Web: lint, build vinext, 48 testes `tests/web/*.test.mjs` e smoke aprovados; cobertura de
+  transporte da conexão, edição de texto sem mídia e configurações específicas.
+- Runtime: migration local aplicada; API, container, MCP, web e site saudáveis.
+- Navegador integrado em `localhost:3000`: cartões das quatro redes renderizados;
+  filtro LinkedIn selecionado em Métricas sociais, sem overlay ou tela vazia.
+  A inspeção do console mostrou aviso de hidratação do nonce no script público
+  Firebase, fora dos arquivos alterados por esta extensão. Não houve erro do
+  componente LinkedIn. Screenshot de conferência salvo fora do repositório.
+- Validação real de OAuth/publicação/métricas Zernio não executada; usa fixtures
+  locais e mocks HTTP. Viewport móvel não validado nesta rodada.

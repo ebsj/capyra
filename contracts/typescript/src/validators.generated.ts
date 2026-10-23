@@ -138,7 +138,7 @@ const patchApiv1brandsId_Body = z
   })
   .partial();
 const createSocialAuthorization_Body = z.object({
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   reconnectAccountId: z.string().uuid().optional(),
 });
 const createSocialPublication_Body = z.object({
@@ -155,6 +155,7 @@ const createSocialDestination_Body = z.object({
     "video",
     "photo_carousel",
     "short",
+    "text",
   ]),
   content: z.string(),
   title: z.string().optional(),
@@ -1826,6 +1827,7 @@ const SocialDestinationInput = z.object({
     "video",
     "photo_carousel",
     "short",
+    "text",
   ]),
   content: z.string(),
   title: z.string().optional(),
@@ -1862,7 +1864,7 @@ const SocialDestinationInput = z.object({
 const SocialAccount = z.object({
   id: z.string().uuid(),
   brandId: z.string().uuid(),
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   displayName: z.string(),
   status: z.enum([
     "pending",
@@ -1875,7 +1877,7 @@ const SocialAccount = z.object({
   createdAt: z.string().datetime({ offset: true }),
 });
 const SocialAuthorizationRequest = z.object({
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   reconnectAccountId: z.string().uuid().optional(),
 });
 const SocialAuthorization = z.object({
@@ -1884,7 +1886,7 @@ const SocialAuthorization = z.object({
   expiresAt: z.string().datetime({ offset: true }),
 });
 const SocialCapabilities = z.object({
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   formats: z.array(z.string()),
   limits: z.object({
     maxBytes: z.number(),
@@ -1914,6 +1916,7 @@ const SocialDestinationVersion = z.object({
       "video",
       "photo_carousel",
       "short",
+      "text",
     ]),
     content: z.string(),
     title: z.string().optional(),
@@ -1971,6 +1974,7 @@ const SocialDestination = z.object({
     "video",
     "photo_carousel",
     "short",
+    "text",
   ]),
   content: z.string(),
   title: z.string().optional(),
@@ -2005,7 +2009,7 @@ const SocialDestination = z.object({
     .partial(),
   id: z.string().uuid(),
   publicationId: z.string().uuid(),
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   status: z.enum([
     "draft",
     "awaiting_handoff",
@@ -2038,6 +2042,7 @@ const SocialDestination = z.object({
             "video",
             "photo_carousel",
             "short",
+            "text",
           ]),
           content: z.string(),
           title: z.string().optional(),
@@ -2110,6 +2115,7 @@ const SocialPublication = z.object({
         "video",
         "photo_carousel",
         "short",
+        "text",
       ]),
       content: z.string(),
       title: z.string().optional(),
@@ -2148,7 +2154,7 @@ const SocialPublication = z.object({
         .partial(),
       id: z.string().uuid(),
       publicationId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       status: z.enum([
         "draft",
         "awaiting_handoff",
@@ -2181,6 +2187,7 @@ const SocialPublication = z.object({
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),
@@ -2247,7 +2254,7 @@ const SocialPreflight = z.object({
     z.object({ field: z.string(), code: z.string(), message: z.string() })
   ),
   capabilities: z.object({
-    platform: z.enum(["instagram", "tiktok", "youtube"]),
+    platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
     formats: z.array(z.string()),
     limits: z.object({
       maxBytes: z.number(),
@@ -2273,7 +2280,7 @@ const ExternalPost = z.object({
   id: z.string().uuid(),
   brandId: z.string().uuid(),
   socialAccountId: z.string().uuid(),
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   nativePostId: z.string(),
   url: z.union([z.string(), z.null()]),
   content: z.string(),
@@ -2289,7 +2296,7 @@ const SocialMetricSnapshot = z.object({
   socialAccountId: z.string().uuid(),
   destinationId: z.union([z.string(), z.null()]),
   externalPostId: z.union([z.string(), z.null()]),
-  platform: z.enum(["instagram", "tiktok", "youtube"]),
+  platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
   metric: z.string(),
   value: z.union([z.number(), z.null()]),
   availability: z.enum(["available", "unavailable"]),
@@ -2304,7 +2311,7 @@ const SocialAccountList = z.object({
     z.object({
       id: z.string().uuid(),
       brandId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       displayName: z.string(),
       status: z.enum([
         "pending",
@@ -2338,6 +2345,7 @@ const SocialPublicationList = z.object({
             "video",
             "photo_carousel",
             "short",
+            "text",
           ]),
           content: z.string(),
           title: z.string().optional(),
@@ -2376,7 +2384,7 @@ const SocialPublicationList = z.object({
             .partial(),
           id: z.string().uuid(),
           publicationId: z.string().uuid(),
-          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
           status: z.enum([
             "draft",
             "awaiting_handoff",
@@ -2409,6 +2417,7 @@ const SocialPublicationList = z.object({
                     "video",
                     "photo_carousel",
                     "short",
+                    "text",
                   ]),
                   content: z.string(),
                   title: z.string().optional(),
@@ -2474,7 +2483,7 @@ const ExternalPostList = z.object({
       id: z.string().uuid(),
       brandId: z.string().uuid(),
       socialAccountId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       nativePostId: z.string(),
       url: z.union([z.string(), z.null()]),
       content: z.string(),
@@ -2491,7 +2500,7 @@ const SocialMetricList = z.object({
       socialAccountId: z.string().uuid(),
       destinationId: z.union([z.string(), z.null()]),
       externalPostId: z.union([z.string(), z.null()]),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       metric: z.string(),
       value: z.union([z.number(), z.null()]),
       availability: z.enum(["available", "unavailable"]),
@@ -4627,7 +4636,7 @@ const endpoints = makeApi([
         z.object({
           id: z.string().uuid(),
           brandId: z.string().uuid(),
-          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
           displayName: z.string(),
           status: z.enum([
             "pending",
@@ -4899,7 +4908,7 @@ const endpoints = makeApi([
           id: z.string().uuid(),
           brandId: z.string().uuid(),
           socialAccountId: z.string().uuid(),
-          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
           nativePostId: z.string(),
           url: z.union([z.string(), z.null()]),
           content: z.string(),
@@ -5583,7 +5592,7 @@ const endpoints = makeApi([
       },
     ],
     response: z.object({
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       formats: z.array(z.string()),
       limits: z.object({
         maxBytes: z.number(),
@@ -5657,7 +5666,7 @@ const endpoints = makeApi([
     response: z.object({
       id: z.string().uuid(),
       brandId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       displayName: z.string(),
       status: z.enum([
         "pending",
@@ -5861,7 +5870,7 @@ const endpoints = makeApi([
           socialAccountId: z.string().uuid(),
           destinationId: z.union([z.string(), z.null()]),
           externalPostId: z.union([z.string(), z.null()]),
-          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
           metric: z.string(),
           value: z.union([z.number(), z.null()]),
           availability: z.enum(["available", "unavailable"]),
@@ -5959,6 +5968,7 @@ const endpoints = makeApi([
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),
@@ -5997,7 +6007,7 @@ const endpoints = makeApi([
                 .partial(),
               id: z.string().uuid(),
               publicationId: z.string().uuid(),
-              platform: z.enum(["instagram", "tiktok", "youtube"]),
+              platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
               status: z.enum([
                 "draft",
                 "awaiting_handoff",
@@ -6030,6 +6040,7 @@ const endpoints = makeApi([
                         "video",
                         "photo_carousel",
                         "short",
+                        "text",
                       ]),
                       content: z.string(),
                       title: z.string().optional(),
@@ -6162,6 +6173,7 @@ const endpoints = makeApi([
             "video",
             "photo_carousel",
             "short",
+            "text",
           ]),
           content: z.string(),
           title: z.string().optional(),
@@ -6200,7 +6212,7 @@ const endpoints = makeApi([
             .partial(),
           id: z.string().uuid(),
           publicationId: z.string().uuid(),
-          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
           status: z.enum([
             "draft",
             "awaiting_handoff",
@@ -6233,6 +6245,7 @@ const endpoints = makeApi([
                     "video",
                     "photo_carousel",
                     "short",
+                    "text",
                   ]),
                   content: z.string(),
                   title: z.string().optional(),
@@ -6362,6 +6375,7 @@ const endpoints = makeApi([
             "video",
             "photo_carousel",
             "short",
+            "text",
           ]),
           content: z.string(),
           title: z.string().optional(),
@@ -6400,7 +6414,7 @@ const endpoints = makeApi([
             .partial(),
           id: z.string().uuid(),
           publicationId: z.string().uuid(),
-          platform: z.enum(["instagram", "tiktok", "youtube"]),
+          platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
           status: z.enum([
             "draft",
             "awaiting_handoff",
@@ -6433,6 +6447,7 @@ const endpoints = makeApi([
                     "video",
                     "photo_carousel",
                     "short",
+                    "text",
                   ]),
                   content: z.string(),
                   title: z.string().optional(),
@@ -6559,6 +6574,7 @@ const endpoints = makeApi([
         "video",
         "photo_carousel",
         "short",
+        "text",
       ]),
       content: z.string(),
       title: z.string().optional(),
@@ -6597,7 +6613,7 @@ const endpoints = makeApi([
         .partial(),
       id: z.string().uuid(),
       publicationId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       status: z.enum([
         "draft",
         "awaiting_handoff",
@@ -6630,6 +6646,7 @@ const endpoints = makeApi([
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),
@@ -6759,6 +6776,7 @@ const endpoints = makeApi([
         "video",
         "photo_carousel",
         "short",
+        "text",
       ]),
       content: z.string(),
       title: z.string().optional(),
@@ -6797,7 +6815,7 @@ const endpoints = makeApi([
         .partial(),
       id: z.string().uuid(),
       publicationId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       status: z.enum([
         "draft",
         "awaiting_handoff",
@@ -6830,6 +6848,7 @@ const endpoints = makeApi([
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),
@@ -6959,6 +6978,7 @@ const endpoints = makeApi([
         "video",
         "photo_carousel",
         "short",
+        "text",
       ]),
       content: z.string(),
       title: z.string().optional(),
@@ -6997,7 +7017,7 @@ const endpoints = makeApi([
         .partial(),
       id: z.string().uuid(),
       publicationId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       status: z.enum([
         "draft",
         "awaiting_handoff",
@@ -7030,6 +7050,7 @@ const endpoints = makeApi([
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),
@@ -7150,7 +7171,7 @@ const endpoints = makeApi([
         z.object({ field: z.string(), code: z.string(), message: z.string() })
       ),
       capabilities: z.object({
-        platform: z.enum(["instagram", "tiktok", "youtube"]),
+        platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
         formats: z.array(z.string()),
         limits: z.object({
           maxBytes: z.number(),
@@ -7242,6 +7263,7 @@ const endpoints = makeApi([
         "video",
         "photo_carousel",
         "short",
+        "text",
       ]),
       content: z.string(),
       title: z.string().optional(),
@@ -7280,7 +7302,7 @@ const endpoints = makeApi([
         .partial(),
       id: z.string().uuid(),
       publicationId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       status: z.enum([
         "draft",
         "awaiting_handoff",
@@ -7313,6 +7335,7 @@ const endpoints = makeApi([
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),
@@ -7447,6 +7470,7 @@ const endpoints = makeApi([
         "video",
         "photo_carousel",
         "short",
+        "text",
       ]),
       content: z.string(),
       title: z.string().optional(),
@@ -7485,7 +7509,7 @@ const endpoints = makeApi([
         .partial(),
       id: z.string().uuid(),
       publicationId: z.string().uuid(),
-      platform: z.enum(["instagram", "tiktok", "youtube"]),
+      platform: z.enum(["instagram", "tiktok", "youtube", "linkedin"]),
       status: z.enum([
         "draft",
         "awaiting_handoff",
@@ -7518,6 +7542,7 @@ const endpoints = makeApi([
                 "video",
                 "photo_carousel",
                 "short",
+                "text",
               ]),
               content: z.string(),
               title: z.string().optional(),

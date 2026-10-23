@@ -26,6 +26,8 @@ export async function enqueueSync(
         ? ["instagram.com"]
         : account.platform === "tiktok"
         ? ["tiktok.com"]
+        : account.platform === "linkedin"
+        ? ["linkedin.com"]
         : ["youtube.com", "youtu.be"];
     if (
       parsed.protocol !== "https:" ||
