@@ -2796,10 +2796,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Complete a single-use social authorization or display Instagram identity selection */
+        /** Complete a single-use social authorization or display social identity selection */
         get: operations["completeSocialAuthorizationGet"];
         put?: never;
-        /** Complete a single-use social authorization or display Instagram identity selection */
+        /** Complete a single-use social authorization or display social identity selection */
         post: operations["completeSocialAuthorizationPost"];
         delete?: never;
         options?: never;
@@ -3514,7 +3514,7 @@ export interface components {
             /** Format: uuid */
             socialAccountId: string;
             /** @enum {string} */
-            format: "feed" | "reel" | "story" | "carousel" | "video" | "photo_carousel" | "short";
+            format: "feed" | "reel" | "story" | "carousel" | "video" | "photo_carousel" | "short" | "text";
             content: string;
             title?: string;
             description?: string;
@@ -3531,7 +3531,7 @@ export interface components {
             /** Format: uuid */
             brandId: string;
             /** @enum {string} */
-            platform: "instagram" | "tiktok" | "youtube";
+            platform: "instagram" | "tiktok" | "youtube" | "linkedin";
             displayName: string;
             /** @enum {string} */
             status: "pending" | "active" | "requires_action" | "disconnecting" | "disconnected";
@@ -3542,7 +3542,7 @@ export interface components {
         };
         SocialAuthorizationRequest: {
             /** @enum {string} */
-            platform: "instagram" | "tiktok" | "youtube";
+            platform: "instagram" | "tiktok" | "youtube" | "linkedin";
             /** Format: uuid */
             reconnectAccountId?: string;
         };
@@ -3556,7 +3556,7 @@ export interface components {
         };
         SocialCapabilities: {
             /** @enum {string} */
-            platform: "instagram" | "tiktok" | "youtube";
+            platform: "instagram" | "tiktok" | "youtube" | "linkedin";
             formats: string[];
             limits: {
                 maxBytes: number;
@@ -3600,7 +3600,7 @@ export interface components {
             /** Format: uuid */
             socialAccountId: string;
             /** @enum {string} */
-            format: "feed" | "reel" | "story" | "carousel" | "video" | "photo_carousel" | "short";
+            format: "feed" | "reel" | "story" | "carousel" | "video" | "photo_carousel" | "short" | "text";
             content: string;
             title?: string;
             description?: string;
@@ -3615,7 +3615,7 @@ export interface components {
             /** Format: uuid */
             publicationId: string;
             /** @enum {string} */
-            platform: "instagram" | "tiktok" | "youtube";
+            platform: "instagram" | "tiktok" | "youtube" | "linkedin";
             /** @enum {string} */
             status: "draft" | "awaiting_handoff" | "submitting" | "scheduled" | "publishing" | "published" | "cancellation_requested" | "cancelled" | "unknown" | "failed";
             scheduledAt: string | null;
@@ -3668,7 +3668,7 @@ export interface components {
             /** Format: uuid */
             socialAccountId: string;
             /** @enum {string} */
-            platform: "instagram" | "tiktok" | "youtube";
+            platform: "instagram" | "tiktok" | "youtube" | "linkedin";
             nativePostId: string;
             url: string | null;
             content: string;
@@ -3691,7 +3691,7 @@ export interface components {
             destinationId: string | null;
             externalPostId: string | null;
             /** @enum {string} */
-            platform: "instagram" | "tiktok" | "youtube";
+            platform: "instagram" | "tiktok" | "youtube" | "linkedin";
             metric: string;
             value: number | null;
             /** @enum {string} */
@@ -5257,7 +5257,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Capyra Instagram account selection */
+            /** @description Capyra social account selection */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -5298,7 +5298,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Capyra Instagram account selection */
+            /** @description Capyra social account selection */
             200: {
                 headers: {
                     [name: string]: unknown;

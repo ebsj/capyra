@@ -16,7 +16,7 @@ Audit: actor, account, optional brand, action/resource/correlation/time, twelve-
 
 ## Social (migration 0002)
 
-Social accounts: internal ID, account/brand, platform enum instagram|tiktok|youtube, provider profile/account references, verified native identity nullable, display name, identity status, connection state and timestamps. Partial uniqueness protects occupied brand/platform slots and verified platform/native identity globally. Unknown identity is never active.
+Social accounts: internal ID, account/brand, platform enum instagram|tiktok|youtube|linkedin, provider profile/account references, verified native identity nullable, display name, identity status, connection state and timestamps. Partial uniqueness protects occupied brand/platform slots and verified platform/native identity globally. Unknown identity is never active.
 
 Authorization sessions: hashed single-use state, actor/account/brand/platform, expected identity for safe reconnect, expiry and provider references; no persisted OAuth social access tokens.
 

@@ -1775,7 +1775,7 @@ paths:
   /api/v1/social-connections/callback:
     get:
       operationId: completeSocialAuthorizationGet
-      summary: Complete a single-use social authorization or display Instagram identity
+      summary: Complete a single-use social authorization or display social identity
         selection
       tags:
       - Social
@@ -1784,7 +1784,7 @@ paths:
         '302':
           description: Redirect to brand connections
         '200':
-          description: Capyra Instagram account selection
+          description: Capyra social account selection
           content:
             text/html:
               schema:
@@ -1795,7 +1795,7 @@ paths:
           description: Identity verification failed
     post:
       operationId: completeSocialAuthorizationPost
-      summary: Complete a single-use social authorization or display Instagram identity
+      summary: Complete a single-use social authorization or display social identity
         selection
       tags:
       - Social
@@ -1804,7 +1804,7 @@ paths:
         '302':
           description: Redirect to brand connections
         '200':
-          description: Capyra Instagram account selection
+          description: Capyra social account selection
           content:
             text/html:
               schema:
@@ -3745,6 +3745,7 @@ components:
           - video
           - photo_carousel
           - short
+          - text
         content:
           type: string
         title:
@@ -3786,6 +3787,7 @@ components:
           - instagram
           - tiktok
           - youtube
+          - linkedin
         displayName:
           type: string
         status:
@@ -3822,6 +3824,7 @@ components:
           - instagram
           - tiktok
           - youtube
+          - linkedin
         reconnectAccountId:
           type: string
           format: uuid
@@ -3854,6 +3857,7 @@ components:
           - instagram
           - tiktok
           - youtube
+          - linkedin
         formats:
           type: array
           items:
@@ -3982,6 +3986,7 @@ components:
           - video
           - photo_carousel
           - short
+          - text
         content:
           type: string
         title:
@@ -4013,6 +4018,7 @@ components:
           - instagram
           - tiktok
           - youtube
+          - linkedin
         status:
           type: string
           enum:
@@ -4178,6 +4184,7 @@ components:
           - instagram
           - tiktok
           - youtube
+          - linkedin
         nativePostId:
           type: string
         url:
@@ -4241,6 +4248,7 @@ components:
           - instagram
           - tiktok
           - youtube
+          - linkedin
         metric:
           type: string
         value:

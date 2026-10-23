@@ -606,5 +606,7 @@
   "Ir para Publicações": "Go to Publications",
   "Página não encontrada": "Page not found",
   "A página pode ter sido removida ou o endereço pode estar incompleto.": "The page may have been removed or the address may be incomplete.",
-  "Métricas nativas por rede. Dados indisponíveis não são zero; comparações são observacionais.": "Native metrics by network. Unavailable data is not zero; comparisons are observational."
+  "Métricas nativas por rede. Dados indisponíveis não são zero; comparações são observacionais.": "Native metrics by network. Unavailable data is not zero; comparisons are observational.",
+  "Texto": "Text",
+  "Publicação no perfil ou página selecionado na conexão. Texto: até 3.000 caracteres; carrossel: até 20 imagens.": "Posts use the profile or page selected when connecting. Text: up to 3,000 characters; carousel: up to 20 images."
 }

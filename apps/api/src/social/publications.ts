@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateLinkedInMedia } from "./linkedin";
 import { ApiError, nowIso, uuidv7 } from "../common";
 import { requireActiveBrand, recordAudit } from "../foundations";
 import type { AuthPrincipal } from "../runtime";
@@ -24,6 +25,7 @@ export const payloadSchema = z
       "video",
       "photo_carousel",
       "short",
+      "text",
     ]),
     content: z.string().max(5000).default(""),
     title: z.string().max(100).optional(),
@@ -299,11 +301,13 @@ export function validateMedia(
   );
   const videos = media.filter((a) => a.media_kind === "video");
   const images = media.filter((a) => a.media_kind === "image");
-  if (!media.length) add("mediaAssetIds", "media_required", "Adicione mídia.");
+  if (!media.length && !(account.platform === "linkedin" && payload.format === "text")) add("mediaAssetIds", "media_required", "Adicione mídia.");
   if (new Set(payload.mediaAssetIds).size !== payload.mediaAssetIds.length)
     add("mediaAssetIds", "duplicate_media", "Não repita a mesma mídia.");
   if (payload.content.length > capabilities.limits.maxContentLength)
     add("content", "content_too_long", "O texto excede o limite da rede.");
+  if (account.platform === "linkedin")
+    issues.push(...validateLinkedInMedia(payload, media, capabilities));
   if (account.platform === "instagram") {
     if (
       payload.format === "feed" &&
@@ -423,7 +427,7 @@ export function validateMedia(
       add("mediaAssetIds", "media_too_large", "O arquivo excede o limite.");
     if (asset.media_kind === "image") {
       const max =
-        account.platform === "instagram" ? 8 * 1024 * 1024 : 20 * 1024 * 1024;
+        ["instagram", "linkedin"].includes(account.platform) ? 8 * 1024 * 1024 : 20 * 1024 * 1024;
       if (asset.content_length > max)
         add(
           "mediaAssetIds",

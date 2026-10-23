@@ -119,7 +119,7 @@ Saldo e convite concorrentes; Membro removido com sessão antiga; Marca alheia/a
 - **FR-013**: Autorização social deve ser de uso único, expirar e vincular Operador, Conta, Marca e rede; o navegador não decide a propriedade da identidade.
 - **FR-014**: Identidade não verificável deve permanecer pendente sem publicar; reconexão insegura deve ser bloqueada antes da autorização, sem usar handle como identidade.
 - **FR-015**: Publicações devem agrupar Destinos com conteúdo, mídia, configurações, horários e estados independentes; análise concluída da mesma Marca é vínculo opcional.
-- **FR-016**: Devem ser suportados Feed, Reels, Stories e carrosséis Instagram; vídeos e carrosséis de fotos TikTok; vídeos e Shorts YouTube, sujeitos às capacidades válidas da conexão.
+- **FR-016**: Devem ser suportados Feed, Reels, Stories e carrosséis Instagram; vídeos e carrosséis de fotos TikTok; vídeos e Shorts YouTube; texto, imagem, carrossel de até 20 imagens e vídeo LinkedIn (perfil pessoal ou página de empresa), sujeitos às capacidades válidas da conexão.
 - **FR-017**: Composição deve validar mídia e configurações por Destino antes de enviar e exigir prévia, privacidade e consentimentos TikTok.
 - **FR-018**: Submissão deve preservar versão imutável e tentativas rastreáveis; estados devem distinguir rascunho, aguardando envio, submetendo, agendado, publicando, publicado, cancelamento solicitado, cancelado, desconhecido e falha definitiva.
 - **FR-019**: Agendamentos distantes devem permanecer duráveis até seis dias antes da publicação; horários ambíguos ou inexistentes devem ser recusados.

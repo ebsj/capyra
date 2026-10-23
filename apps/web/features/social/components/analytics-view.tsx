@@ -1,4 +1,5 @@
 "use client";
+import { socialPlatforms, platformLabels } from "../utils/state";
 import { useEffect, useState } from "react";
 import { VIDEO_ANALYSIS_ENABLED } from "@/lib/features";
 import { Button } from "@/components/ui/button";
@@ -77,8 +78,8 @@ export function AnalyticsView({ accessToken, initialBrandId = "" }: { accessToke
               {t("Rede")}
               <select aria-label={t("Rede")} className="ml-2 h-10 rounded border bg-background px-3" value={filter} onChange={(e) => setFilter(e.target.value)}>
                 <option value="">{t("Todas")}</option>
-                {["instagram", "tiktok", "youtube"].map((v) => (
-                  <option key={v}>{v}</option>
+                {socialPlatforms.map((v) => (
+                  <option key={v} value={v}>{platformLabels[v]}</option>
                 ))}
               </select>
             </label>

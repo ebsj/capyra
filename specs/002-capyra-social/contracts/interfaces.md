@@ -25,7 +25,7 @@ All new upload/create analysis inputs require brandId. Asset output extends curr
 
 ## Social
 
-Provider/public enums use instagram|tiktok|youtube. Social implementation owns `src/social/*`, `routes/social.ts`, migration `0002_capyra_social.sql`, tests `test/social*.test.ts`. It supplies route contract fragment to root for canonical integration.
+Provider/public enums use instagram|tiktok|youtube|linkedin. Social implementation owns `src/social/*`, `routes/social.ts`, migration `0002_capyra_social.sql`, tests `test/social*.test.ts`. It supplies route contract fragment to root for canonical integration.
 
 SocialAccount public shape: `{id,brandId,platform,displayName,status,identityStatus,createdAt}` with status pending|active|requires_action|disconnecting|disconnected and identityStatus verified|unavailable. No provider IDs exposed.
 `GET /brands/:brandId/social-connections` => `{items:SocialAccount[]}`.

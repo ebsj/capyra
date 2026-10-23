@@ -562,3 +562,23 @@ Uma fase está pronta somente com:
 - Implementação do adaptador real e simulador local; nenhum deploy, migration remota, publicação real ou chamada paga durante o desenvolvimento.
 - Identidade nativa não comprovada permanece pendente e bloqueia publicação; reconexão insegura não abre OAuth. Não usar handle ou ID do fornecedor como prova de identidade.
 - A prova prática de OAuth, white label, formatos e métricas reais será executada pelo usuário posteriormente. Não registrar esses gates como aprovados por testes locais.
+
+
+### Extensão LinkedIn — 2026-10-19
+
+O escopo social inclui LinkedIn além das três redes do plano inicial, com uma
+identidade por rede/Marca e a mesma franquia contratada. Perfil pessoal e página
+de empresa são selecionados no Capyra por dados OAuth obtidos servidor a
+servidor; reconexão preserva a identidade nativa. Texto, imagem, carrossel de
+imagens e vídeo usam os mesmos Destinos, versões, fila, cancelamento e métricas.
+Veja os limites e o roteiro de teste no [quickstart](../../specs/002-capyra-social/quickstart.md#linkedin).
+
+Constitution Check: a API continua sendo a única fronteira; OpenAPI e derivados
+incluem a rede/formato, e D1 recebe a migration aditiva `0008_social_linkedin.sql`.
+A tabela com CHECK é reconstruída com FKs diferidas preservando dados e índices;
+Queue/R2 e a franquia permanecem com o comportamento vigente. Falta de prova de
+identidade/permissão bloqueia o envio; timeouts e retries usam o fluxo existente.
+Não há novo segredo, binding ou custo fixo. Testes locais cobrem migration com
+histórico, seleção/reconexão, limites, publicação idempotente e URLs por rede.
+A homologação de OAuth/publicação/métricas reais requer conta autorizada do
+provedor e não é comprovada pelo simulador.

@@ -32,7 +32,7 @@ Em macOS com limite baixo de arquivos, use `ulimit -n 8192` antes de iniciar. Em
 1. Crie uma Conta descartável e confirme o nome/fuso da Marca inicial em **Marcas**. Contas legadas recebem Marca inicial; análises anteriores continuam sem Marca até atribuição manual.
 2. Em **Equipe**, crie convite para um e-mail definido e copie o link. O aceite real usa login Firebase com e-mail verificado correspondente. A concorrência, expiração e revogação são verificadas nos testes locais com Firebase simulado.
 3. Carregue vídeo/imagem na **Biblioteca**, escolhendo a Marca. Aguarde a inspeção do container. Ela não chama OpenAI. Análises aceitam somente vídeos até 180 segundos; a ausência de chave OpenAI resulta em falha explícita e liberação da reserva, nunca relatório fictício.
-4. Em **Conexões**, conecte Instagram, TikTok e YouTube. No modo mock a autorização retorna ao callback local, com identidades sintéticas verificadas. Escolha uma mídia e crie Publicação com Destinos independentes. Confirme privacidade, prévia e consentimentos TikTok.
+4. Em **Conexões**, conecte Instagram, TikTok, YouTube e LinkedIn. No modo mock a autorização retorna ao callback local, com identidades sintéticas verificadas. Escolha uma mídia e crie Publicação com Destinos independentes. Confirme privacidade, prévia e consentimentos TikTok.
 5. Publique no simulador ou agende. O detalhe mostra versão, tentativas e estado de cada Destino. Um horário distante permanece no Capyra até T−6 dias. Cancele um agendamento e aguarde confirmação antes de editar.
 6. Consulte Posts externos/Métricas, Uso, Notificações e Auditoria. Teste uma Conta distinta para confirmar isolamento. Arquive uma Marca após os cancelamentos/desconexões; o histórico fica somente leitura. A restauração exige conectar novamente.
 
@@ -82,6 +82,38 @@ Não há fallback para mock se faltar token. O adaptador aceita apenas o host of
 
 O fornecedor pode exigir uma URL HTTPS alcançável para callback/webhook. Criar túnel ou tornar a API acessível externamente não foi realizado. Para esse teste posterior, o issuer usado pelo Worker e pelos consumidores precisa coincidir com a origem escolhida; o script local padrão fixa localhost e deve ser ajustado conscientemente para esse contexto. R2 deve continuar privado: o Worker transfere a mídia por streaming.
 
-Use uma Marca/contas de teste para executar a [matriz de prova white label](../../docs/plans/capyra-social.md): autorização das três redes, identidade nativa servidor a servidor, seleção protegida Instagram, reconexão, formatos/permissões, publicação, cancelamento, importação e atualização de métricas. Registre campos observados, resposta/horário e resultado por rede sem guardar tokens. Handle e ID do fornecedor nunca substituem identidade nativa comprovada. Uma conexão sem essa evidência fica pendente; reconexão insegura é bloqueada antes do OAuth.
+Use uma Marca/contas de teste para executar a [matriz de prova white label](../../docs/plans/capyra-social.md): autorização das quatro redes, identidade nativa servidor a servidor, seleção protegida Instagram e LinkedIn, reconexão, formatos/permissões, publicação, cancelamento, importação e atualização de métricas. Registre campos observados, resposta/horário e resultado por rede sem guardar tokens. Handle e ID do fornecedor nunca substituem identidade nativa comprovada. Uma conexão sem essa evidência fica pendente; reconexão insegura é bloqueada antes do OAuth.
 
 **Pendente do usuário:** prova real Zernio, branding OAuth/white label, publicações reais, métricas reais e resultados comerciais do piloto. Nenhum desses gates foi aprovado pelos testes locais.
+
+
+## LinkedIn
+
+Em **Marcas → Conexões**, escolha **LinkedIn → Conectar**. Em modo mock, o
+callback local ativa uma identidade sintética para testar a interface e a fila.
+Em modo Zernio, o OAuth solicita somente as áreas `posting,analytics`. A seleção de perfil pessoal ou página é feita no Capyra, a
+partir de `GET /connect/pending-data`. A identidade nativa (`urn:li:person:…`
+ou `urn:li:organization:…`) vem exclusivamente dessa resposta servidor a
+servidor. A reconexão exige a mesma identidade; ausência de evidência bloqueia
+a conexão, sem usar handle ou ID do fornecedor como substituto.
+
+Formatos disponíveis: texto sem mídia (não vazio), uma imagem, carrossel de
+2 a 20 imagens ou um vídeo. Texto tem limite de 3.000 caracteres; imagens
+JPEG/PNG/GIF, até 8 MB cada. Vídeo MP4/MOV/AVI tem mínimo de 3 segundos,
+máximo de 10 minutos em perfil pessoal ou 30 minutos em página, proporção
+entre 1:2.4 e 2.4:1 e o teto de upload do Capyra (200 MB). Capas personalizadas,
+documentos, enquetes e republicações não integram este escopo.
+
+O filtro **LinkedIn** aparece em Métricas sociais. URLs de importação aceitam
+HTTPS em `linkedin.com` e subdomínios; a disponibilidade de histórico e métricas
+depende das permissões e do tipo de conta. Métricas ausentes continuam
+indisponíveis. Perfis pessoais têm métricas apenas dos posts publicados pelo
+provedor; conectar uma rede adicional não aumenta a franquia de identidades.
+
+A migration `0008_social_linkedin.sql` amplia a rede permitida preservando IDs,
+referências e índices de isolamento. Aplique localmente com o comando habitual
+de migrations; a aplicação remota faz parte de um deploy autorizado.
+
+Referências: [LinkedIn](https://docs.zernio.com/platforms/linkedin),
+[dados OAuth pendentes](https://docs.zernio.com/connect/get-pending-oauth-data),
+[seleção de perfil/página](https://docs.zernio.com/connect/select-linkedin-organization).

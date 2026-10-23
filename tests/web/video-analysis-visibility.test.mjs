@@ -132,3 +132,25 @@ test("reenabling the flag restores analysis selection for new destinations", asy
   await find(tree, "form").props.onSubmit({ preventDefault() {} });
   assert.equal(editor.state.saved[2].analysisId, "selected-analysis");
 });
+
+test("LinkedIn text drafts hide media and cover controls and preserve an empty media list", async () => {
+  const editor = await load("features/social/components/destination-editor.tsx");
+  const initial = { id: "dest", socialAccountId: "linkedin", format: "text", content: "Hello LinkedIn", mediaAssetIds: [], settings: {} };
+  const tree = editor.DestinationEditor({ accessToken: "test", publicationId: "pub", accounts: [{ id: "linkedin", platform: "linkedin", status: "active", identityStatus: "verified", displayName: "Company" }], assets: [], analyses: [], initial, onSaved() {}, onClose() {} });
+  const rendered = JSON.stringify(tree);
+  assert.doesNotMatch(rendered, /Mídias na ordem de publicação|Capa \(opcional\)/);
+  assert.match(rendered, /LinkedIn/);
+  await find(tree, "form").props.onSubmit({ preventDefault() {} });
+  assert.equal(editor.state.saved[2].format, "text");
+  assert.deepEqual(editor.state.saved[2].mediaAssetIds, []);
+});
+
+test("LinkedIn settings omit unsupported privacy, feed and cover controls", async () => {
+  const settings = await load("features/social/components/destination-settings.tsx");
+  const tree = settings.DestinationSettings({ platform: "linkedin", settings: {}, capabilities: { privacyLevels: [] }, onChange() {} });
+  const rendered = JSON.stringify(tree);
+  assert.doesNotMatch(rendered, /Privacidade|Compartilhar no feed|Instante da capa/);
+  assert.match(rendered, /3.000 caracteres/);
+  const youtube = settings.DestinationSettings({ platform: "youtube", settings: {}, capabilities: { privacyLevels: ["private"] }, onChange() {} });
+  assert.match(JSON.stringify(youtube), /Privacidade/);
+});
