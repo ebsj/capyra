@@ -58,4 +58,4 @@ transcricoes ou URLs assinadas.
 
 ## Capyra Social
 
-A API permanece a única fronteira de negócio. SocialProvider encapsula o fornecedor; um post externo do fornecedor corresponde a um Destino Capyra. Versões são imutáveis, tentativas são idempotentes e resultados incertos exigem reconciliação. Jobs sociais usam Queue/DLQ separada, com envio de mídia somente dentro de seis dias do agendamento. O Container Python inspeciona metadados sem OpenAI e sem acesso a D1/auth/fornecedor. [Modelo detalhado](../specs/002-capyra-social/data-model.md).
+A API permanece a única fronteira de negócio. SocialProvider encapsula o fornecedor; um post externo do fornecedor corresponde a um Destino Capyra. Versões são imutáveis, tentativas são idempotentes e resultados incertos exigem reconciliação. Jobs sociais usam Queue/DLQ separada, com envio de mídia somente dentro de seis dias do agendamento. O Container Python inspeciona metadados sem OpenAI e sem acesso a D1/auth/fornecedor. Consulte o [modelo de persistência](database-foundation.md#modelo-social).

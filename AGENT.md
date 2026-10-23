@@ -3,8 +3,8 @@
 ## Escopo
 
 Contrato operacional do monorepo Capyra. Para codigo ou comportamento de um
-app, consulte seu `AGENT.md`. Para specs, planos ou mudancas de fronteira,
-consulte a [constituicao](.specify/memory/constitution.md) e a spec afetada.
+app, consulte seu `AGENT.md`. Para planos ou mudancas de fronteira, consulte
+a arquitetura, os contratos e as decisoes de produto afetadas em `docs/`.
 O [workflow](docs/agent-workflow.md) orienta leitura e validacao por impacto.
 
 ## Execucao e conclusao
@@ -57,10 +57,32 @@ URLs locais: API `5080`, MCP `5090`, web `3000`, site `3001`.
 - A AI nunca acessa D1, JWT, Firebase ou OAuth.
 - `content_strategy`, `filming`, `editing` e `audio_music` sao publicados;
   `compliance` e ID historico nao publicado.
-- MCP e CLI nunca chamam a AI diretamente.
-- Toda mudanca de fronteira atualiza OpenAPI, schemas, derivados e testes.
+- Web, MCP e CLI acessam o negocio pela API, sem acesso direto a AI, D1 ou
+  Queues. O browser usa o proxy web `/api/v1`; Workers em producao usam Service
+  Bindings. Uploads diretos ao R2 dependem de autorizacao da API.
+- Toda mudanca de fronteira atualiza OpenAPI, schemas, derivados, consumers
+  e testes de contrato.
+- Ingestao por URL publica e best effort; prefira upload direto e `sourceAssetId`.
+  Multipart acima de 100 MB exige upload direto, com limite de 200 MB.
 - Migrations de producao sao aplicadas antes do Worker e seguem expand/contract.
+- Preserve as fronteiras de feature folders e shadcn documentadas para a UI.
 - Nao reintroduza .NET, SQL Server, Azurite ou Compose integrado.
+
+## Seguranca, filas e custos
+
+- Preserve isolamento por Conta, OAuth/PKCE, verificacao Firebase, defesas SSRF
+  e de upload, R2 privado e bindings com privilegio minimo.
+- Secrets ficam em Workers/Container secrets ou `.dev.vars` nao versionado.
+  Logs e traces usam amostragem e redacao; nunca incluem midia de usuarios,
+  prompts, transcricoes, credenciais ou URLs assinadas.
+- Trabalho que pode exceder uma requisicao HTTP usa Queues ou outra primitiva
+  duravel. Cada consumer define idempotencia, retries, DLQ e recuperacao de
+  jobs parados, com concorrencia limitada.
+- Prefira bindings diretos, assets estaticos e compute que escala a zero.
+  Corpos grandes usam streaming ou upload direto ao R2; limite armazenamento,
+  retries e observabilidade para controlar custo.
+- Siga o [baseline de seguranca](docs/security-baseline.md) para scans de
+  dependencias/imagens e DAST, restrito a alvos locais ou autorizados.
 
 ## Handoff
 

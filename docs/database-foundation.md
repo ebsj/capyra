@@ -29,7 +29,7 @@ Migrations remotas antecedem o deploy e seguem expand/contract.
 
 ## Modelo Social
 
-As migrations expandem o modelo com Marcas, convites, entitlements/lotes/reservas/ledger, auditoria e notificações, seguidos de perfis/conexões, Publicações/Destinos/versões/tentativas, inbox de webhook, importação e snapshots nativos. Registros legados de análise/mídia preservam `brand_id` nulo até atribuição; novos registros exigem Marca na API. Constraints/índices e operações atômicas protegem quotas, identidade, Proprietário e idempotência. [Invariantes e estados](../specs/002-capyra-social/data-model.md).
+As migrations expandem o modelo com Marcas, convites, entitlements/lotes/reservas/ledger, auditoria e notificações, seguidos de perfis/conexões, Publicações/Destinos/versões/tentativas, inbox de webhook, importação e snapshots nativos. Registros legados de análise/mídia preservam `brand_id` nulo até atribuição; novos registros exigem Marca na API. Constraints/índices e operações atômicas protegem quotas, identidade, Proprietário e idempotência.
 
 
 Migrations Social na ordem de aplicação:

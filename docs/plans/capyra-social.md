@@ -185,8 +185,8 @@ O gate reprova se não for possível:
 Produzir um relatório assinado pelo responsável do produto contendo matriz de
 evidências, versões/data dos fluxos, lacunas, resposta do fornecedor sobre app
 OAuth próprio e decisão `go/no-go`. Sem `go` nas três redes, o piloto comercial não começa. A implementação
-local das fases sociais está autorizada, com os bloqueios de identidade
-registrados na [spec](../../specs/002-capyra-social/spec.md).
+local das fases sociais está autorizada, preservando os bloqueios de identidade
+descritos neste plano.
 
 ## 6. Arquitetura proposta
 
@@ -554,7 +554,6 @@ Uma fase está pronta somente com:
 
 ## 16. Decisões de execução aprovadas em 14/09/2026
 
-- Artefatos Spec Kit: [spec](../../specs/002-capyra-social/spec.md), [plano técnico](../../specs/002-capyra-social/plan.md), [tarefas](../../specs/002-capyra-social/tasks.md) e [quickstart](../../specs/002-capyra-social/quickstart.md).
 - `brandId` obrigatório também nos comandos e ferramentas existentes de CLI/MCP; o usuário rejeitou atribuição automática à Marca padrão. A alteração de entrada exige atualização dos clientes.
 - Oferta inicial aplicada a todas as Contas, sem consumo retroativo; ciclo mensal por aniversário UTC a partir da migração/provisionamento.
 - Convites seguros por link copiável, com destinatário autenticado e expiração de sete dias; sem provedor de e-mail transacional adicional.
@@ -571,9 +570,8 @@ identidade por rede/Marca e a mesma franquia contratada. Perfil pessoal e págin
 de empresa são selecionados no Capyra por dados OAuth obtidos servidor a
 servidor; reconexão preserva a identidade nativa. Texto, imagem, carrossel de
 imagens e vídeo usam os mesmos Destinos, versões, fila, cancelamento e métricas.
-Veja os limites e o roteiro de teste no [quickstart](../../specs/002-capyra-social/quickstart.md#linkedin).
 
-Constitution Check: a API continua sendo a única fronteira; OpenAPI e derivados
+A API continua sendo a única fronteira; OpenAPI e derivados
 incluem a rede/formato, e D1 recebe a migration aditiva `0008_social_linkedin.sql`.
 A tabela com CHECK é reconstruída com FKs diferidas preservando dados e índices;
 Queue/R2 e a franquia permanecem com o comportamento vigente. Falta de prova de

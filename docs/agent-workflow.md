@@ -7,12 +7,17 @@ tarefa atual. Instrucoes ja lidas continuam validas; nao ha releitura obrigatori
 por edicao.
 
 - Codigo/comportamento de app: `apps/<app>/AGENT.md`.
-- Specs, planos ou fronteiras: constituicao e spec afetada; arquitetura e
-  contratos quando houver interacao entre apps.
+- Planos ou fronteiras: arquitetura, contratos e decisoes de produto afetadas.
 - Runtime, bindings ou secrets: setup/development e runbook pertinente.
 - Texto ou ajuste localizado: arquivo afetado e referencias relevantes.
 
-Para o fluxo Spec Kit e sua manutencao, consulte [Spec Kit](speckit.md).
+## Planejamento por impacto
+
+Planeje entregas que possam ser implementadas, testadas e demonstradas de ponta
+a ponta. Explicite dependencias e gates de rollout; limite fundacoes ao que
+bloqueia as entregas. Considere contratos, dados/storage, modos de falha,
+seguranca, custo, validacao e documentacao conforme o impacto. Pedidos apenas
+de plano ou revisao terminam no artefato solicitado.
 
 ## Matriz de impacto
 
@@ -20,7 +25,9 @@ Para o fluxo Spec Kit e sua manutencao, consulte [Spec Kit](speckit.md).
 | --- | --- | --- |
 | API/auth | OpenAPI, derivados, consumers | `npm -w @capyra/api test && npm -w @capyra/api run check` |
 | Report/skill | Python, JSON Schema, projecao API | `uv run pytest` e testes API |
-| D1/R2/Queue | migration, docs e testes de runtime | migration local e Vitest Workers |
+| D1 | migration, docs e testes de runtime | migration local, constraints e Vitest Workers |
+| R2 | contratos de upload/storage e docs | ownership, upload e streaming |
+| Queue/Container | consumer, docs e testes de runtime | duplicatas, retries, timeout e reconciliacao |
 | Web | proxy/models se afetados | lint; build para rotas/config/data loading; smoke para fluxo |
 | Site | mensagens/rotas/CTA se afetados | lint; build para rotas/config/runtime |
 | MCP/CLI | integration-core e docs | typecheck, test e build |
@@ -31,6 +38,12 @@ Escolha os checks pelo comportamento alterado. A suite completa abaixo serve
 para integracao ampla e CI; nao e um ritual para toda edicao. Corrija falhas
 introduzidas pela tarefa e repita os checks afetados. Testes locais usam
 fixtures/emulacao; nao deduza autorizacao para producao ou servicos pagos.
+
+Mudancas em bindings Wrangler exigem geracao e verificacao dos tipos. Prepare
+deploy com checks de configuracao e dry-run; um deploy autorizado inclui
+migrations remotas aplicaveis e smoke posterior. A substituicao de runtime
+exige testes de caracterizacao, contrato, integracao e consumers antes de
+remover o anterior.
 
 ## Comandos canonicos
 
@@ -55,7 +68,8 @@ curl http://localhost:5090/healthz
 
 ## Handoff
 
-Informe o resultado, evidencias de validacao e limitacoes materiais. Cite apps,
-contratos, migrations e premissas apenas quando afetados. Nao documente
+Informe o resultado, evidencias de validacao, motivo dos checks nao executados
+e limitacoes materiais. Cite apps, contratos, migrations e premissas apenas
+quando afetados. Nao documente
 comportamento futuro como concluido. Termine quando o escopo estiver atendido
 e verificado, ou descreva o bloqueio concreto e o trabalho restante.
